@@ -1,6 +1,6 @@
 # 🗺️ FEUILLE DE ROUTE D'INGÉNIERIE & DE DÉPLOIEMENT (ROADMAP)
 ## Plateforme Gbɛ (BENINVIE) — Réponse au Programme d'Action Wadagni-Talata 2026
-### *Document de Cadrage et de Validation Préalable à l'Exécution des Agents*
+### *Document de Cadrage et d'Ordonnancement Soumis à Validation Préalable*
 
 ---
 
@@ -15,14 +15,14 @@
 
 ## 1. VISION D'ENSEMBLE DE LA CONSTRUCTION
 
-L'objectif de cette feuille de route est de réaliser la fusion harmonieuse des acquis de **`sant-plus`** (Dossier FHIR, Triage IA, Cartographie IASO) et de **`BMM`** (HEMORA, Don de sang, Ancrage Bitcoin OpenTimestamps), tout en comblant les exigences spécifiques du Programme Présidentiel Wadagni-Talata (Paiement différé des urgences, Pharmacopée traditionnelle certifiée, ARCH/GBESSOKE, PWA pour les 16 000 ASC).
+La construction unifie les acquis fonctionnels de **`sant-plus`** (Dossier FHIR, Triage IA, Cartographie IASO) et de **`BMM`** (HEMORA, Don de sang, Ancrage Bitcoin OpenTimestamps), tout en matérialisant les engagements du Programme Présidentiel Wadagni-Talata 2026 (Paiement différé des urgences vitales, Pharmacopée traditionnelle certifiée ARS, ARCH/GBESSOKE, PWA pour les 16 000 ASC).
 
 La construction est ordonnée en **5 Jalons Structurants (Milestones)** :
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                   JALON 1 : SOCLE DE DONNÉES & INTEROPÉRABILITÉ                        │
-│   Schéma Drizzle unifié • PostGIS • IASO 77 communes • Seed 2026 déterministe          │
+│                   JALON 1 : SOCLE DE DONNÉES & ENVIRONNEMENT DÉTERMINISTE              │
+│   Next.js 16 + React 19 • Schémas Drizzle unifiés • PostGIS • IASO 77 communes • Seed  │
 └──────────────────────────────────────────┬─────────────────────────────────────────────┘
                                            ▼
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
@@ -50,63 +50,110 @@ La construction est ordonnée en **5 Jalons Structurants (Milestones)** :
 
 ## 2. DÉTAIL DES PHASES ET ACTIONS D'INGÉNIERIE
 
-### 🔹 JALON 1 : Socle Unifié de Données & Environnement Déterministe
-* **Objectif** : Avoir une base de données PostgreSQL + PostGIS commune, consolidée et prête pour la production et la démo.
+### 🔹 JALON 1 : Socle Applicatif, Modèle de Données & Environnement Déterministe
+* **Objectif** : Initialiser la structure applicative complète du dépôt `BENINVIE`, configurer la base PostgreSQL + PostGIS, déployer le schéma Drizzle et alimenter la base avec le seed déterministe national.
 * **Tâches à réaliser** :
-  1. Fusionner les schémas Drizzle ORM de `BMM` et `sant-plus` dans un répertoire centralisé de schémas.
-  2. Intégrer les données réelles de la carte sanitaire **IASO Bénin** (les 77 communes, CHIC Calavi, CNHU, hôpitaux de zone).
-  3. Mettre en place un script de **Seed Déterministe 2026** reproductible (`pnpm db:seed`) injectant patients fictifs complets (avec Bio à Kalalé), soignants, officines, tradipraticiens et banques de sang.
-  4. Configurer Docker et Docker Compose avec initialisation automatique PostGIS.
-* **Livrables attendus** : Schéma relationnel complet validé, script de seed opérationnel, conteneurs démarrant sans erreur.
-* **Agents mobilisés** : `database-engineer`, `devops-engineer`.
+  1. **Initialisation de l'application** :
+     - Setup Next.js 16 (App Router), React 19, TypeScript (mode strict), Tailwind CSS v4, composants UI (`shadcn/ui`, Lucide Icons).
+     - Configuration Docker (`Dockerfile` multi-stage, `docker-compose.yml` avec PostgreSQL 16 + PostGIS).
+  2. **Schéma Drizzle unifié (`src/db/schema/`)** :
+     - Tables : `patients`, `etablissements`, `soignants`, `encounters`, `ordonnances`, `dossiers_paiement_differe`, `donneurs_sang`, `stocks_sang`, `alertes_transfusionnelles`, `transactions_recompenses`, `audit_logs`.
+     - Intégration des extensions géographiques PostGIS (`geometry(Point, 4326)`).
+  3. **Cartographie sanitaire IASO & Données Nationales** :
+     - Intégration du maillage des 77 communes du Bénin (12 départements, coordonnées GPS réelles, types d'établissements du CHIC Calavi aux centres de santé communaux).
+  4. **Script de Seed Déterministe 2026 (`npm run db:seed`)** :
+     - Injection de données de référence cohérentes : Bio GOUDA à Kalalé, médecins, sage-femmes, pharmacies partenaires, tradipraticiens accrédités, banques de sang avec stocks initiaux.
+* **Livrables attendus** : Dépôt amorcé, schéma relationnel migré sans warning, conteneur de dev opérationnel, base peuplée et vérifiée par un test d'intégrité.
+* **Agents mobilisés** : `database-engineer`, `devops-engineer`, `software-architect`.
+
+---
 
 ### 🔹 JALON 2 : SIH Fédéré, Carnet HL7 FHIR & Urgences à Paiement Différé
-* **Objectif** : Rendre opérationnel le cœur clinique et implémenter la prise en charge systématique des urgences vitales sans barrière financière.
+* **Objectif** : Rendre opérationnel le dossier patient électronique HL7 FHIR et implémenter la prise en charge systématique des urgences vitales sans barrière financière.
 * **Tâches à réaliser** :
-  1. Unifier l'espace patient et praticien avec le dossier **HL7 FHIR** (`Patient`, `Encounter`, `Observation`, `MedicationRequest`).
-  2. Implémenter l'écran et l'API du **Triage IA Clinique** (intégration Gemini multilingue avec gestion des symptômes en français et langues locales).
-  3. Créer le **Module d'Urgence Vitale avec Paiement Différé** :
-     - Accès « Bris de Glace » en 1 clic pour soignant accrédité avec journalisation inaltérable.
-     - Admission immédiate sans avance de frais.
+  1. **Espace Patient & Carnet Numérique FHIR** :
+     - Modélisation des ressources standard (`Patient`, `Encounter`, `Observation`, `MedicationRequest`, `Immunization`).
+     - Vue patient résumée en un coup d'œil (allergies, groupe sanguin, antécédents, calendrier vaccinal).
+     - Génération de la carte de santé avec QR code cryptographique.
+  2. **Triage IA Médical Multilingue (Moteur Gemini)** :
+     - Route API `/api/v1/triage/analyse` analysant la gravité clinique et proposant l'orientation adaptée.
+     - Interface de saisie vocale et textuelle (français et langues béninoises : Bariba, Fon, Yoruba, Dendi).
+  3. **Module d'Urgence Vitale avec Paiement Différé** :
+     - Bouton d'accès « Bris de Glace » en 1 clic pour urgentiste avec journalisation inaltérable dans `audit_logs`.
+     - Admission d'urgence vitale sans caution ni avance financière.
      - Génération automatique du dossier de paiement différé garanti par l'État.
-     - Interface de gestion des apurements et prise en charge.
+     - Interface de gestion d'apurement post-stabilisation (couverture ARCH ou échéancier Mobile Money).
 * **Livrables attendus** : Parcours d'admission d'urgence complet, interface FHIR interactive, triage IA fonctionnel avec suggestions médicales réalistes.
 * **Agents mobilisés** : `backend-engineer`, `frontend-engineer`.
 
-### 🔹 JALON 3 : Filière Pharmacopée Traditionnelle & Accréditation Tradipraticiens
-* **Objectif** : Matérialiser l'engagement inédit du programme Wadagni-Talata sur la valorisation sécurisée de la médecine traditionnelle.
+---
+
+### 🔹 JALON 3 : Filière Pharmacopée Traditionnelle Innovante & Accréditation
+* **Objectif** : Matérialiser l'engagement officiel du programme présidentiel sur la valorisation sécurisée de la pharmacopée traditionnelle béninoise.
 * **Tâches à réaliser** :
-  1. Créer le **Registre Numérique des Tradipraticiens Accrédités** (validation ARS, numéro d'accréditation officiel).
-  2. Déployer le catalogue de **Médicaments Traditionnels Améliorés (MTA)** certifiés par l'Agence Nationale du Médicament.
-  3. Développer l'interface de prescription d'ordonnances traditionnelles avec contrôle d'interactions et génération de QR code sécurisé à usage unique.
-  4. Intégrer la vue de délivrance en officine / herboristerie agréée.
+  1. **Registre National des Tradipraticiens Accrédités** :
+     - Portail de consultation et de vérification des praticiens accrédités par l'ARS et le Ministère de la Santé.
+  2. **Catalogue Officiel des Médicaments Traditionnels Améliorés (MTA)** :
+     - Base de données des phytomédicaments homologués par l'Agence Nationale du Médicament (posologies, indications thérapeutiques).
+  3. **Ordonnances Numériques Sécurisées à Usage Unique** :
+     - Formulaire de prescription réservé aux produits homologués MTA.
+     - Génération d'un QR code infalsifiable à usage unique.
+     - Contrôle automatique des contre-indications et interactions avec les molécules conventionnelles du dossier patient.
+  4. **Interface de Délivrance en Officine / Herboristerie Agréée** :
+     - Scan du QR code, validation de l'ordonnance, bascule automatique du statut à `delivree` et verrouillage contre toute réutilisation frauduleuse.
 * **Livrables attendus** : Formulaire de prescription MTA certifié, contrôle des interactions médicamenteuses, vérification de validité de l'ordonnance par QR code.
 * **Agents mobilisés** : `frontend-engineer`, `backend-engineer`.
 
+---
+
 ### 🔹 JALON 4 : Urgences Transfusionnelles HEMORA & Réseau de Confiance
-* **Objectif** : Intégrer le module d'urgence sang issu du hackathon international Bitcoin Mastermind 2026 dans la plateforme globale.
+* **Objectif** : Intégrer le module d'urgence transfusionnelle HEMORA (don de sang, matching, stocks, défraiements et preuves cryptographiques).
 * **Tâches à réaliser** :
-  1. Raccorder le moteur de **matching hématologique d'urgence** ABO/Rhésus avec calcul géodésique PostGIS.
-  2. Raccorder le tableau de bord de **gestion des stocks de sang** pour les banques de sang et hôpitaux départementaux.
-  3. Connecter la génération des cartes donneurs avec signature Ed25519 et ancrage d'intégrité **Bitcoin OpenTimestamps**.
-  4. Intégrer la chaîne de **défraiement forfaitaire de transport** : versement direct en Mobile Money (MTN MoMo/Moov) par défaut, avec option Lightning Network.
+  1. **Moteur de Matching Hématologique & Géodésique** :
+     - Calcul instantané de compatibilité ABO/Rhésus.
+     - Calcul de distance par formule Haversine via PostGIS.
+     - Calcul du score de pertinence (proximité + bonus assiduité jusqu'à 40 pts).
+  2. **Gestion Prédictive des Stocks Régionaux** :
+     - Tableau de bord en temps réel des poches par établissement et par groupe sanguin.
+     - Alerte de seuil critique départemental (< 48h de réserve).
+  3. **Campagnes d'Urgence Géociblées** :
+     - Diffusion ciblée par SMS, appel vocal simulé et notifications PWA dans un rayon de 5 à 25 km.
+  4. **Chaîne de Défraiement Forfaitaire de Transport** :
+     - Règle OMS : don bénévole et non rémunéré.
+     - Versement automatique d'une indemnité forfaitaire de déplacement (2 000 FCFA via simulateur MTN MoMo / Moov Money) à chaque donneur qui se présente, **y compris en cas d'ajournement médical**.
+     - Règle médicale bloquante : interdiction stricte de tout prélèvement à moins de 60 jours d'intervalle.
+  5. **Ancrage Cryptographique & Cartes Donneurs** :
+     - Hachage salé SHA-256 du profil donneur avec sel cryptographique de 32 octets.
+     - Ancrage Merkle sur Bitcoin via OpenTimestamps (`javascript-opentimestamps`).
+     - Vérification de clé BIP-322 pour l'option Lightning Network.
 * **Livrables attendus** : Déclaration d'urgence sang en temps réel, classement instantané des donneurs compatibles, validation du don et émission de l'indemnité.
 * **Agents mobilisés** : `backend-engineer`, `frontend-engineer`.
 
-### 🔹 JALON 5 : Protection Sociale (ARCH/GUPS), PWA Hors-Ligne 16 000 ASC & Qualification
-* **Objectif** : Assurer l'inclusion totale des populations vulnérables, le fonctionnement terrain hors-ligne et la validation finale avant démonstration.
+---
+
+### 🔹 JALON 5 : Protection Sociale (ARCH/GUPS), PWA Hors-Ligne pour les 16 000 ASC & Qualification Démo
+* **Objectif** : Assurer l'inclusion complète des populations vulnérables, le fonctionnement terrain hors-ligne et la validation finale avant démonstration.
 * **Tâches à réaliser** :
-  1. Implémenter la vérification automatique des droits **ARCH** (Assurance Maladie Universelle) et le couplage avec les Guichets Uniques de Protection Sociale (**GUPS**).
-  2. Mettre en place le déclencheur de **transferts monétaires numériques fléchés** (programme GBESSOKE) après validation des CPN et vaccins.
-  3. Optimiser l'application **PWA Hors-Ligne** pour les agents de santé communautaire (Service Worker, IndexedDB, synchro réseau automatique).
-  4. Réaliser la suite de tests automatisés (Vitest + Playwright) sur l'ensemble du parcours officiel de « Bio à Kalalé ».
-  5. Audit complet de conformité **APDP** (protection des données) et de sécurité par les agents dédiés.
+  1. **Interconnexion ARCH & Guichets Uniques de Protection Sociale (GUPS)** :
+     - Vérification en temps réel des droits ARCH (tiers-payant 100% sur le panier de soins d'urgence et de maternité).
+     - Signalement des cas d'indigence vers les GUPS communaux.
+  2. **Transferts Monétaires Numériques Fléchés (GBESSOKE)** :
+     - Déclenchement automatique d'un transfert Mobile Money de soutien nutritionnel (5 000 FCFA) lors de la validation d'une CPN ou de la complétion du calendrier vaccinal PEV.
+  3. **PWA Hors-Ligne pour les 16 000 ASC** :
+     - Service Worker et IndexedDB chiffré pour le travail sans réseau dans les hameaux isolés.
+     - Synchronisation bidirectionnelle automatique dès rétablissement de la connexion.
+     - Synthèse et rappels audio en langues nationales (Bariba, Fon, Yoruba, Dendi).
+  4. **Scénario Officiel Déterministe « Bio à Kalalé »** :
+     - Exécution sans accroc du parcours complet en 7 étapes : visite ASC à domicile -> alerte vocale Bariba -> consultation CS Kalalé -> ordonnance délivrée en pharmacie avec tiers-payant ARCH -> transfert fléché GBESSOKE -> urgence hémorragique à l'HZ Nikki avec paiement différé bris de glace -> matching transfusionnel HEMORA.
+  5. **Audits et Gates de Qualification Finale** :
+     - Audit de conformité APDP (Code du Numérique, contrôle des rôles, anti-IDOR).
+     - Exécution des suites de tests unitaires et E2E (Vitest, Playwright).
 * **Livrables attendus** : PWA testée réseau coupé, parcours de démo complet sans faille, rapport d'audit sécurité et conformité réglementaire.
 * **Agents mobilisés** : `security-engineer`, `qa-engineer`, `final-verifier`, `delivery-orchestrator`.
 
 ---
 
-## 3. MATRICE DES RESPONSABILITÉS DES AGENTS
+## 3. MATRICE D'ATTRIBUTION DES AGENTS
 
 | Rôle Agent | Responsabilité Précise dans le Projet |
 |---|---|

@@ -18,6 +18,7 @@ import {
   Shield,
   User,
   ChevronDown,
+  ChevronRight,
   Activity,
   Pill,
   HeartHandshake,
@@ -29,6 +30,7 @@ import {
   X,
   Clock,
   PhoneCall,
+  QrCode,
 } from "lucide-react";
 
 type NavDropdownItem = {
@@ -132,16 +134,33 @@ export function Nav(): ReactNode {
 
   const navRef = useRef<HTMLDivElement>(null);
 
-  // Close menus on outside click
+  // Close menus on outside click or touch
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    function handleClickOutside(event: MouseEvent | TouchEvent) {
       if (navRef.current && !navRef.current.contains(event.target as Node)) {
         setActiveDropdown(null);
         setUserDropdownOpen(false);
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+    };
+  }, []);
+
+  // Close menus on Escape key
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setActiveDropdown(null);
+        setUserDropdownOpen(false);
+        setMobileMenuOpen(false);
+      }
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   // Close menus on route change
@@ -154,6 +173,26 @@ export function Nav(): ReactNode {
   const toggleDropdown = (id: "urgences" | "citoyens") => {
     setActiveDropdown((prev) => (prev === id ? null : id));
     setUserDropdownOpen(false);
+  };
+
+  const toggleUserDropdown = () => {
+    setUserDropdownOpen((prev) => {
+      if (!prev) {
+        setActiveDropdown(null);
+        setMobileMenuOpen(false);
+      }
+      return !prev;
+    });
+  };
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen((prev) => {
+      if (!prev) {
+        setUserDropdownOpen(false);
+        setActiveDropdown(null);
+      }
+      return !prev;
+    });
   };
 
   const dashboardUrl = user ? ROLE_DASHBOARDS[user.role] : "/login";
@@ -193,7 +232,7 @@ export function Nav(): ReactNode {
       {/* Barre Principale de Navigation (Style ANIP Officiel) */}
       <div
         ref={navRef}
-        className="mx-auto flex h-16 sm:h-20 w-full max-w-7xl items-center justify-between gap-2 sm:gap-4 px-3 sm:px-6 lg:px-8 overflow-hidden"
+        className="mx-auto flex h-16 sm:h-20 w-full max-w-7xl items-center justify-between gap-2 sm:gap-4 px-3 sm:px-6 lg:px-8"
       >
         {/* Marque Officielle Institutionnelle avec Armoiries de la République du Bénin */}
         <Link
@@ -398,76 +437,187 @@ export function Nav(): ReactNode {
           </a>
         </nav>
 
-        {/* Espace Droite : Bouton Style ANIP "ACCÉDER À MON ESPACE" ou Profil Connecté */}
-        <div className="flex items-center gap-2.5">
+        {/* Espace Droite : Profil Connecté (Cercle avec Photo) ou Connexion */}
+        <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
           {user ? (
             <div className="relative">
+              {/* Bouton Avatar Circulaire Épuré */}
               <button
-                onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                className="flex items-center gap-2.5 rounded-lg bg-[#3f6184] hover:bg-[#4a729c] px-3.5 py-2 text-xs font-medium border border-white/20 shadow-sm transition-colors cursor-pointer"
+                onClick={toggleUserDropdown}
+                aria-expanded={userDropdownOpen}
+                aria-haspopup="dialog"
+                className="relative flex items-center justify-center h-10 w-10 sm:h-11 sm:w-11 rounded-full border-2 border-white/40 hover:border-white bg-[#3f6184] shadow-xs hover:shadow-md transition-all duration-200 active:scale-95 cursor-pointer overflow-hidden group focus:outline-hidden focus:ring-2 focus:ring-amber-400 focus:ring-offset-2 focus:ring-offset-[#0a3764] shrink-0"
+                aria-label={`Profil de ${user.prenom} ${user.nom} — Voir détails`}
+                title={`${user.prenom} ${user.nom} (${user.role}) — Voir profil`}
               >
-                <div className="h-6 w-6 rounded-full bg-white text-[#0a3764] flex items-center justify-center font-bold text-[11px]">
-                  {user.prenom[0]}
+                {user.avatarUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={user.avatarUrl}
+                    alt={`${user.prenom} ${user.nom}`}
+                    className="h-full w-full object-cover rounded-full group-hover:scale-105 transition-transform duration-200"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = "none";
+                      const fb = e.currentTarget.parentElement?.querySelector(".avatar-fallback");
+                      if (fb) (fb as HTMLElement).style.display = "flex";
+                    }}
+                  />
+                ) : null}
+                <div
+                  className={`avatar-fallback h-full w-full rounded-full bg-gradient-to-tr from-[#0a3764] via-[#164e87] to-[#3f6184] text-white items-center justify-center font-bold text-sm tracking-wider uppercase ${
+                    user.avatarUrl ? "hidden" : "flex"
+                  }`}
+                >
+                  {user.prenom?.[0] || "U"}
                 </div>
-                <div className="flex flex-col text-left">
-                  <span className="font-semibold text-white leading-tight text-[11px] truncate max-w-[120px]">
-                    {user.prenom} {user.nom}
-                  </span>
-                  <span className="text-[9px] text-amber-300 font-bold uppercase tracking-wider">
-                    {user.role}
-                  </span>
-                </div>
-                <ChevronDown className="h-3.5 w-3.5 text-white/70 ml-0.5" />
+                {/* Pastille statut connecté officielle verte APDP */}
+                <span
+                  className="absolute bottom-0 right-0 h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-[#008751] border-2 border-[#0a3764] ring-1 ring-white/40 shadow-xs"
+                  title="Session active & sécurisée"
+                />
               </button>
 
               <AnimatePresence>
                 {userDropdownOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 8, scale: 0.96 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                    transition={{ duration: 0.15 }}
-                    className="absolute right-0 mt-2 w-68 rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl z-50 text-slate-900"
-                  >
-                    <div className="px-3 py-2.5 border-b border-slate-100">
-                      <p className="text-xs font-bold text-slate-900">{user.prenom} {user.nom}</p>
-                      <p className="text-[10px] text-slate-500">{user.titre}</p>
-                      <p className="text-[10px] text-[#0a3764] mt-0.5 font-semibold">{user.etablissementNom}</p>
-                    </div>
+                  <>
+                    {/* Backdrop assombrissant mobile pour fermer au clic */}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="fixed inset-0 bg-black/40 backdrop-blur-xs z-40 sm:hidden"
+                      aria-hidden="true"
+                    />
 
-                    <div className="py-1">
-                      <Link
-                        href={dashboardUrl}
-                        onClick={() => setUserDropdownOpen(false)}
-                        className="flex items-center gap-2.5 w-full rounded-xl px-3 py-2 text-xs text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors font-semibold"
-                      >
-                        <LayoutDashboard className="h-4 w-4 text-[#0a3764]" />
-                        <span>Mon Tableau de bord</span>
-                      </Link>
+                    {/* Carte / Modal de Profil Connecté Responsive */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                      transition={{ duration: 0.16, ease: "easeOut" }}
+                      className="fixed sm:absolute right-3 sm:right-0 top-18 sm:top-full sm:mt-2.5 w-[calc(100vw-24px)] max-w-[340px] sm:w-84 rounded-2xl border border-slate-200/90 bg-white shadow-2xl z-50 text-slate-900 overflow-hidden"
+                      role="dialog"
+                      aria-label="Profil utilisateur"
+                    >
+                      {/* Ruban Tricolore National */}
+                      <div className="flex h-1 w-full shrink-0">
+                        <div className="w-1/3 bg-[#008751]" />
+                        <div className="w-1/3 bg-[#ffbe00]" />
+                        <div className="w-1/3 bg-[#eb0000]" />
+                      </div>
 
-                      <Link
-                        href="/login"
-                        onClick={() => setUserDropdownOpen(false)}
-                        className="flex items-center gap-2.5 w-full rounded-xl px-3 py-2 text-xs text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors"
-                      >
-                        <User className="h-4 w-4 text-sky-600" />
-                        <span>Changer d&apos;acteur</span>
-                      </Link>
-                    </div>
+                      {/* En-tête de la carte avec fermeture */}
+                      <div className="px-4 pt-3.5 pb-2.5 flex items-center justify-between border-b border-slate-100 bg-slate-50/70">
+                        <div className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                          <Shield className="h-3.5 w-3.5 text-emerald-600" />
+                          <span>Identité Numérique Santé</span>
+                        </div>
+                        <button
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="h-6 w-6 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-700 hover:bg-slate-200/60 transition-colors cursor-pointer"
+                          aria-label="Fermer le profil"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                      </div>
 
-                    <div className="pt-1 border-t border-slate-100">
-                      <button
-                        onClick={() => {
-                          setUserDropdownOpen(false);
-                          logout();
-                        }}
-                        className="flex items-center gap-2.5 w-full rounded-xl px-3 py-2 text-xs text-red-600 hover:bg-red-50 transition-colors font-semibold text-left cursor-pointer"
-                      >
-                        <LogOut className="h-4 w-4" />
-                        <span>Déconnexion</span>
-                      </button>
-                    </div>
-                  </motion.div>
+                      {/* Corps Profil Identité */}
+                      <div className="p-4">
+                        <div className="flex items-start gap-3">
+                          <div className="relative h-13 w-13 rounded-full border-2 border-[#0a3764]/20 shadow-xs shrink-0 overflow-hidden bg-slate-100">
+                            {user.avatarUrl ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img
+                                src={user.avatarUrl}
+                                alt={`${user.prenom} ${user.nom}`}
+                                className="h-full w-full object-cover rounded-full"
+                              />
+                            ) : (
+                              <div className="h-full w-full flex items-center justify-center font-bold text-[#0a3764] bg-[#eaf2f9] text-lg">
+                                {user.prenom?.[0] || "U"}
+                              </div>
+                            )}
+                            <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-[#008751] border-2 border-white" />
+                          </div>
+
+                          <div className="min-w-0 flex-1">
+                            <p className="text-sm font-extrabold text-slate-900 truncate">
+                              {user.prenom} {user.nom}
+                            </p>
+                            <div className="inline-flex items-center gap-1 px-2 py-0.5 mt-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/60 text-[9px] font-bold uppercase tracking-wider">
+                              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                              <span>{user.role}</span>
+                            </div>
+                            <p className="text-[11px] text-slate-600 line-clamp-1 mt-1 font-medium">
+                              {user.titre}
+                            </p>
+                            <p className="text-[11px] text-[#0a3764] font-semibold truncate mt-0.5">
+                              {user.etablissementNom}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* NPI & Commune */}
+                        <div className="mt-3 p-2.5 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between text-[11px] text-slate-600">
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <span className="font-semibold text-slate-500 text-[10px]">NPI :</span>
+                            <span className="font-mono font-bold text-slate-800 text-[10px] truncate">{user.npi}</span>
+                          </div>
+                          <span className="text-[10px] text-slate-500 font-medium shrink-0 ml-1">
+                            {user.commune} ({user.departement})
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Actions rapides */}
+                      <div className="p-3 pt-0 space-y-1">
+                        <Link
+                          href={dashboardUrl}
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="flex items-center justify-between w-full rounded-xl px-3.5 py-2.5 text-xs text-white bg-[#0a3764] hover:bg-[#082a4d] transition-colors font-bold shadow-xs group"
+                        >
+                          <div className="flex items-center gap-2.5">
+                            <LayoutDashboard className="h-4 w-4 shrink-0 text-amber-300" />
+                            <span>Mon Tableau de bord</span>
+                          </div>
+                          <ChevronRight className="h-4 w-4 opacity-70 group-hover:translate-x-0.5 transition-transform" />
+                        </Link>
+
+                        <Link
+                          href="/verify"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="flex items-center gap-2.5 w-full rounded-xl px-3.5 py-2 text-xs text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors font-medium"
+                        >
+                          <QrCode className="h-4 w-4 text-emerald-600 shrink-0" />
+                          <span>Guichet de vérification QR</span>
+                        </Link>
+
+                        <Link
+                          href="/login"
+                          onClick={() => setUserDropdownOpen(false)}
+                          className="flex items-center gap-2.5 w-full rounded-xl px-3.5 py-2 text-xs text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors font-medium"
+                        >
+                          <User className="h-4 w-4 text-sky-600 shrink-0" />
+                          <span>Changer d&apos;acteur / rôle (Démo)</span>
+                        </Link>
+                      </div>
+
+                      {/* Déconnexion */}
+                      <div className="p-3 pt-2 border-t border-slate-100 bg-slate-50/50">
+                        <button
+                          onClick={() => {
+                            setUserDropdownOpen(false);
+                            logout();
+                          }}
+                          className="flex items-center gap-2.5 w-full rounded-xl px-3 py-2 text-xs text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors font-bold text-left cursor-pointer"
+                        >
+                          <LogOut className="h-4 w-4 shrink-0" />
+                          <span>Déconnexion</span>
+                        </button>
+                      </div>
+                    </motion.div>
+                  </>
                 )}
               </AnimatePresence>
             </div>
@@ -482,10 +632,10 @@ export function Nav(): ReactNode {
             </Link>
           )}
 
-          {/* Bouton Menu Mobile Ergonomique (44px) */}
+          {/* Bouton Menu Mobile Ergonomique (40px/44px) */}
           <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden min-h-[40px] min-w-[40px] sm:min-h-[44px] sm:min-w-[44px] flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+            onClick={toggleMobileMenu}
+            className="lg:hidden min-h-[40px] min-w-[40px] sm:min-h-[44px] sm:min-w-[44px] flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer shrink-0"
             aria-label={mobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu de navigation"}
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -555,6 +705,44 @@ export function Nav(): ReactNode {
                 <div className="w-1/3 bg-[#ffbe00]" />
                 <div className="w-1/3 bg-[#eb0000]" />
               </div>
+
+              {/* Carte profil utilisateur si connecté */}
+              {user && (
+                <div className="p-3 mx-4 mt-3 rounded-2xl bg-slate-50 border border-slate-200/90 flex items-center justify-between gap-3 shrink-0">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="relative h-10 w-10 rounded-full border border-slate-200 overflow-hidden shrink-0 bg-white">
+                      {user.avatarUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={user.avatarUrl}
+                          alt={`${user.prenom} ${user.nom}`}
+                          className="h-full w-full object-cover rounded-full"
+                        />
+                      ) : (
+                        <div className="h-full w-full flex items-center justify-center font-bold text-[#0a3764] bg-[#eaf2f9] text-xs">
+                          {user.prenom[0]}
+                        </div>
+                      )}
+                      <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-[#008751] border border-white" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-xs font-bold text-slate-900 truncate block">
+                        {user.prenom} {user.nom}
+                      </span>
+                      <span className="text-[10px] text-[#0a3764] font-semibold uppercase tracking-wider block truncate">
+                        {user.role} • {user.etablissementNom}
+                      </span>
+                    </div>
+                  </div>
+                  <Link
+                    href={dashboardUrl}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="min-h-[36px] px-3 py-1.5 rounded-xl bg-[#0a3764] text-white text-[11px] font-bold shrink-0 hover:bg-[#072544] transition-colors flex items-center gap-1"
+                  >
+                    <span>Dossier</span>
+                  </Link>
+                </div>
+              )}
 
               {/* Contenu Défilable du Tiroir */}
               <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-5">
@@ -670,7 +858,7 @@ export function Nav(): ReactNode {
                 </div>
               </div>
 
-              {/* 4. Barre Actions Bas : Ligne 136 et Connexion */}
+              {/* 4. Barre Actions Bas : Ligne 136 et Connexion / Déconnexion */}
               <div className="p-4 bg-slate-50 border-t border-slate-200 flex flex-col gap-2 shrink-0">
                 <a
                   href="tel:136"
@@ -680,14 +868,27 @@ export function Nav(): ReactNode {
                   <span>Appeler 136 • Urgences 24/7</span>
                 </a>
 
-                <Link
-                  href="/login"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="min-h-[44px] flex items-center justify-center gap-2 rounded-xl bg-[#0a3764] hover:bg-[#072544] text-white text-xs font-bold shadow-xs transition-colors"
-                >
-                  <LogIn className="h-4 w-4" />
-                  <span>Accéder à mon espace sécurisé</span>
-                </Link>
+                {user ? (
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      logout();
+                    }}
+                    className="min-h-[44px] flex items-center justify-center gap-2 rounded-xl bg-red-50 hover:bg-red-100 border border-red-200 text-red-700 text-xs font-bold shadow-xs transition-colors cursor-pointer"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    <span>Déconnexion ({user.prenom})</span>
+                  </button>
+                ) : (
+                  <Link
+                    href="/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="min-h-[44px] flex items-center justify-center gap-2 rounded-xl bg-[#0a3764] hover:bg-[#072544] text-white text-xs font-bold shadow-xs transition-colors"
+                  >
+                    <LogIn className="h-4 w-4" />
+                    <span>Accéder à mon espace sécurisé</span>
+                  </Link>
+                )}
               </div>
             </motion.div>
           </>

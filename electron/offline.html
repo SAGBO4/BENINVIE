@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BENINVIE — Mode Autonome Officine & Structure Sanitaire</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    body {
+      background-color: #0a3764;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+    }
+    .flag-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 6px;
+      display: flex;
+    }
+    .flag-green { flex: 1; background-color: #008751; }
+    .flag-yellow { flex: 1; background-color: #ffbe00; }
+    .flag-red { flex: 1; background-color: #eb0000; }
+
+    .card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 24px;
+      padding: 40px;
+      max-width: 640px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      background: rgba(0, 135, 81, 0.25);
+      border: 1px solid #008751;
+      color: #34d399;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 16px;
+    }
+    h1 {
+      font-size: 26px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: #ffffff;
+    }
+    p {
+      font-size: 14px;
+      color: #cbd5e1;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+    .hardware-box {
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 24px;
+      text-align: left;
+      font-size: 12px;
+    }
+    .hardware-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .hardware-item:last-child {
+      border-bottom: none;
+    }
+    .status-ok {
+      color: #34d399;
+      font-weight: bold;
+    }
+    .btn {
+      display: inline-block;
+      background-color: #f0a945;
+      color: #0f172a;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 12px 28px;
+      border-radius: 12px;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: background-color 0.2s;
+    }
+    .btn:hover {
+      background-color: #d9912b;
+    }
+    .footer {
+      margin-top: 24px;
+      font-size: 11px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <div class="flag-bar">
+    <div class="flag-green"></div>
+    <div class="flag-yellow"></div>
+    <div class="flag-red"></div>
+  </div>
+
+  <div class="card">
+    <div class="badge">Application Métier Desktop Officine & Hôpital</div>
+    <h1>BENINVIE Logiciel Autonome</h1>
+    <p>
+      Le client lourd pour pharmacies et centres de santé est opérationnel.
+      Connexion aux périphériques physiques USB (lecteurs sans contact NFC et douchettes 2D).
+    </p>
+
+    <div class="hardware-box">
+      <div class="hardware-item">
+        <span>Borne NFC PC/SC USB :</span>
+        <span class="status-ok">✔ Connecté (ISO 14443)</span>
+      </div>
+      <div class="hardware-item">
+        <span>Scanner Code-Barres / Douchette QR :</span>
+        <span class="status-ok">✔ Actif (Émulation Clavier)</span>
+      </div>
+      <div class="hardware-item">
+        <span>Scellé Cryptographique APDP :</span>
+        <span class="status-ok">✔ Conforme Loi 2017-20</span>
+      </div>
+    </div>
+
+    <button class="btn" onclick="window.location.href = 'http://localhost:3000/verify'">
+      Lancer le Guichet de Vérification
+    </button>
+
+    <div class="footer">
+      République du Bénin • Ministère de la Santé • ANIP • CNTS
+    </div>
+  </div>
+</body>
+</html>

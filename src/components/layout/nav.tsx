@@ -71,11 +71,18 @@ const URGENCES_GROUP: NavGroup = {
       badge: "CNTS Bénin",
     },
     {
-      label: "Passeport Donneur Numérique",
-      desc: "QR APDP salé SHA-256 et défraiement MoMo 2 000 F",
+      label: "Passeport Donneur & NFC",
+      desc: "QR APDP salé SHA-256 et carte sans contact ISO 14443",
       href: "/projects?module=passport",
       icon: Award,
-      badge: "MoMo Validé",
+      badge: "NFC Actif",
+    },
+    {
+      label: "Vérification QR & Scellé ANIP",
+      desc: "Guichet officiel réservé aux acteurs de santé habilités",
+      href: "/verify",
+      icon: Shield,
+      badge: "Légal APDP",
     },
   ],
 };

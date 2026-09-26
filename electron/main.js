@@ -20,7 +20,7 @@ function createWindow() {
       nodeIntegration: false,
       sandbox: false,
     },
-    icon: path.join(__dirname, "../public/logo-republique-benin.png"),
+    icon: path.join(__dirname, "../public/armoiries-benin.png"),
   });
 
   // Construction du Menu Applicatif Métier Officine & Santé

@@ -1,4 +1,4 @@
-# Analyse Exhaustive de BMM (Blood Money Matrix / HEMORA) & Plan de Refonte Intégrale dans Gbɛ (BENINVIE)
+# Analyse Exhaustive de BMM (Blood Money Matrix / HEMORA) & Plan de Refonte Intégrale dans BENINVIE
 
 **Date** : 26 Septembre 2026  
 **Auteurs** : Équipe Technique Conjointe (Architecte Logiciel, Ingénieur UI/UX shadcn, Ingénieur Sécurité & Cryptographie)  
@@ -27,7 +27,7 @@ Le projet **BMM (Blood Money Matrix / HEMORA)** a été conçu comme une platefo
 
 ### 1.2 Cartographie des Modules Existants de BMM
 
-| Module BMM d'Origine | Rôle Métier | Fichiers Clés | Évaluation & Plan de Fusion dans Gbɛ |
+| Module BMM d'Origine | Rôle Métier | Fichiers Clés | Évaluation & Plan de Fusion dans BENINVIE |
 | :--- | :--- | :--- | :--- |
 | `src/modules/matching/` | Algorithme de compatibilité ABO/Rh et score Haversine avec bonus d'assiduité | `matching.service.ts` | Intégré dans l'API unifiée `/api/v1/hemora/matching` avec explication clinique native. |
 | `src/modules/stock/` | Gestion des stocks de sang par établissement et alertes de seuils critiques | `stock.service.ts` | Modélisé dans Drizzle ORM PostGIS (`stocksSang`), composant shadcn `BloodStockMonitor`. |
@@ -41,7 +41,7 @@ Le projet **BMM (Blood Money Matrix / HEMORA)** a été conçu comme une platefo
 
 ---
 
-## 2. Architecture Cible & Principes de Refonte dans Gbɛ
+## 2. Architecture Cible & Principes de Refonte dans BENINVIE
 
 1. **Souveraineté des Données & APDP (Loi n° 2017-20)** :
    - Aucun identifiant médical personnel n'est exposé publiquement.

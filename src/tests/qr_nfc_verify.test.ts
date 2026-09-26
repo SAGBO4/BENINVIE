@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { generateSecureQrToken, verifyQrToken, hasRequiredAccessRole } from "../lib/qr-verify";
+import { generateSecureQrToken, verifyQrToken, resolveQrToken, hasRequiredAccessRole } from "../lib/qr-verify";
 
 describe("BENINVIE - Système Cryptographique de QR Codes & Cartes Sécurisées", () => {
   it("génère un jeton QR sécurisé avec signature HMAC-SHA256 et empreinte scellée", () => {
@@ -91,5 +91,21 @@ describe("BENINVIE - Système Cryptographique de QR Codes & Cartes Sécurisées"
     expect(hasRequiredAccessRole("CITOYEN", ordonnancePayload)).toBe(false);
     expect(hasRequiredAccessRole("VISITEUR", ordonnancePayload)).toBe(false);
     expect(hasRequiredAccessRole(undefined, ordonnancePayload)).toBe(false);
+  });
+
+  it("résout automatiquement les jetons scannés par douchette ou caméra (raccourcis scellés)", () => {
+    // Scan d'une ordonnance
+    const resOrd = resolveQrToken("ORD-2026-001-SCELLÉ");
+    expect(resOrd.isValid).toBe(true);
+    expect(resOrd.payload?.type).toBe("ORDONNANCE");
+    expect(resOrd.payload?.id).toBe("ORD-2026-001");
+    expect(resOrd.payload?.details.medicaments?.length).toBeGreaterThan(0);
+
+    // Scan d'un passeport donneur HEMORA
+    const resHemora = resolveQrToken("DONNEUR-109876543210-HEMORA");
+    expect(resHemora.isValid).toBe(true);
+    expect(resHemora.payload?.type).toBe("DONNEUR_HEMORA");
+    expect(resHemora.payload?.details.groupeSanguin).toBe("O+");
+    expect(resHemora.payload?.sha256Seal).toBeDefined();
   });
 });

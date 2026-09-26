@@ -1,12 +1,12 @@
 # 🗺️ FEUILLE DE ROUTE D'INGÉNIERIE & DE DÉPLOIEMENT (ROADMAP)
-## Plateforme Gbɛ (BENINVIE) — Réponse au Programme d'Action Wadagni-Talata 2026
+## Plateforme BENINVIE — Réponse au Programme d'Action Wadagni-Talata 2026
 ### *Document de Cadrage et d'Ordonnancement Soumis à Validation Préalable*
 
 ---
 
 | Métadonnée | Valeur |
 |---|---|
-| **Projet** | Gbɛ (BENINVIE) |
+| **Projet** | BENINVIE |
 | **Objectif de la Roadmap** | Structurer la réalisation ordonnée et sans rupture de la plateforme nationale |
 | **Garantie Fondamentale** | Règle d'or n°1 : La démo ne plante jamais |
 | **Statut** | **SOUMIS À L'ACCORD DU CHEF DE PROJET AVANT DÉCLENCHEMENT DES AGENTS** |

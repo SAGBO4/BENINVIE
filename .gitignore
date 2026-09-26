@@ -30,3 +30,5 @@ pnpm-debug.log*
 .env*
 sant-plus/
 programme-wadagni-talata-2026-1.pdf
+desktop/
+dist-electron/

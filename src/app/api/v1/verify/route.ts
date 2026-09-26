@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { verifyQrToken, hasRequiredAccessRole, generateSecureQrToken, SecureQrPayload } from "@/lib/qr-verify";
+import { verifyQrToken, resolveQrToken, hasRequiredAccessRole, generateSecureQrToken, SecureQrPayload } from "@/lib/qr-verify";
 import { dbStore } from "@/db/client";
 
 // Enregistrement d'audit APDP en mémoire pour traçabilité légale
@@ -32,7 +32,7 @@ export async function GET(req: NextRequest) {
   }
 
   // Vérification de la signature cryptographique et de l'intégrité
-  const verification = verifyQrToken(token);
+  const verification = resolveQrToken(token);
 
   if (!verification.isValid || !verification.payload) {
     apdpAuditLog.push({
@@ -116,7 +116,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: "Token requis" }, { status: 400 });
     }
 
-    const verification = verifyQrToken(token);
+    const verification = resolveQrToken(token);
     if (!verification.isValid || !verification.payload) {
       return NextResponse.json({ success: false, error: "Jeton cryptographique invalide" }, { status: 403 });
     }

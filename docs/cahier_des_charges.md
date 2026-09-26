@@ -1,12 +1,12 @@
 # 📘 CAHIER DES CHARGES FONCTIONNEL, TECHNIQUE & RÉGLEMENTAIRE
-## Plateforme Nationale de Santé Numérique et de Gestion des Urgences : Gbɛ (BENINVIE)
+## Plateforme Nationale de Santé Numérique et de Gestion des Urgences : BENINVIE
 ### *Source Unique de Vérité (SSOT) pour le Développement et la Qualification des Livrables*
 
 ---
 
 | Métadonnée | Valeur |
 |---|---|
-| **Projet** | Gbɛ (BENINVIE) — Système d'Information Sanitaire Intégré du Bénin |
+| **Projet** | BENINVIE — Système d'Information Sanitaire Intégré du Bénin |
 | **Cadre de Référence Politique** | Programme d'Action du Président Romuald Wadagni & Vice-Présidente Mariam Chabi Talata (2026-2031) |
 | **Piliers Nationaux Ciblés** | Priorité 1 : Santé (pp. 12-13) & Protection Sociale (pp. 14-15) ; Priorité 3 : Technologie (pp. 64-65) |
 | **Tutelles Réglementaires** | Ministère de la Santé, ARS (Autorité de Régulation du secteur de la Santé), APDP (Autorité de Protection des Données Personnelles) |
@@ -17,7 +17,7 @@
 
 ## 1. VISION & OBJECTIFS FONDAMENTAUX DU PROJET
 
-Le présent Cahier des Charges définit les exigences strictes pour l'unification, l'industrialisation et la mise en conformité de la plateforme **Gbɛ (BENINVIE)**.
+Le présent Cahier des Charges définit les exigences strictes pour l'unification, l'industrialisation et la mise en conformité de la plateforme **BENINVIE**.
 
 La plateforme a pour objectif d'éradiquer les fractures sanitaires et de concrétiser la promesse d'un système de santé béninois moderne, inclusif, souverain et accessible à chaque citoyen, où qu'il réside sur le territoire national :
 1. **Éradiquer les décès évitables par défaut de paiement à l'admission** grâce au **Dispositif National de Paiement Différé pour les Urgences Vitales** (Règle d'or : « Zéro refus d'admission pour motif financier »).
@@ -46,24 +46,24 @@ Le projet unifie les briques fonctionnelles éprouvées :
 
 ```
                         ┌──────────────────────────────────────────────┐
-                        │                BENINVIE (Gbɛ)                │
+                        │                   BENINVIE                   │
                         │    Plateforme Collaborative de Santé Bénin   │
                         └──────────────────────┬───────────────────────┘
                                                │
-               ┌───────────────────────────────┴───────────────────────────────┐
-               ▼                                                               ▼
-┌─────────────────────────────────────────────┐ ┌─────────────────────────────────────────────┐
-│                 sant-plus                   │ │                     BMM                     │
-│       (Module SIH & Soins Cliniques)        │ │          (Module Transfusion HEMORA)        │
-├─────────────────────────────────────────────┤ ├─────────────────────────────────────────────┤
-│ • Dossier Patient Électronique HL7 FHIR     │ │ • Réseau national des donneurs volontaires  │
-│ • Cartographie Sanitaire IASO (77 communes) │ │ • Moteur de matching hématologique d'urgence│
-│ • Module IA Triage Clinique (Gemini)        │ │ • Gestion des stocks de poches de sang      │
-│ • Ordonnances numériques & vérification QR  │ │ • Alertes géociblées par SMS/Email          │
-│ • Conformité APDP & Portails professionnels │ │ • Preuves cryptographiques OpenTimestamps   │
-│ • Intégration MTN MoMo / Moov Money         │ │ • Défraiements de transport forfaitaires    │
-└─────────────────────────────────────────────┘ └─────────────────────────────────────────────┘
+          ┌────────────────────────────────────┼────────────────────────────────────┐
+          ▼                                    ▼                                    ▼
+┌──────────────────────────────┐ ┌──────────────────────────────┐ ┌──────────────────────────────┐
+│          sant-plus           │ │             BMM              │ │  Module Desktop & Matériel   │
+│(Module SIH & Soins Cliniques)│ │ (Module Transfusion HEMORA)  │ │   (Electron, QR 2D & NFC)    │
+├──────────────────────────────┤ ├──────────────────────────────┤ ├──────────────────────────────┤
+│• Dossier Patient HL7 FHIR    │ │• Donateurs & Matching Urgence│ │• Client lourd Desktop (Linux/│
+│• Cartographie IASO 77 comm.  │ │• Gestion des stocks poches   ││  Windows dans /desktop)      │
+│• Triage IA Clinique (Gemini) │ │• Alertes SMS / IVR géociblées│ │• Guichet /verify cam & USB   │
+│• Ordonnances & ARCH 0 FCFA   │ │• Preuves OpenTimestamps (OTS)│ │• Scellé QR HMAC-SHA256 APDP  │
+│• Télémédecine & bris de glace│ │• Défraiements Mobile Money   │ │• Carte NFC ISO 14443 PC/SC   │
+└──────────────────────────────┘ └──────────────────────────────┘ └──────────────────────────────┘
 ```
+
 
 ---
 
@@ -146,6 +146,44 @@ Le projet unifie les briques fonctionnelles éprouvées :
   - Synthèse vocale et messages audio enregistrés en Bariba, Fon, Yoruba et Dendi.
   - Support de cartes de santé papier imprimées avec QR code cryptographique pour les patients sans équipement connecté.
 
+### SF-8 : QR Codes Cryptographiques Scellés ANIP & Guichet National de Vérification (`/verify`)
+* **SF-8.1 Moteur Cryptographique HMAC-SHA256 & Horodatage OTS** :
+  - Génération de jetons signés en Base64Url `<encodedPayload>.<signature>` avec clé de scellé d'État.
+  - Empreinte de scellement documentaire publique SHA-256 (`0x...`) et preuve Merkle d'ancrage `OTS-BTC-BJ-2026-XXXX`.
+  - Date d'émission et d'expiration stricte (30 jours pour ordonnance, 365 jours pour passeport donneur).
+* **SF-8.2 Contrôle d'Accès RBAC Strict & Conformité Loi 2017-20 (APDP)** :
+  - Tout scan public masque intégralement les données médicales confidentielles (`rolesAutorises`).
+  - Seuls les professionnels de santé habilités (Médecin, Pharmacien, Agent CNTS, Urgentiste, Superviseur ARS/ADMIN) ont accès au déchiffrement complet.
+  - Journalisation inaltérable de chaque tentative d'accès (autorisée, refusée ou falsifiée) pour audit légal APDP.
+* **SF-8.3 Guichet Officiel Universel de Vérification (`/verify`)** :
+  - Module réactif avec scanner caméra direct, saisie manuelle de jeton et détection d'émulation clavier USB (douchettes 2D).
+  - Résolution universelle (`resolveQrToken`) capable de décoder à la fois les jetons complets HMAC et les codes d'ordonnance / passeports courts scellés.
+  - Retour sonore Web Audio (bip aigu de validation et double bip grave d'alerte fraude).
+* **SF-8.4 Délivrance Officinale & Invalidation à Usage Unique** :
+  - Action de délivrance en pharmacie conventionnée avec enregistrement du pharmacien (ONPB), de l'officine et scellement d'horodatage.
+  - Invalidation immédiate pour prévenir toute réutilisation frauduleuse.
+
+### SF-9 : Carte Sans Contact NFC ISO 14443 HEMORA & Patient
+* **SF-9.1 Interopérabilité Matérielle Bornes Sans Contact** :
+  - Support standard PC/SC et lecteurs USB sans contact (ACS ACR122U, Identiv).
+  - Émulation de puce NFC avec identifiant matériel UID unique (ex: `04:C8:7B:A2:3F:89:E1`).
+* **SF-9.2 Données Vitales Embarquées Sécurisées** :
+  - NPI scellé ANIP, groupe sanguin, statut d'aptitude médicale, date de dernier don, solde de points santé MoMo et contacts d'urgence.
+* **SF-9.3 Écriture & Consignation Immédiate** :
+  - Consignation en 1 clic d'un nouveau don de sang (450 mL) ou d'une dispensation avec incrémentation des points civiques.
+
+### SF-10 : Client Lourd Desktop Electron pour Officines & Structures Sanitaires
+* **SF-10.1 Architecture Sécurisée & Isolation de Contexte** :
+  - Application Electron native avec `contextIsolation: true`, `nodeIntegration: false` et script de préchargement sécurisé (`preload.js`).
+* **SF-10.2 Intégration Périphériques Métier USB** :
+  - Écoute et gestion IPC des événements matériels : douchettes code-barres / QR USB, bornes sans contact NFC et imprimantes thermiques tickets de caisse 80mm (<kbd>Ctrl+P</kbd>).
+* **SF-10.3 Mode Kiosque Plein Écran Sécurisé** :
+  - Raccourci <kbd>F11</kbd> verrouillant l'environnement pour guichet d'accueil ou comptoir d'officine.
+* **SF-10.4 Mode Dégradé Hors-Ligne (`offline.html`)** :
+  - Affichage instantané d'une mire locale autonome avec monitoring du statut des périphériques en cas de latence du serveur.
+* **SF-10.5 Packages Autonomes Déployables (Linux & Windows)** :
+  - Distribution dans le répertoire `desktop/` : paquet `.AppImage` et paquet `.deb` pour Linux (AMD64), archive autonome `.zip` et binaire portable `BENINVIE.exe` pour Windows.
+
 ---
 
 ## 5. SPÉCIFICATIONS TECHNIQUES & ARCHITECTURE
@@ -159,10 +197,9 @@ Le projet unifie les briques fonctionnelles éprouvées :
   - Ancrage Merkle sur Bitcoin via OpenTimestamps (`javascript-opentimestamps`).
   - Preuve de possession de clé **BIP-322** (`bip322-js`).
   - Signatures numériques Ed25519 pour ordonnances et cartes hors-ligne.
-* **Simulateurs Déterministes Intégrés** :
-  - Simulateur MTN Mobile Money & Moov Money (FCFA).
-  - Simulateur SMS & Appels vocaux IVR (audio multilingue).
-  - Simulateur USSD (`*155#`).
+* **Client Desktop & Packaging** : Electron 44, electron-builder 26 (installeurs et paquets autonomes Linux AppImage / deb et Windows zip / portable stockés dans `/desktop`).
+* **Sécurité Matérielle & Périphériques** : Émulation douchette 2D USB, borne sans contact NFC (ISO 14443 PC/SC), impression thermique de caisse ESC/POS (<kbd>Ctrl+P</kbd>).
+* **Rendu & Cryptographie QR / NFC** : `qrcode.react`, Web Audio API (retours sonores), Web MediaDevices API (scanner caméra en direct), HMAC-SHA256 avec comparaison en temps constant `timingSafeEqual`.
 
 ### 5.2 Cartographie des Routes API `/api/v1/`
 
@@ -180,6 +217,9 @@ Le projet unifie les briques fonctionnelles éprouvées :
 | `POST` | `/api/v1/ordonnances` | Émission d'ordonnance (conventionnelle ou MTA certifié) | Médecin, Tradipraticien ARS |
 | `GET` | `/api/v1/ordonnances/:id/verifier` | Vérification de l'authenticité et validité du QR code | Pharmacie, Patient |
 | `POST` | `/api/v1/ordonnances/:id/delivrer` | Délivrance et invalidation à usage unique | Pharmacie conventionnée |
+| `POST` | `/api/v1/qr-tokens` | Génération de jeton QR scellé HMAC-SHA256 avec preuve OTS | Système, Soignants |
+| `GET` | `/api/v1/verify` | Vérification cryptographique, audit APDP et filtrage RBAC | Public, Professionnels |
+| `POST` | `/api/v1/verify` | Délivrance officinale ou enregistrement de don de sang | Pharmacien, Agent CNTS |
 | `GET` | `/api/v1/tradipraticiens` | Annuaire officiel des tradipraticiens accrédités ARS | Public, Professionnels |
 | `GET` | `/api/v1/medicaments/mta` | Référentiel des Médicaments Traditionnels Améliorés certifiés | Public, Prescripteurs |
 | `POST` | `/api/v1/triage/analyse` | Triage IA multilingue (Gemini) des symptômes | Soignant, ASC |
@@ -227,15 +267,19 @@ Le jeu de données de test et la qualification doivent impérativement supporter
 
 ## 8. CRITÈRES D'ACCEPTATION POUR LES AGENTS ET LIVRABLES
 
-1. **Fiabilité d'Exécution** :
-   - `npm run build` et `npm run typecheck` réussis avec 0 erreur TypeScript.
-   - `npm run lint` validé.
-   - Suites de tests Vitest exécutées et passantes (matching hématologique, détection réutilisation ordonnance, bris de glace, simulateurs).
-2. **Authenticité des Données** :
-   - Script de seed déterministe reproductible (`pnpm db:seed` ou `npm run seed`) peuplant les 77 communes, les structures sanitaires réelles et les acteurs de la démo (Bio à Kalalé, tradipraticiens homologués, banques de sang).
-3. **Intégrité UI/UX** :
-   - Navigation fluide, interfaces accessibles et soignées en Tailwind CSS v4.
-   - Composants réactifs affichant les rétroactions visuelles instantanées (dialogue bris de glace, simulation SMS/MoMo/Appel vocal, alertes de rupture de stock).
+1. **Fiabilité d'Exécution & Couverture de Tests** :
+   - `npm run build` réussi avec compilation complète des 59 routes (statiques et dynamiques).
+   - `npm run typecheck` validé avec 0 erreur TypeScript.
+   - Suites de tests Vitest exécutées à 100% de réussite : **10 suites de tests et 30 tests unitaires/intégration** (moteur cryptographique HMAC-SHA256, résolution des scans QR ordonnance/HEMORA, détection de falsification APDP, contrôle RBAC soignants, matching hématologique, détection réutilisation ordonnance, bris de glace, simulateurs).
+2. **Authenticité des Données & Traçabilité Légale** :
+   - Script de seed déterministe reproductible (`npm run db:seed`) peuplant les 77 communes, les structures sanitaires réelles et les acteurs de la démo (Bio à Kalalé, tradipraticiens homologués, banques de sang).
+   - Journalisation continue des accès et des contrôles de scellés pour conformité au Code du Numérique (Loi 2017-20).
+3. **Packaging Autonome Desktop Livré** :
+   - Présence des installeurs et paquets prêts à l'emploi dans le répertoire [`desktop/`](file:///home/lesaint/Rendue/BENINVIE/desktop) : `BENINVIE-1.0.0.AppImage` (Linux), `beninvie_1.0.0_amd64.deb` (Debian/Ubuntu), `BENINVIE-1.0.0-win.zip` et `BENINVIE.exe` (Windows portable).
+4. **Intégrité UI/UX & Accessibilité** :
+   - Navigation fluide, interfaces conformes à la charte visuelle officielle républicaine en Tailwind CSS v4 et composants shadcn/ui.
+   - Retours visuels et sonores immédiats (Web Audio API) lors du scan de QR codes, du badgeage de cartes NFC et des actions de délivrance.
 
 ---
-*Ce document fait foi comme Source Unique de Vérité (SSOT) pour toutes les phases de développement de la plateforme Gbɛ (BENINVIE).*
+*Ce document fait foi comme Source Unique de Vérité (SSOT) pour toutes les phases de développement de la plateforme BENINVIE.*
+

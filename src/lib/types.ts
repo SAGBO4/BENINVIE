@@ -237,3 +237,18 @@ export interface DonHistorique {
   defraiementRef: string;
   otsTimestampHash: string;
 }
+
+export type DonorTier = "BRONZE" | "ARGENT" | "OR" | "PLATINE";
+
+export interface PointTransaction {
+  id: string;
+  donneurNpi: string;
+  donneurNom: string;
+  action: "AWARD" | "REDEEM";
+  points: number;
+  motif: string;
+  transactionHash: string;
+  otsProof?: string;
+  dateTransaction: string;
+}
+

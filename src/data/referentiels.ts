@@ -1,4 +1,4 @@
-import { Etablissement, Soignant, Patient, DonneurHemora, StockSang, Ordonnance, CampagneDon, TransfertSang, DemandeCarte } from "@/lib/types";
+import { Etablissement, Soignant, Patient, DonneurHemora, StockSang, Ordonnance, CampagneDon, TransfertSang, DemandeCarte, PointTransaction, UrgenceTransfusion } from "@/lib/types";
 
 export const ETABLISSEMENTS_REF: Etablissement[] = [
   {
@@ -503,3 +503,78 @@ export const DEMANDES_CARTES_REF: DemandeCarte[] = [
     dateDemande: "2026-09-18",
   },
 ];
+
+export const POINTS_LEDGER_REF: PointTransaction[] = [
+  {
+    id: "pts-tx-001",
+    donneurNpi: "2026-COT-3310-MAT",
+    donneurNom: "Mathieu SOSSA",
+    action: "AWARD",
+    points: 150,
+    motif: "Don de sang d'urgence (CHNU-HKM Cotonou)",
+    transactionHash: "0x7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b",
+    otsProof: "OTS-POINTS-MERKLE-2026-001",
+    dateTransaction: "2026-09-15T10:30:00Z",
+  },
+  {
+    id: "pts-tx-002",
+    donneurNpi: "2026-KAL-4412-KOR",
+    donneurNom: "Kora BIAOU",
+    action: "AWARD",
+    points: 120,
+    motif: "Participation campagne mobile de Kalalé",
+    transactionHash: "0x8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c",
+    otsProof: "OTS-POINTS-MERKLE-2026-002",
+    dateTransaction: "2026-09-18T14:15:00Z",
+  },
+  {
+    id: "pts-tx-003",
+    donneurNpi: "2026-COT-3310-MAT",
+    donneurNom: "Mathieu SOSSA",
+    action: "REDEEM",
+    points: -100,
+    motif: "Conversion en Bon de Santé Prénatale ARCH Bénin",
+    transactionHash: "0x9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d",
+    otsProof: "OTS-POINTS-MERKLE-2026-003",
+    dateTransaction: "2026-09-22T09:00:00Z",
+  },
+  {
+    id: "pts-tx-004",
+    donneurNpi: "2026-NIK-8821-IDR",
+    donneurNom: "Idrissou BANI",
+    action: "AWARD",
+    points: 100,
+    motif: "Don régulier semestriel (HZ Nikki)",
+    transactionHash: "0x0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a8b9c0d1e",
+    otsProof: "OTS-POINTS-MERKLE-2026-004",
+    dateTransaction: "2026-09-23T11:45:00Z",
+  },
+];
+
+export const URGENCES_HEMORA_REF: UrgenceTransfusion[] = [
+  {
+    id: "urg-2026-001",
+    codeUrgence: "URG-HEM-2026-NIK-01",
+    hopitalNom: "Hôpital de Zone de Nikki",
+    commune: "Nikki",
+    lat: 9.9400,
+    lng: 3.2108,
+    groupeRequis: "O+",
+    pochesRequises: 2,
+    statut: "OUVERTE",
+    dateDeclaration: "2026-09-26T02:00:00Z",
+  },
+  {
+    id: "urg-2026-002",
+    codeUrgence: "URG-HEM-2026-PAR-02",
+    hopitalNom: "CHUD Borgou (Parakou)",
+    commune: "Parakou",
+    lat: 9.3372,
+    lng: 2.6303,
+    groupeRequis: "O-",
+    pochesRequises: 3,
+    statut: "TRAITEE",
+    dateDeclaration: "2026-09-25T16:20:00Z",
+  },
+];
+

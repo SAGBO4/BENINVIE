@@ -231,12 +231,17 @@ export function DonorPassportConsole(): ReactNode {
                 disabled={momoTriggered}
                 className="w-full focus-ring flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-amber-500 px-4 py-3 text-xs font-bold text-black transition-all hover:bg-amber-400 shadow-md shadow-amber-500/20 disabled:opacity-75"
               >
-                <CreditCard className="h-4 w-4" />
-                <span>
-                  {momoTriggered
-                    ? "✓ Forfait 2 000 FCFA versé (MTN/Moov MoMo)"
-                    : "Débloquer Forfait Transport (2 000 FCFA MoMo)"}
-                </span>
+                {momoTriggered ? (
+                  <>
+                    <Check className="h-4 w-4" />
+                    <span>Forfait 2 000 FCFA versé (MTN/Moov MoMo)</span>
+                  </>
+                ) : (
+                  <>
+                    <CreditCard className="h-4 w-4" />
+                    <span>Débloquer Forfait Transport (2 000 FCFA MoMo)</span>
+                  </>
+                )}
               </button>
             </div>
           </div>

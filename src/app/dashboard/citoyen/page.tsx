@@ -23,6 +23,7 @@ import {
   Send,
 } from "lucide-react";
 import { FadeIn, ScaleUnblur } from "@/components/ui/motion-primitives";
+import { getPoleForCommune } from "@/data/communes";
 
 type CitoyenModule = "carte" | "dons" | "defraiements" | "signalement";
 
@@ -263,7 +264,7 @@ export default function CitoyenDashboardPage(): ReactNode {
                 <div className="text-pink-400 font-mono text-xs">{user?.npi}</div>
                 <div className="text-[11px] text-foreground/75 flex items-center gap-1 mt-1">
                   <MapPin className="h-3.5 w-3.5 text-pink-400" />
-                  <span>Commune de {user?.commune} ({user?.departement})</span>
+                  <span>Commune de {user?.commune} ({user?.departement}) • {getPoleForCommune(user?.commune || "").nom}</span>
                 </div>
                 <div className="mt-1 text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
                   <CheckCircle className="h-3.5 w-3.5" />

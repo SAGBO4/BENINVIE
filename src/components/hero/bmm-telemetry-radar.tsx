@@ -58,12 +58,12 @@ export function BmmTelemetryRadar(): ReactNode {
   }, []);
 
   return (
-    <div className="relative flex h-full w-full flex-col justify-between overflow-hidden rounded-[1.6rem] bg-gradient-to-br from-zinc-950 via-zinc-900 to-black p-6 text-white shadow-2xl">
+    <div className="relative flex h-full w-full flex-col justify-between overflow-hidden rounded-[1.6rem] bg-gradient-to-br from-[#0a3764] via-[#082a4d] to-[#041a30] p-6 text-white shadow-xl border border-white/10">
       {/* Sovereign Benin Tricolor Stripe */}
       <div className="absolute top-0 inset-x-0 h-1.5 flex">
         <div className="flex-1 bg-[#008751]" />
-        <div className="flex-1 bg-[#fcd116]" />
-        <div className="flex-1 bg-[#e8112d]" />
+        <div className="flex-1 bg-[#ffbe00]" />
+        <div className="flex-1 bg-[#eb0000]" />
       </div>
 
       {/* Dynamic Animated Radar Wave */}

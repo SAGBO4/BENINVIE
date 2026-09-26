@@ -15,7 +15,7 @@ import {
 import { pool, db, schema } from "../drizzle";
 
 async function runSeed() {
-  console.log("[Gbɛ Seed 2026] Initialisation des données nationales...");
+  console.log("[BENINVIE Seed 2026] Initialisation des données nationales...");
 
   // 1. Initialiser le magasin en mémoire (Zero-fail fallback)
   dbStore.seed();

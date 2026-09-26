@@ -11,6 +11,7 @@ import {
   DEMANDES_CARTES_REF,
   POINTS_LEDGER_REF,
   URGENCES_HEMORA_REF,
+  ORDONNANCES_REF,
 } from "../../data/referentiels";
 import { pool, db, schema } from "../drizzle";
 
@@ -280,6 +281,25 @@ async function runSeed() {
       pochesRequises: 2,
       statut: "OUVERTE",
     });
+    // Ingestion des Ordonnances Médicales Nationales
+    if (ORDONNANCES_REF.length > 0) {
+      await db.insert(schema.ordonnances).values(
+        ORDONNANCES_REF.map((ord) => ({
+          codeUnique: ord.code,
+          patientNpi: ord.patientNpi,
+          praticienNpi: ord.prescripteurNpi,
+          typePrescription: ord.typeOrdonnance === "pharmacopee_certifiee" ? "MTA_CERTIFIEE" : "CONVENTIONNELLE",
+          medicaments: ord.medicaments as any,
+          statut: ord.statut.toLowerCase(),
+          dateDelivrance: ord.dateDelivrance || null,
+          pharmacieNom: ord.pharmacieNom || null,
+          qrPayload: ord.qrPayload,
+          empreinteHash: ord.empreinteHash,
+        }))
+      );
+      console.log(`[Neon DB] ${ORDONNANCES_REF.length} ordonnances médicales nationales insérées.`);
+    }
+
     console.log("[Neon DB] Urgence témoin Nikki URG-2026-NIK-001 initialisée.");
 
     console.log("[Neon DB - Succès] Toutes les données ont été synchronisées avec succès !");

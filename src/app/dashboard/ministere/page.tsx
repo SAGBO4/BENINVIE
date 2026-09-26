@@ -13,8 +13,13 @@ import {
   Search,
   Filter,
   CheckCircle,
+  Layers,
+  Map as MapIcon,
+  Table as TableIcon,
 } from "lucide-react";
 import { FadeIn, ScaleUnblur } from "@/components/ui/motion-primitives";
+import { OpenStreetMapTerritoire } from "@/components/map/OpenStreetMapTerritoire";
+import { POLES_DEVELOPPEMENT_BENIN } from "@/data/communes";
 
 export default function MinistereDashboardPage(): ReactNode {
   const { user } = useAuth();
@@ -23,6 +28,8 @@ export default function MinistereDashboardPage(): ReactNode {
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
   const [signalements, setSignalements] = useState<any[]>([]);
   const [selectedDept, setSelectedDept] = useState<string>("ALL");
+  const [selectedPole, setSelectedPole] = useState<string>("ALL");
+  const [vueMode, setVueMode] = useState<"map" | "table">("map");
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -56,11 +63,17 @@ export default function MinistereDashboardPage(): ReactNode {
 
   const filteredFacilities = facilities.filter((f) => {
     const matchDept = selectedDept === "ALL" || f.departement === selectedDept;
+    const matchPole =
+      selectedPole === "ALL" ||
+      f.poleId === selectedPole ||
+      POLES_DEVELOPPEMENT_BENIN.find((p) => p.id === selectedPole)?.communes.some(
+        (c) => c.toLowerCase() === (f.commune || "").toLowerCase()
+      );
     const matchSearch =
       searchTerm === "" ||
       f.nom.toLowerCase().includes(searchTerm.toLowerCase()) ||
       f.commune.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchDept && matchSearch;
+    return matchDept && matchPole && matchSearch;
   });
 
   const criticalStocks = stocks.filter((s) => s.quantitePoches <= s.seuilAlerte);
@@ -92,7 +105,7 @@ export default function MinistereDashboardPage(): ReactNode {
         <div className="flex items-center gap-2">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-background border border-foreground/10 text-xs text-foreground/75">
             <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>77 Communes Interconnectées</span>
+            <span>06 Pôles Territoriaux • 77 Communes Interconnectées</span>
           </div>
         </div>
       </FadeIn>
@@ -157,82 +170,126 @@ export default function MinistereDashboardPage(): ReactNode {
         </div>
       </div>
 
-      {/* Section 1 : Carte Sanitaire IASO & Établissements */}
+      {/* Section 1 : Carte Sanitaire IASO & Établissements (06 Pôles Territoriaux) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div className="lg:col-span-8 flex flex-col gap-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl border border-foreground/10 bg-background/60">
             <div>
-              <h2 className="text-base font-bold text-foreground">
-                Répertoire National des Établissements (IASO)
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                  Réforme Territoriale 229 DEGRÉ
+                </span>
+                <span className="text-xs text-foreground/50">SIG National</span>
+              </div>
+              <h2 className="text-base font-bold text-foreground mt-1">
+                Carte Sanitaire & Répertoire des 06 Pôles (IASO)
               </h2>
               <p className="text-xs text-foreground/60">
-                Géolocalisation et capacités hospitalières des 77 communes
+                Supervision géodésique OpenStreetMap et capacités hospitalières des 77 communes
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-2">
+              {/* Bascule de Vue Carte / Tableau */}
+              <div className="flex items-center p-1 rounded-xl bg-foreground/5 border border-foreground/10">
+                <button
+                  onClick={() => setVueMode("map")}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
+                    vueMode === "map"
+                      ? "bg-blue-600 text-white shadow-sm"
+                      : "text-foreground/60 hover:text-foreground"
+                  }`}
+                >
+                  <MapIcon className="h-3.5 w-3.5" />
+                  <span>Carte OSM</span>
+                </button>
+                <button
+                  onClick={() => setVueMode("table")}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
+                    vueMode === "table"
+                      ? "bg-blue-600 text-white shadow-sm"
+                      : "text-foreground/60 hover:text-foreground"
+                  }`}
+                >
+                  <TableIcon className="h-3.5 w-3.5" />
+                  <span>Tableau</span>
+                </button>
+              </div>
+
+              {/* Filtre Pôle Territorial */}
+              <select
+                value={selectedPole}
+                onChange={(e) => setSelectedPole(e.target.value)}
+                className="rounded-xl border border-foreground/15 bg-background px-2.5 py-1.5 text-xs text-foreground focus:outline-none"
+              >
+                <option value="ALL">Tous les 06 Pôles</option>
+                {POLES_DEVELOPPEMENT_BENIN.map((p) => (
+                  <option key={p.id} value={p.id}>
+                    {p.nom} ({p.communes.length} com.)
+                  </option>
+                ))}
+              </select>
+
               <div className="relative">
                 <Search className="h-3.5 w-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-foreground/40" />
                 <input
                   type="text"
-                  placeholder="Rechercher hôpital, commune..."
+                  placeholder="Rechercher..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="rounded-xl border border-foreground/15 bg-background pl-8 pr-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-blue-500"
+                  className="rounded-xl border border-foreground/15 bg-background pl-8 pr-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-blue-500 w-32 sm:w-40"
                 />
               </div>
-
-              <select
-                value={selectedDept}
-                onChange={(e) => setSelectedDept(e.target.value)}
-                className="rounded-xl border border-foreground/15 bg-background px-3 py-1.5 text-xs text-foreground focus:outline-none"
-              >
-                <option value="ALL">Tous départements</option>
-                <option value="Borgou">Borgou</option>
-                <option value="Littoral">Littoral</option>
-                <option value="Atlantique">Atlantique</option>
-                <option value="Alibori">Alibori</option>
-                <option value="Atacora">Atacora</option>
-                <option value="Ouémé">Ouémé</option>
-                <option value="Zou">Zou</option>
-              </select>
             </div>
           </div>
 
-          <div className="rounded-3xl border border-foreground/10 bg-background/80 overflow-hidden shadow-sm">
-            <div className="overflow-x-auto max-h-[420px]">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-foreground/5 text-foreground/60 uppercase sticky top-0 backdrop-blur-md">
-                  <tr>
-                    <th className="py-3 px-4">Code IASO</th>
-                    <th className="py-3 px-4">Établissement</th>
-                    <th className="py-3 px-4">Département</th>
-                    <th className="py-3 px-4">Commune</th>
-                    <th className="py-3 px-4 text-center">Capacité (Lits)</th>
-                    <th className="py-3 px-4 text-center">Statut ARS</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-foreground/5">
-                  {filteredFacilities.slice(0, 15).map((fac) => (
-                    <tr key={fac.id || fac.codeIaso} className="hover:bg-foreground/2 transition-colors">
-                      <td className="py-3 px-4 font-mono font-bold text-blue-500">{fac.codeIaso}</td>
-                      <td className="py-3 px-4 font-semibold text-foreground">{fac.nom}</td>
-                      <td className="py-3 px-4 text-foreground/80">{fac.departement}</td>
-                      <td className="py-3 px-4 text-foreground/60">{fac.commune}</td>
-                      <td className="py-3 px-4 text-center font-bold text-foreground">
-                        {fac.capaciteLits || 50}
-                      </td>
-                      <td className="py-3 px-4 text-center">
-                        <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[10px] font-bold">
-                          Homologué
-                        </span>
-                      </td>
+          {/* Affichage conditionnel : Carte OpenStreetMap ou Tableau IASO */}
+          {vueMode === "map" ? (
+            <OpenStreetMapTerritoire
+              selectedPoleId={selectedPole}
+              onPoleSelect={(pId) => setSelectedPole(pId)}
+              showFilters={true}
+            />
+          ) : (
+            <div className="rounded-3xl border border-foreground/10 bg-background/80 overflow-hidden shadow-sm">
+              <div className="overflow-x-auto max-h-[540px]">
+                <table className="w-full text-left text-xs">
+                  <thead className="bg-foreground/5 text-foreground/60 uppercase sticky top-0 backdrop-blur-md">
+                    <tr>
+                      <th className="py-3 px-4">Code IASO</th>
+                      <th className="py-3 px-4">Établissement</th>
+                      <th className="py-3 px-4">Pôle Territorial</th>
+                      <th className="py-3 px-4">Commune</th>
+                      <th className="py-3 px-4 text-center">Capacité (Lits)</th>
+                      <th className="py-3 px-4 text-center">Statut ARS</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="divide-y divide-foreground/5">
+                    {filteredFacilities.map((fac) => (
+                      <tr key={fac.id || fac.codeIaso} className="hover:bg-foreground/2 transition-colors">
+                        <td className="py-3 px-4 font-mono font-bold text-blue-500">{fac.codeIaso}</td>
+                        <td className="py-3 px-4 font-semibold text-foreground">{fac.nom}</td>
+                        <td className="py-3 px-4 text-foreground/80">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/10 text-blue-500 border border-blue-500/20">
+                            {fac.poleNom || "Pôle Sanitaire"}
+                          </span>
+                        </td>
+                        <td className="py-3 px-4 text-foreground/60">{fac.commune}</td>
+                        <td className="py-3 px-4 text-center font-bold text-foreground">
+                          {fac.capaciteLits || 50}
+                        </td>
+                        <td className="py-3 px-4 text-center">
+                          <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[10px] font-bold">
+                            Homologué
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Section 2 : Télémétrie HEMORA (Stocks critiques) */}

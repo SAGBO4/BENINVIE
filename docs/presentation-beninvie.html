@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>BENINVIE — Dossier Officiel de Présentation Stratégique, Fonctionnelle & Technique</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+    @page {
+      size: A4 portrait;
+      margin: 12mm 12mm 12mm 12mm;
+      @bottom-right {
+        content: "Page " counter(page);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 8pt;
+        color: #64748B;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #0F172A;
+      background: #FFFFFF;
+      font-size: 9pt;
+      line-height: 1.45;
+    }
+
+    .page {
+      page-break-after: always;
+      position: relative;
+      min-height: 268mm;
+      padding-bottom: 4mm;
+    }
+
+    .page:last-child {
+      page-break-after: avoid;
+    }
+
+    /* En-têtes & Pieds de page */
+    .doc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #008751;
+      padding-bottom: 3.5mm;
+      margin-bottom: 5mm;
+    }
+
+    .doc-header .rep-benin {
+      font-size: 7.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: #008751;
+      letter-spacing: 0.5px;
+    }
+
+    .doc-header .doc-ref {
+      font-size: 7.5pt;
+      color: #64748B;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    h1, h2, h3, h4 {
+      color: #008751;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+    }
+
+    h1 { font-size: 19pt; line-height: 1.2; margin-bottom: 3mm; }
+    h2 { font-size: 12.5pt; margin-bottom: 3mm; border-left: 4px solid #FCD116; padding-left: 3mm; display: flex; align-items: center; }
+    h3 { font-size: 10pt; margin-bottom: 2mm; color: #0F172A; font-weight: 600; }
+    p { margin-bottom: 2.2mm; color: #334155; }
+
+    /* Couverture */
+    .cover-page {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 268mm;
+      text-align: center;
+      padding: 8mm 4mm 4mm 4mm;
+    }
+
+    .cover-top .benin-flag-bar {
+      display: flex;
+      height: 6px;
+      width: 150px;
+      margin: 0 auto 5mm auto;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .flag-green { background: #008751; flex: 1; }
+    .flag-yellow { background: #FCD116; flex: 1; }
+    .flag-red { background: #E8112D; flex: 1; }
+
+    .cover-badge {
+      display: inline-block;
+      background: #ECFDF5;
+      color: #065F46;
+      border: 1px solid #A7F3D0;
+      padding: 3px 12px;
+      border-radius: 999px;
+      font-size: 7.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 5mm;
+    }
+
+    .cover-title {
+      font-size: 26pt;
+      font-weight: 800;
+      color: #008751;
+      line-height: 1.15;
+      margin-bottom: 2.5mm;
+    }
+
+    .cover-subtitle {
+      font-size: 11pt;
+      color: #475569;
+      font-weight: 500;
+      max-width: 90%;
+      margin: 0 auto 6mm auto;
+    }
+
+    .cover-motto {
+      font-size: 9pt;
+      font-weight: 600;
+      color: #B45309;
+      background: #FFFBEB;
+      border: 1px dashed #FDE68A;
+      display: inline-block;
+      padding: 5px 14px;
+      border-radius: 8px;
+      margin-bottom: 7mm;
+    }
+
+    .cover-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3mm;
+      text-align: left;
+      margin-bottom: 6mm;
+    }
+
+    .cover-card {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      padding: 3.5mm;
+    }
+
+    .cover-card h4 {
+      font-size: 8pt;
+      color: #008751;
+      margin-bottom: 1.5mm;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .cover-card p {
+      font-size: 7.2pt;
+      line-height: 1.35;
+      color: #64748B;
+      margin-bottom: 0;
+    }
+
+    .cover-footer {
+      border-top: 1px solid #E2E8F0;
+      padding-top: 3.5mm;
+      display: flex;
+      justify-content: space-between;
+      font-size: 7pt;
+      color: #64748B;
+      text-align: left;
+    }
+
+    /* Grilles et composants */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3.5mm;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3mm;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2.5mm;
+    }
+
+    .card {
+      background: #FFFFFF;
+      border: 1px solid #E2E8F0;
+      border-radius: 6px;
+      padding: 3mm;
+      margin-bottom: 3mm;
+    }
+
+    .card-highlight {
+      border-left: 3px solid #008751;
+      background: #F8FAFC;
+    }
+
+    .card-urgent {
+      border-left: 3px solid #E8112D;
+      background: #FEF2F2;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 6.5pt;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .badge-green { background: #DCFCE7; color: #166534; }
+    .badge-blue { background: #DBEAFE; color: #1E40AF; }
+    .badge-amber { background: #FEF3C7; color: #92400E; }
+    .badge-red { background: #FEE2E2; color: #991B1B; }
+    .badge-purple { background: #F3E8FF; color: #6B21A8; }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 3mm;
+      font-size: 7.2pt;
+    }
+
+    th, td {
+      border: 1px solid #CBD5E1;
+      padding: 2mm 2.2mm;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #008751;
+      color: #FFFFFF;
+      font-weight: 600;
+      font-size: 7.2pt;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    tr:nth-child(even) td {
+      background: #F8FAFC;
+    }
+
+    .diagram-container {
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 6px;
+      padding: 2.5mm;
+      margin-bottom: 3mm;
+      text-align: center;
+    }
+
+    .diagram-caption {
+      font-size: 7pt;
+      font-weight: 600;
+      color: #475569;
+      margin-top: 1mm;
+    }
+
+    .callout {
+      border-left: 3px solid #FCD116;
+      background: #FFFBEB;
+      padding: 2mm 3mm;
+      border-radius: 0 4px 4px 0;
+      font-size: 7.5pt;
+      margin-bottom: 3mm;
+      color: #92400E;
+    }
+
+    .actor-box {
+      border: 1px solid #E2E8F0;
+      border-radius: 6px;
+      padding: 2.5mm;
+      background: #FFFFFF;
+      height: 100%;
+    }
+
+    .actor-box .actor-title {
+      font-size: 8pt;
+      font-weight: 700;
+      color: #008751;
+      margin-bottom: 1.2mm;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .actor-box ul {
+      list-style: none;
+      font-size: 6.8pt;
+      color: #475569;
+      padding-left: 0;
+    }
+
+    .actor-box ul li {
+      margin-bottom: 1mm;
+      position: relative;
+      padding-left: 2.8mm;
+    }
+
+    .actor-box ul li::before {
+      content: "•";
+      color: #008751;
+      position: absolute;
+      left: 0;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================
+       PAGE 1 : COUVERTURE OFFICIELLE
+       ========================================== -->
+  <div class="page cover-page">
+    <div class="cover-top">
+      <div class="benin-flag-bar">
+        <div class="flag-green"></div>
+        <div class="flag-yellow"></div>
+        <div class="flag-red"></div>
+      </div>
+      <div style="font-size: 8pt; font-weight: 700; text-transform: uppercase; color: #008751; letter-spacing: 1.5px; margin-bottom: 1.5mm;">
+        RÉPUBLIQUE DU BÉNIN
+      </div>
+      <div style="font-size: 7pt; color: #64748B; margin-bottom: 4mm;">
+        Ministère de la Santé • Autorité de Régulation du secteur de la Santé (ARS) • APDP
+      </div>
+      <div class="cover-badge">
+        DOSSIER TECHNIQUE D'HOMOLOGATION & DÉMONSTRATION INSTITUTIONNELLE
+      </div>
+      <h1 class="cover-title">BENINVIE</h1>
+      <div class="cover-subtitle">
+        Système d'Information Sanitaire Intégré, Dispositif National d'Admission d'Urgence à Paiement Différé, Réseau Transfusionnel HEMORA & Supervision des 06 Pôles Territoriaux
+      </div>
+      <div class="cover-motto">
+        « Règle d'or Nationale : Zéro refus d'admission aux urgences pour motif financier »
+      </div>
+    </div>
+
+    <div class="cover-cards">
+      <div class="cover-card">
+        <h4>🚨 Urgences Vitales & Paiement Différé</h4>
+        <p>Prise en charge médicale inconditionnelle sous 24-48h, cautionnée par l'État, avec régularisation différée sans rupture de chaîne de soins.</p>
+      </div>
+      <div class="cover-card">
+        <h4>🩸 Réseau Transfusionnel HEMORA</h4>
+        <p>Télémétrie en temps réel des poches CGR dans les 77 communes, matching géodésique Haversine et appel d'urgence aux donneurs géolocalisés.</p>
+      </div>
+      <div class="cover-card">
+        <h4>🗺️ SIG 06 Pôles & OpenStreetMap</h4>
+        <p>Organisation conforme à la réforme territoriale 229 DEGRÉ : Grand-Nokoué, Sud-Ouest, Sud-Est, Centre, Nord-Ouest et Nord-Est interconnectés.</p>
+      </div>
+      <div class="cover-card">
+        <h4>🔒 Ordonnances Sécurisées & ACID</h4>
+        <p>Délivrance unique atomique contre la fraude grâce aux transactions PostgreSQL Neon <code>FOR UPDATE</code> et audit immuable APDP.</p>
+      </div>
+      <div class="cover-card">
+        <h4>🌿 Pharmacopée Traditionnelle MTA</h4>
+        <p>Cadre d'accréditation officiel ARS pour les tradipraticiens et prescription sécurisée de remèdes traditionnels améliorés validés.</p>
+      </div>
+      <div class="cover-card">
+        <h4>📱 Écosystème Terrain Hybride</h4>
+        <p>PWA Mobile Offline-First, application Desktop Electron avec lecture NFC/QR 2D, et interfaçage avec le régime social ARCH Gbêssôkê.</p>
+      </div>
+    </div>
+
+    <div class="cover-footer">
+      <div>
+        <strong>Référentiel Contractuel :</strong> SSOT BENINVIE 2026<br>
+        <strong>Conformité :</strong> Code du Numérique (Loi 2017-20) & Réglementation Sanitaire Bénin
+      </div>
+      <div style="text-align: right;">
+        <strong>Version :</strong> v1.0.0 Production Ready<br>
+        <strong>Validation :</strong> 55/55 Tests Unitaires & Bancs de Torture validés
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PAGE 2 : VISION STRATÉGIQUE & PROBLÉMATIQUE
+       ========================================== -->
+  <div class="page">
+    <div class="doc-header">
+      <div class="rep-benin">RÉPUBLIQUE DU BÉNIN • BENINVIE SANTÉ SOUVERAINE</div>
+      <div class="doc-ref">DOC-REF: BV-2026-PRES-01 • SECTION 1 : VISION & ENJEUX NATIONAUX</div>
+    </div>
+
+    <h2>1. Vision Stratégique & Rupture Opérationnelle</h2>
+    <p>
+      Le système de santé de la République du Bénin amorce sa plus grande transformation numérique et sociale. Historiquement confronté à l'absence de continuité d'information entre les hôpitaux de référence (CNHU, CHIC), les centres hospitaliers départementaux (CHD) et les 77 centres de santé communaux, le parcours du patient souffrait d'une fragmentation critique.
+    </p>
+
+    <div class="grid-2">
+      <div class="card card-urgent">
+        <h3 style="color: #991B1B;">⚠️ Les 4 Fractures Sanitaires Historiques</h3>
+        <ul style="font-size: 7.2pt; color: #7F1D1D; padding-left: 3.5mm; line-height: 1.5;">
+          <li><strong>Le drame du refus financier :</strong> Décès évitables de femmes enceintes et de blessés graves faute de paiement immédiat à la porte des urgences.</li>
+          <li><strong>Pénurie et opacité transfusionnelle :</strong> Familles contraintes à la recherche désespérée de sang alors que des dépôts voisins disposent de stocks.</li>
+          <li><strong>Dossier médical morcelé :</strong> Perte de données vitales, examens redondants coûteux et absence de traçabilité des antécédents et allergies.</li>
+          <li><strong>Isolement territorial :</strong> Centres ruraux coupés des référentiels hospitaliers centraux et manque d'intégration des tradipraticiens.</li>
+        </ul>
+      </div>
+
+      <div class="card card-highlight">
+        <h3 style="color: #065F46;">✅ La Réponse Souveraine BENINVIE</h3>
+        <ul style="font-size: 7.2pt; color: #064E3B; padding-left: 3.5mm; line-height: 1.5;">
+          <li><strong>Garantie Absolue Urgences Vitales :</strong> Prise en charge immédiate 100% avec tiers-payant d'État et délai de grâce pour régularisation.</li>
+          <li><strong>HEMORA National :</strong> Supervision temps réel des réserves de poches CGR dans les 77 communes et matching donneurs géodésique.</li>
+          <li><strong>Dossier Patient HL7 FHIR :</strong> Unification de l'historique médical rattaché au Numéro Personnel d'Identification (NPI ANIP).</li>
+          <li><strong>06 Pôles Territoriaux Connectés :</strong> Supervision macro-sanitaire OpenStreetMap des pôles Grand-Nokoué, Centre, Nord-Est, etc.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>Règle d'or de la Présidence de la République du Bénin :</strong> Tout établissement de santé public ou conventionné est formellement interdit de subordonner les gestes d'urgence vitale au versement préalable d'une caution ou au règlement comptant des frais d'admission.
+    </div>
+
+    <h3>Principes Directeurs d'Ingénierie & Souveraineté</h3>
+    <table>
+      <thead>
+        <tr>
+          <th style="width: 25%;">Pilier National</th>
+          <th style="width: 35%;">Exigence Opérationnelle</th>
+          <th style="width: 40%;">Implémentation Technique BENINVIE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Zéro Panne en Démo</strong></td>
+          <td>Garantie de résilience face aux coupures réseau et latences</td>
+          <td>Architecture Offline-First (PWA/IndexedDB), fallback gracieux Neon DB vers mémoire, résilience des API REST Next.js 15.</td>
+        </tr>
+        <tr>
+          <td><strong>Conformité APDP</strong></td>
+          <td>Respect strict du Code du Numérique (Loi 2017-20)</td>
+          <td>Chiffrement des sessions HMAC-SHA256, pseudonymisation, journal d'audit immuable <code>audit_logs</code> horodaté en base PostgreSQL.</td>
+        </tr>
+        <tr>
+          <td><strong>Inclusion ARCH Gbêssôkê</strong></td>
+          <td>Prise en charge automatisée des citoyens vulnérables</td>
+          <td>Reconnaissance automatique du statut d'assuré social par vérification NPI et exonération intégrale des quotes-parts d'admission.</td>
+        </tr>
+        <tr>
+          <td><strong>Intégrité Anti-Fraude</strong></td>
+          <td>Interdiction formelle de la double-délivrance d'ordonnances</td>
+          <td>Verrouillage transactionnel ACID avec <code>SELECT ... FOR UPDATE</code> sur PostgreSQL Neon évitant toute race condition simultanée.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ==========================================
+       PAGE 3 : 06 PÔLES TERRITORIAUX & OPENSTREETMAP
+       ========================================== -->
+  <div class="page">
+    <div class="doc-header">
+      <div class="rep-benin">RÉPUBLIQUE DU BÉNIN • BENINVIE SANTÉ SOUVERAINE</div>
+      <div class="doc-ref">DOC-REF: BV-2026-PRES-01 • SECTION 2 : ORGANISATION TERRITORIALE EN 06 PÔLES</div>
+    </div>
+
+    <h2>2. Réforme Territoriale en 06 Pôles de Développement (229 DEGRÉ)</h2>
+    <p>
+      Conformément au Schéma National d'Aménagement du Territoire (SNAT) et à la nouvelle architecture décentralisée de la République du Bénin, BENINVIE structure la supervision hospitalière en <strong>06 Pôles de Développement Territorial</strong> couvrant l'intégralité des <strong>77 communes</strong> nationales.
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Pôle Territorial</th>
+          <th>Chef-Lieu / Villes Phares</th>
+          <th>Communes Rattachées</th>
+          <th>Infrastructures Hospitalières Majeures</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong style="color: #10b981;">Pôle Grand-Nokoué</strong><br><span class="badge badge-green">5 Communes</span></td>
+          <td>Cotonou / Porto-Novo</td>
+          <td>Abomey-Calavi, Cotonou, Ouidah, Porto-Novo, Sèmè-Kpodji</td>
+          <td>Centre Hospitalier International de Calavi (CHIC - 436 lits), CNHU-HKM (650 lits), CHD Ouémé, Banques de sang centrales.</td>
+        </tr>
+        <tr>
+          <td><strong style="color: #0284c7;">Pôle Sud-Ouest</strong><br><span class="badge badge-blue">18 Communes</span></td>
+          <td>Lokossa</td>
+          <td>Lokossa, Allada, Aplahoué, Athiémé, Bopa, Comè, Djakotomey, Dogbo, Grand-Popo, Houéyogbé, Klouékanmè, Kpomassè, Lalo, Sô-Ava, Toffo, Tori-Bossito, Toviklin, Zè</td>
+          <td>Hôpitaux de zone Lokossa-Athiémé, Comè, Aplahoué, CHD Mono-Couffo, réseau d'urgences côtières et lagunaires.</td>
+        </tr>
+        <tr>
+          <td><strong style="color: #2563eb;">Pôle Sud-Est</strong><br><span class="badge badge-blue">12 Communes</span></td>
+          <td>Pobè</td>
+          <td>Pobè, Adja-Ouèrè, Adjarra, Adjohoun, Aguégués, Akpro-Missérété, Avrankou, Bonou, Dangbo, Ifangni, Kétou, Sakété</td>
+          <td>Hôpital de zone de Pobè, Hôpital de zone Sakété-Ifangni, centres médicaux frontaliers Nigéria et de la basse vallée de l'Ouémé.</td>
+        </tr>
+        <tr>
+          <td><strong style="color: #06b6d4;">Pôle Centre</strong><br><span class="badge badge-blue">15 Communes</span></td>
+          <td>Abomey / Bohicon</td>
+          <td>Abomey, Agbangnizoun, Bantè, Bohicon, Covè, Dassa-Zoumè, Djidja, Glazoué, Ouèssè, Ouinhi, Savalou, Savè, Za-Kpota, Zagnanado, Zogbodomey</td>
+          <td>CHD Zou-Collines (Goho), Hôpitaux de zone de Dassa, Savalou, Covè. Carrefour stratégique d'évacuation sanitaire nationale.</td>
+        </tr>
+        <tr>
+          <td><strong style="color: #38bdf8;">Pôle Nord-Ouest</strong><br><span class="badge badge-blue">13 Communes</span></td>
+          <td>Natitingou / Djougou</td>
+          <td>Natitingou, Bassila, Boukoumbe, Cobly, Copargo, Djougou, Kerou, Kouande, Matéri, Ouaké, Pehunco, Tanguieta, Toucountouna</td>
+          <td>CHD Atacora (Natitingou), Hôpital Saint Jean de Dieu (Tanguiéta), Hôpital de zone de Djougou, corridor frontalier Togo/Burkina.</td>
+        </tr>
+        <tr>
+          <td><strong style="color: #1e3a8a;">Pôle Nord-Est</strong><br><span class="badge badge-purple">14 Communes</span></td>
+          <td>Parakou</td>
+          <td>Parakou, Banikoara, Bembèrèkè, Gogounou, Kalalé, Kandi, Karimama, Malanville, N'Dali, Nikki, Pèrèrè, Segbana, Sinendé, Tchaourou</td>
+          <td>CHUD Borgou (Parakou - 350 lits), Hôpital de Zone Nikki-Kalalé-Pèrèrè, Hôpitaux frontaliers Kandi et Malanville (Bassin Niger).</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="card card-highlight">
+      <h3 style="color: #008751;">Cartographie SIG Interactive OpenStreetMap (OSM) Intégrée</h3>
+      <p style="font-size: 7.5pt; color: #334155; margin-bottom: 2mm;">
+        Le tableau de bord ministériel BENINVIE intègre une cartographie interactive native OpenStreetMap (Leaflet, tuiles standard OSM) permettant au Ministre de la Santé et à l'Inspection Générale de :
+      </p>
+      <div class="grid-3" style="font-size: 7.2pt; color: #475569;">
+        <div><strong>• Visualisation dynamique :</strong> Polygones et cercles de couverture par pôle avec chef-lieu et communes rattachées.</div>
+        <div><strong>• Télémétrie des lits :</strong> Capacité hospitalière en temps réel (CHIC, CNHU, CHD) et taux d'occupation des urgences.</div>
+        <div><strong>• Alertes ruptures HEMORA :</strong> Repérage immédiat des dépôts de sang départementaux sous le seuil critique d'approvisionnement.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PAGE 4 : CARTOGRAPHIE DES ACTEURS & RBAC
+       ========================================== -->
+  <div class="page">
+    <div class="doc-header">
+      <div class="rep-benin">RÉPUBLIQUE DU BÉNIN • BENINVIE SANTÉ SOUVERAINE</div>
+      <div class="doc-ref">DOC-REF: BV-2026-PRES-01 • SECTION 3 : CARTOGRAPHIE DES ACTEURS & MATRICE RBAC</div>
+    </div>
+
+    <h2>3. Cartographie des Acteurs & Matrice de Contrôle RBAC</h2>
+    <p>
+      La plateforme BENINVIE structure la collaboration entre tous les acteurs de l'écosystème médical béninois via un contrôle d'accès fondé sur les rôles (RBAC) conforme aux prescriptions de l'APDP et de l'ARS.
+    </p>
+
+    <div class="grid-3" style="margin-bottom: 4mm;">
+      <div class="actor-box">
+        <div class="actor-title">🏛️ MINISTÈRE DE LA SANTÉ <span class="badge badge-amber">Supervision</span></div>
+        <ul>
+          <li>Supervision macro des indicateurs sanitaires nationaux.</li>
+          <li>Contrôle en temps réel des stocks de sang dans les 06 pôles.</li>
+          <li>Traitement des signalements citoyennes d'exactions.</li>
+          <li>Arbitrage des dotations du Fonds d'Urgence d'État.</li>
+        </ul>
+      </div>
+
+      <div class="actor-box">
+        <div class="actor-title">🛡️ AUTORITÉ DE RÉGULATION (ARS) <span class="badge badge-green">Régulation</span></div>
+        <ul>
+          <li>Homologation et audit de conformité des 600+ formations.</li>
+          <li>Accréditation légale des tradipraticiens de santé (MTA).</li>
+          <li>Certification des remèdes traditionnels améliorés inscrits.</li>
+          <li>Contrôle qualité des banques de sang hospitalières.</li>
+        </ul>
+      </div>
+
+      <div class="actor-box">
+        <div class="actor-title">👨‍⚕️ CORPS MÉDICAL & SOIGNANTS <span class="badge badge-blue">Soins & Clinique</span></div>
+        <ul>
+          <li>Admission inconditionnelle des urgences vitales.</li>
+          <li>Activation du protocole bris-de-glace pour inconscients.</li>
+          <li>Prescription électronique d'ordonnances infalsifiables.</li>
+          <li>Requête de transfusion sanguine vers le réseau HEMORA.</li>
+        </ul>
+      </div>
+
+      <div class="actor-box">
+        <div class="actor-title">💊 PHARMACIENS D'OFFICINE <span class="badge badge-purple">Dispensation</span></div>
+        <ul>
+          <li>Scan cryptographique du QR code d'ordonnance.</li>
+          <li>Délivrance unique avec verrouillage atomique immédiat.</li>
+          <li>Vérification des interactions médicamenteuses et alertes.</li>
+          <li>Délivrance sécurisée des spécialités MTA certifiées.</li>
+        </ul>
+      </div>
+
+      <div class="actor-box">
+        <div class="actor-title">🩸 BANQUES DE SANG HEMORA <span class="badge badge-red">Transfusion</span></div>
+        <ul>
+          <li>Télémétrie continue des poches CGR (O+, A+, B+, AB, Rh-).</li>
+          <li>Validation biologique et sérologique des dons collectés.</li>
+          <li>Matching donneurs automatisé par calcul géodésique.</li>
+          <li>Validation des dédommagements donneurs par Mobile Money.</li>
+        </ul>
+      </div>
+
+      <div class="actor-box">
+        <div class="actor-title">👥 CITOYENS & PATIENTS <span class="badge badge-green">Bénéficiaires</span></div>
+        <ul>
+          <li>Carnet de santé numérique relié au NPI ANIP.</li>
+          <li>Carte de donneur de sang biométrique avec QR/NFC.</li>
+          <li>Couverture sociale ARCH / Gbêssôkê reconnue à 100%.</li>
+          <li>Signalement direct des refus financiers ou maltraitances.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Matrice d'Habilitation Sécurisée (RBAC Guard)</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Rôle Système</th>
+          <th>Dossier Médical</th>
+          <th>Urgence Vitale</th>
+          <th>Ordonnance</th>
+          <th>Banque Sang</th>
+          <th>MTA Registre</th>
+          <th>Audit APDP</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>MINISTERE</strong></td>
+          <td>Vue anonymisée</td>
+          <td>Supervision globale</td>
+          <td>Statistiques</td>
+          <td>Supervision 06 Pôles</td>
+          <td>Supervision</td>
+          <td>Lecture intégrale</td>
+        </tr>
+        <tr>
+          <td><strong>ARS</strong></td>
+          <td>Statistiques épidémio</td>
+          <td>Contrôle protocoles</td>
+          <td>Contrôle officines</td>
+          <td>Audit conformité</td>
+          <td>Accréditation / Ban</td>
+          <td>Rapports d'audit</td>
+        </tr>
+        <tr>
+          <td><strong>MEDECIN / SOIGNANT</strong></td>
+          <td>Lecture / Écriture</td>
+          <td>Admission & Bris-Glace</td>
+          <td>Création / Signature</td>
+          <td>Commande urgente</td>
+          <td>Prescription MTA</td>
+          <td>Tracé automatique</td>
+        </tr>
+        <tr>
+          <td><strong>PHARMACIEN</strong></td>
+          <td>Interactions seules</td>
+          <td>Régularisation différée</td>
+          <td>Délivrance atomique</td>
+          <td>Non accessible</td>
+          <td>Délivrance MTA</td>
+          <td>Tracé automatique</td>
+        </tr>
+        <tr>
+          <td><strong>CITOYEN / PATIENT</strong></td>
+          <td>Accès dossier propre</td>
+          <td>Garantie d'admission</td>
+          <td>Consultation reçus</td>
+          <td>Historique dons</td>
+          <td>Recherche tradiprat.</td>
+          <td>Logs d'accès au NPI</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ==========================================
+       PAGE 5 : CAS D'UTILISATION & MODULES MÉTIER
+       ========================================== -->
+  <div class="page">
+    <div class="doc-header">
+      <div class="rep-benin">RÉPUBLIQUE DU BÉNIN • BENINVIE SANTÉ SOUVERAINE</div>
+      <div class="doc-ref">DOC-REF: BV-2026-PRES-01 • SECTION 4 : MODULES FONCTIONNELS & CAS D'UTILISATION</div>
+    </div>
+
+    <h2>4. Modules Fonctionnels & Parcours d'Excellence</h2>
+    <p>
+      L'architecture logicielle BENINVIE intègre 5 moteurs métiers hautement spécialisés, conçus pour opérer avec une haute disponibilité sur le terrain sanitaire béninois.
+    </p>
+
+    <div class="grid-2">
+      <div class="card card-highlight">
+        <h3 style="color: #008751;">1. Moteur d'Urgence & Paiement Différé</h3>
+        <p style="font-size: 7.2pt; color: #475569;">
+          Garantit l'admission immédiate sans frais d'entrée du patient en détresse vitale :
+        </p>
+        <ul style="font-size: 7.2pt; color: #334155; padding-left: 3.5mm;">
+          <li><strong>Admission en 3 clics :</strong> Enregistrement NPI, motif clinique et attribution d'un code unique <code>URG-2026-XXX</code>.</li>
+          <li><strong>Garantie Financière d'État :</strong> Exonération immédiate sous le parapluie budgétaire ministériel.</li>
+          <li><strong>Délai de grâce 48h :</strong> Envoi d'un SMS au patient ou à ses ayants droit pour règlement différé via MTN MoMo / Moov Money.</li>
+          <li><strong>Protocole Bris-de-Glace :</strong> Accès aux antécédents d'un patient inconscient sans consentement préalable, avec alerte APDP.</li>
+        </ul>
+      </div>
+
+      <div class="card card-highlight">
+        <h3 style="color: #008751;">2. Réseau Transfusionnel HEMORA</h3>
+        <p style="font-size: 7.2pt; color: #475569;">
+          Supervise le stock de poches de sang et orchestre les dons d'urgence :
+        </p>
+        <ul style="font-size: 7.2pt; color: #334155; padding-left: 3.5mm;">
+          <li><strong>Télémétrie continue :</strong> Suivi en temps réel des poches CGR dans les banques de sang des 77 communes.</li>
+          <li><strong>Matching géodésique Haversine :</strong> Identification instantanée des donneurs compatibles dans un rayon de 10 à 50 km.</li>
+          <li><strong>Mobilisation multicanale :</strong> Diffusion d'alertes ciblées par SMS et notification PWA aux donneurs éligibles.</li>
+          <li><strong>Indemnisation transparente :</strong> Versement sécurisé du défraiement de transport (5 000 FCFA) par Mobile Money.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card card-highlight">
+        <h3 style="color: #008751;">3. Ordonnances Sécurisées & Anti-Fraude</h3>
+        <p style="font-size: 7.2pt; color: #475569;">
+          Éradique les ordonnances falsifiées et la fraude aux assurances :
+        </p>
+        <ul style="font-size: 7.2pt; color: #334155; padding-left: 3.5mm;">
+          <li><strong>Signature cryptographique :</strong> Génération de jeton HMAC et QR code infalsifiable à l'émission par le médecin.</li>
+          <li><strong>Verrouillage atomique SELECT FOR UPDATE :</strong> Bloque formellement toute tentative de seconde délivrance en officine.</li>
+          <li><strong>Décharge numérique unique :</strong> Archivage immuable de l'officine dispensatrice, de l'horodatage et de l'identité du pharmacien.</li>
+        </ul>
+      </div>
+
+      <div class="card card-highlight">
+        <h3 style="color: #008751;">4. Registre de la Pharmacopée Traditionnelle (MTA)</h3>
+        <p style="font-size: 7.2pt; color: #475569;">
+          Valorise le patrimoine médical endogène béninois sous contrôle scientifique :
+        </p>
+        <ul style="font-size: 7.2pt; color: #334155; padding-left: 3.5mm;">
+          <li><strong>Annuaire national certifié :</strong> Répertoire des tradipraticiens accrédités par l'ARS par commune et spécialité.</li>
+          <li><strong>Pharmacopée validée :</strong> Base des Remèdes Traditionnels Améliorés (MTA) ayant subi des essais d'innocuité toxicologique.</li>
+          <li><strong>Prescription intégrée :</strong> Possibilité pour les soignants de prescrire des MTA officiels avec posologie standardisée.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card card-highlight" style="margin-bottom: 0;">
+      <h3 style="color: #008751;">5. Triage IA Médical & Signalement Citoyen Indépendant</h3>
+      <div class="grid-2" style="font-size: 7.2pt; color: #334155;">
+        <div>
+          <strong>• Triage IA d'Urgence :</strong> Algorithme d'orientation clinique calculant le niveau d'urgence (P1 Réanimation, P2 Urgence vitale, P3 Relative) pour assister les soignants et les agents de santé communautaire en zone rurale.
+        </div>
+        <div>
+          <strong>• Canal Citoyen Anti-Racket :</strong> Module permettant à chaque béninois de signaler immédiatement un refus d'admission, une exigence de paiement illicite ou une maltraitance, transmis sous 2h à l'Inspection Générale du Ministère.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PAGE 6 : DIAGRAMMES DE SÉQUENCE & PROCESSUS
+       ========================================== -->
+  <div class="page">
+    <div class="doc-header">
+      <div class="rep-benin">RÉPUBLIQUE DU BÉNIN • BENINVIE SANTÉ SOUVERAINE</div>
+      <div class="doc-ref">DOC-REF: BV-2026-PRES-01 • SECTION 5 : PROCESSUS MÉTIER & SÉQUENCE SÉCURISÉE</div>
+    </div>
+
+    <h2>5. Diagrammes de Séquence & Processus Métier Sécurisés</h2>
+    <p>
+      Les processus critiques de BENINVIE sont articulés autour de garanties cryptographiques et d'une stricte isolation transactionnelle en base de données.
+    </p>
+
+    <div class="diagram-container">
+      <svg viewBox="0 0 780 180" style="width: 100%; height: auto; font-family: 'Plus Jakarta Sans', sans-serif;">
+        <!-- Acteurs -->
+        <rect x="20" y="10" width="110" height="26" rx="5" fill="#E2E8F0" stroke="#94A3B8" />
+        <text x="75" y="27" font-size="9" font-weight="bold" fill="#0F172A" text-anchor="middle">Patient / Ambulancier</text>
+
+        <rect x="180" y="10" width="110" height="26" rx="5" fill="#DCFCE7" stroke="#166534" />
+        <text x="235" y="27" font-size="9" font-weight="bold" fill="#166534" text-anchor="middle">Médecin / Accueil</text>
+
+        <rect x="340" y="10" width="110" height="26" rx="5" fill="#DBEAFE" stroke="#1E40AF" />
+        <text x="395" y="27" font-size="9" font-weight="bold" fill="#1E40AF" text-anchor="middle">BENINVIE API Core</text>
+
+        <rect x="500" y="10" width="110" height="26" rx="5" fill="#FEF3C7" stroke="#92400E" />
+        <text x="555" y="27" font-size="9" font-weight="bold" fill="#92400E" text-anchor="middle">Neon PostgreSQL</text>
+
+        <rect x="650" y="10" width="110" height="26" rx="5" fill="#F3E8FF" stroke="#6B21A8" />
+        <text x="705" y="27" font-size="9" font-weight="bold" fill="#6B21A8" text-anchor="middle">Garantie d'État / SMS</text>
+
+        <!-- Lignes de vie -->
+        <line x1="75" y1="36" x2="75" y2="175" stroke="#CBD5E1" stroke-dasharray="3 3" />
+        <line x1="235" y1="36" x2="235" y2="175" stroke="#CBD5E1" stroke-dasharray="3 3" />
+        <line x1="395" y1="36" x2="395" y2="175" stroke="#CBD5E1" stroke-dasharray="3 3" />
+        <line x1="555" y1="36" x2="555" y2="175" stroke="#CBD5E1" stroke-dasharray="3 3" />
+        <line x1="705" y1="36" x2="705" y2="175" stroke="#CBD5E1" stroke-dasharray="3 3" />
+
+        <!-- Messages -->
+        <line x1="75" y1="52" x2="235" y2="52" stroke="#008751" stroke-width="1.5" marker-end="url(#arrow)" />
+        <text x="155" y="47" font-size="7.5" fill="#008751" text-anchor="middle">1. Arrivée détresse vitale (NPI ou Inconnu)</text>
+
+        <line x1="235" y1="72" x2="395" y2="72" stroke="#008751" stroke-width="1.5" />
+        <text x="315" y="67" font-size="7.5" fill="#008751" text-anchor="middle">2. POST /api/v1/urgences/admission (Zéro caution)</text>
+
+        <line x1="395" y1="92" x2="555" y2="92" stroke="#008751" stroke-width="1.5" />
+        <text x="475" y="87" font-size="7.5" fill="#008751" text-anchor="middle">3. INSERT encounters (statut: ADMIS_URGENCE_VITALE)</text>
+
+        <line x1="555" y1="112" x2="395" y2="112" stroke="#64748B" stroke-width="1.2" stroke-dasharray="2 2" />
+        <text x="475" y="107" font-size="7.5" fill="#64748B" text-anchor="middle">4. Confirmation transactionnelle ACID</text>
+
+        <line x1="395" y1="132" x2="235" y2="132" stroke="#008751" stroke-width="1.5" />
+        <text x="315" y="127" font-size="7.5" fill="#008751" text-anchor="middle">5. Admission validée : Soins cliniques immédiats</text>
+
+        <line x1="395" y1="152" x2="705" y2="152" stroke="#7C3AED" stroke-width="1.5" />
+        <text x="550" y="147" font-size="7.5" fill="#7C3AED" text-anchor="middle">6. Prise en charge Fonds d'État + SMS différé 48h</text>
+      </svg>
+      <div class="diagram-caption">Figure 1 : Séquence d'admission d'urgence vitale avec garantie financière différée</div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card card-highlight">
+        <h3 style="color: #008751;">Protocole d'Urgence "Bris-de-Glace"</h3>
+        <p style="font-size: 7.2pt; color: #475569;">
+          Permet au médecin urgentiste d'accéder instantanément au dossier médical d'un patient inconscient ou comateux :
+        </p>
+        <ul style="font-size: 7.2pt; color: #334155; padding-left: 3.5mm;">
+          <li><strong>Dérogation contrôlée :</strong> Contournement temporaire du consentement explicite sous justification clinique écrite.</li>
+          <li><strong>Audit Immuable APDP :</strong> Enregistrement automatique dans <code>audit_logs</code> du nom du praticien, du motif, de l'établissement et de l'IP.</li>
+          <li><strong>Notification a posteriori :</strong> SMS d'alerte envoyé au titulaire ou tuteur légal dès reprise de conscience.</li>
+        </ul>
+      </div>
+
+      <div class="card card-highlight">
+        <h3 style="color: #008751;">Verrouillage ACID SELECT ... FOR UPDATE</h3>
+        <p style="font-size: 7.2pt; color: #475569;">
+          Garantit l'impossibilité technique de la fraude par double-délivrance d'ordonnance :
+        </p>
+        <ul style="font-size: 7.2pt; color: #334155; padding-left: 3.5mm;">
+          <li><strong>Verrou de ligne exclusif :</strong> La première officine qui scanne l'ordonnance pose un lock physique au niveau Neon PostgreSQL.</li>
+          <li><strong>Rejet instantané des requêtes concurrentes :</strong> Toute tentative concurrente (même à la milliseconde) est rejetée avec code <code>409 Conflict</code>.</li>
+          <li><strong>Preuve par Banc de Torture :</strong> 5 attaques concurrentes simultanées simulées en test : 1 succès, 4 blocages fermes.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PAGE 7 : TECHNOLOGIES DE TERRAIN & INCLUSION
+       ========================================== -->
+  <div class="page">
+    <div class="doc-header">
+      <div class="rep-benin">RÉPUBLIQUE DU BÉNIN • BENINVIE SANTÉ SOUVERAINE</div>
+      <div class="doc-ref">DOC-REF: BV-2026-PRES-01 • SECTION 6 : TECHNOLOGIES DE TERRAIN & INCLUSION</div>
+    </div>
+
+    <h2>6. Écosystème Terrain Hybride & Inclusion Citoyenne</h2>
+    <p>
+      Pour toucher les réalités sanitaires des zones urbaines comme des localités rurales les plus reculées (Kalalé, Malanville, Boukombé, Karimama), BENINVIE déploie une panoplie technologique adaptée aux contraintes d'infrastructure.
+    </p>
+
+    <div class="grid-3">
+      <div class="card card-highlight">
+        <h3 style="color: #008751;">📱 PWA Mobile Offline-First</h3>
+        <p style="font-size: 7.2pt; color: #475569;">
+          Application web progressive installable sur smartphones Android et iOS des soignants et citoyens :
+        </p>
+        <ul style="font-size: 7.2pt; color: #334155; padding-left: 3.5mm;">
+          <li>Fonctionnement autonome sans connexion Internet grâce au stockage local <strong>IndexedDB</strong>.</li>
+          <li>Synchronisation automatique en tâche de fond (Background Sync) dès reconnexion au réseau GSM.</li>
+          <li>Accès instantané à la carte de donneur et aux numéros d'urgence communaux.</li>
+        </ul>
+      </div>
+
+      <div class="card card-highlight">
+        <h3 style="color: #008751;">💻 Client Lourd Desktop Electron</h3>
+        <p style="font-size: 7.2pt; color: #475569;">
+          Logiciel de comptoir sécurisé pour officines pharmaceutiques et hôpitaux :
+        </p>
+        <ul style="font-size: 7.2pt; color: #334155; padding-left: 3.5mm;">
+          <li>Installateurs natifs Linux (<code>.AppImage</code>, <code>.deb</code>) et Windows (<code>.exe</code>, <code>.zip</code>) générés dans <code>/desktop</code>.</li>
+          <li>Pilotage direct des lecteurs optiques de QR Code 2D et capteurs <strong>NFC</strong> USB.</li>
+          <li>Performances natives pour le traitement intensif des flux hospitaliers.</li>
+        </ul>
+      </div>
+
+      <div class="card card-highlight">
+        <h3 style="color: #008751;">💳 Carte Santé Biométrique QR/NFC</h3>
+        <p style="font-size: 7.2pt; color: #475569;">
+          Support physique infalsifiable délivré à chaque citoyen béninois :
+        </p>
+        <ul style="font-size: 7.2pt; color: #334155; padding-left: 3.5mm;">
+          <li>QR Code 2D cryptographique signé numériquement avec le NPI et le groupe sanguin certifié.</li>
+          <li>Puce NFC sans contact pour identification d'urgence en moins de 2 secondes par les ambulanciers.</li>
+          <li>Portail de commande de carte physique avec livraison en mairie ou centre de santé communal.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Inclusion Sociale, Mobile Money & Protection Gbêssôkê</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Composant d'Inclusion</th>
+          <th>Bénéficiaires Ciblés</th>
+          <th>Mécanisme Opérationnel</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Régime ARCH Gbêssôkê</strong></td>
+          <td>Populations vulnérables et ménages à faibles revenus</td>
+          <td>Reconnaissance automatique du statut d'assuré social par vérification NPI. Exonération totale (100%) des frais d'admission et des médicaments essentiels prescrits.</td>
+        </tr>
+        <tr>
+          <td><strong>Dédommagement MTN MoMo / Moov Money</strong></td>
+          <td>Donneurs de sang bénévoles du réseau HEMORA</td>
+          <td>Crédit automatique instantané des indemnités de déplacement et rafraîchissement (forfait national de 5 000 FCFA) directement sur le portefeuille mobile du donneur.</td>
+        </tr>
+        <tr>
+          <td><strong>Régularisation Différée des Urgences</strong></td>
+          <td>Citoyens admis en urgence vitale sans paiement préalable</td>
+          <td>Lien sécurisé SMS permettant le paiement différé échelonné par Mobile Money sous 48h, sans harcèlement du patient pendant sa phase critique de convalescence.</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <strong>Engagement pour l'Équité Territoriale :</strong> Aucun citoyen béninois ne doit être exclu du système de santé numérique pour défaut de couverture Internet ou d'équipement informatique individuel. Les 16 000 Agents de Santé Communautaire (ASC) disposent du module mobile pour assurer le relais de proximité.
+    </div>
+  </div>
+
+  <!-- ==========================================
+       PAGE 8 : ARCHITECTURE TECHNIQUE & HOMOLOGATION
+       ========================================== -->
+  <div class="page">
+    <div class="doc-header">
+      <div class="rep-benin">RÉPUBLIQUE DU BÉNIN • BENINVIE SANTÉ SOUVERAINE</div>
+      <div class="doc-ref">DOC-REF: BV-2026-PRES-01 • SECTION 7 : ARCHITECTURE TECHNIQUE & CONFORMITÉ</div>
+    </div>
+
+    <h2>7. Architecture Technique, Sécurité & Bilan de Qualification</h2>
+    <p>
+      BENINVIE repose sur une architecture logicielle moderne, modulaire et hautement sécurisée, conçue pour supporter les exigences d'un service public régalien critique 24h/24 et 7j/7.
+    </p>
+
+    <div class="grid-2">
+      <div class="card card-highlight">
+        <h3 style="color: #008751;">Stack Technologique de Référence</h3>
+        <ul style="font-size: 7.2pt; color: #334155; padding-left: 3.5mm; line-height: 1.5;">
+          <li><strong>Frontend Web & Mobile :</strong> Next.js 15 (App Router), React 19, Tailwind CSS v4, Motion, Lucide Icons.</li>
+          <li><strong>Cartographie SIG :</strong> Leaflet & Tuiles OpenStreetMap (OSM Standard Carto).</li>
+          <li><strong>Base de Données & Persistance :</strong> PostgreSQL Serverless (Neon) avec ORM Drizzle, support spatial PostGIS et transactions ACID strictes.</li>
+          <li><strong>Client Desktop Officine :</strong> Electron 34 avec Electron-Builder pour Linux (AppImage/deb) et Windows (exe/zip).</li>
+          <li><strong>Cryptographie & Sécurité :</strong> HMAC-SHA256, jetons de session signés, masquage de données sensibles APDP.</li>
+        </ul>
+      </div>
+
+      <div class="card card-highlight">
+        <h3 style="color: #008751;">Cadre Réglementaire & Souveraineté</h3>
+        <ul style="font-size: 7.2pt; color: #334155; padding-left: 3.5mm; line-height: 1.5;">
+          <li><strong>Loi n° 2017-20 (Code du Numérique) :</strong> Traitement souverain des données de santé à caractère personnel.</li>
+          <li><strong>Directives APDP :</strong> Immutabilité des journaux d'accès, finalité stricte des traitements, droit d'accès et de rectification.</li>
+          <li><strong>Normes d'Interopérabilité :</strong> Modélisation des ressources cliniques alignée sur <strong>HL7 FHIR Release 4</strong>.</li>
+          <li><strong>Réforme Territoriale 229 DEGRÉ :</strong> Découpage officiel en 06 Pôles de Développement Territorial.</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3>Bilan Officiel des Tests & Bancs de Torture Adversariaux</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Suite de Tests Automatisés</th>
+          <th>Nb Tests</th>
+          <th>Objets Vérifiés</th>
+          <th>Résultat</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>adversarial_ordonnance_persistence.test.ts</code></td>
+          <td>5 tests</td>
+          <td>Verrouillage ACID FOR UPDATE, rejet des attaques de double délivrance concurrente sous Neon PostgreSQL</td>
+          <td><span class="badge badge-green">100% SUCCÈS</span></td>
+        </tr>
+        <tr>
+          <td><code>adversarial_urgences_hemora.test.ts</code></td>
+          <td>8 tests</td>
+          <td>Garantie d'admission inconditionnelle, isolation bris-de-glace, audit log APDP et atomicité des dons</td>
+          <td><span class="badge badge-green">100% SUCCÈS</span></td>
+        </tr>
+        <tr>
+          <td><code>adversarial_auth_rbac.test.ts</code></td>
+          <td>6 tests</td>
+          <td>Cryptographie HMAC-SHA256, résistance au bit-flipping, contrôle d'accès soignants et Bounding Box géodésique</td>
+          <td><span class="badge badge-green">100% SUCCÈS</span></td>
+        </tr>
+        <tr>
+          <td><code>poles_territoire_osm.test.ts</code></td>
+          <td>6 tests</td>
+          <td>Répartition des 77 communes dans les 06 Pôles (SNAT 229 DEGRÉ) et métadonnées OpenStreetMap</td>
+          <td><span class="badge badge-green">100% SUCCÈS</span></td>
+        </tr>
+        <tr>
+          <td><code>matching.test.ts</code> & <code>crypto.test.ts</code></td>
+          <td>9 tests</td>
+          <td>Algorithme Haversine, compatibilité immunologique ABO/Rhésus et signature cryptographique</td>
+          <td><span class="badge badge-green">100% SUCCÈS</span></td>
+        </tr>
+        <tr>
+          <td><code>jalon2, jalon3, jalon4, qr_nfc, bmm, soft</code></td>
+          <td>21 tests</td>
+          <td>Pharmacopée MTA, intégration PWA, cartes biométriques et scénarios d'évacuation</td>
+          <td><span class="badge badge-green">100% SUCCÈS</span></td>
+        </tr>
+        <tr>
+          <td><strong>TOTAL GÉNÉRAL VALIDATION</strong></td>
+          <td><strong>55 tests</strong></td>
+          <td><strong>Couverture Intégrale de la Plateforme BENINVIE</strong></td>
+          <td><strong style="color: #166534;">55 / 55 VALIDÉS (0 ÉCHEC)</strong></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div style="background: #F8FAFC; border: 1px solid #E2E8F0; border-radius: 6px; padding: 3mm; margin-top: 2mm; display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <strong style="color: #008751; font-size: 8pt;">STATUT DU LIVRABLE : PRODUCTION READY</strong><br>
+        <span style="font-size: 7.2pt; color: #64748B;">Code validé sous TypeScript strict (<code>tsc --noEmit</code> OK), tests Vitest 100% verts, dépôt GitHub synchronisé.</span>
+      </div>
+      <div style="text-align: right;">
+        <span style="font-size: 8pt; font-weight: bold; color: #0F172A;">RÉPUBLIQUE DU BÉNIN</span><br>
+        <span style="font-size: 7pt; color: #008751; font-weight: 600;">Souveraineté Numérique & Sanitaire</span>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

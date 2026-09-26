@@ -1,4 +1,5 @@
 import type { ComponentProps } from "react";
+
 import { cn } from "@/lib/utils";
 
 type ProgressProps = ComponentProps<"div"> & {
@@ -21,14 +22,14 @@ export function Progress({
       aria-valuemin={0}
       aria-valuemax={100}
       className={cn(
-        "relative h-2 w-full overflow-hidden rounded-full bg-slate-800",
+        "bg-secondary relative h-2 w-full overflow-hidden rounded-full",
         className,
       )}
       {...props}
     >
       <div
         className={cn(
-          "h-full rounded-full bg-emerald-500 transition-all duration-300",
+          "bg-primary h-full rounded-full transition-all",
           indicatorClassName,
         )}
         style={{ width: `${clamped}%` }}

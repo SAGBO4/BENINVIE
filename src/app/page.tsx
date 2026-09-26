@@ -2,7 +2,14 @@
 
 import React, { useState, useEffect } from "react";
 import { Header } from "@/components/layout/Header";
-import { Card, StatCard, Badge, Button } from "@/components/ui/Primitives";
+import { Footer } from "@/components/layout/Footer";
+import { NationalShowcase } from "@/components/marketing/NationalShowcase";
+import { NationalDashboard } from "@/components/dashboard/NationalDashboard";
+import { DonorPortal } from "@/components/donor/DonorPortal";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { MobileMoneyModal } from "@/components/simulators/MobileMoneyModal";
 import { SmsDrawer } from "@/components/simulators/SmsDrawer";
 import { IvrAudioPlayer } from "@/components/simulators/IvrAudioPlayer";
@@ -20,20 +27,27 @@ import {
   UserCheck,
   Send,
   Lock,
+  Leaf,
+  Check,
 } from "lucide-react";
-import { Patient, Ordonnance, DonneurHemora, StockSang, AuditLog, CampagneDon, TransfertSang, DemandeCarte, PointTransaction } from "@/lib/types";
-import { SimulatedSmsResult, SimulatedPaymentResult } from "@/lib/simulation";
-import { DonorBadgeCard } from "@/components/hemora/DonorBadgeCard";
-import { BloodStockMonitor } from "@/components/hemora/BloodStockMonitor";
-import { EmergencyDispatchConsole } from "@/components/hemora/EmergencyDispatchConsole";
-import { MobileCampaignsTracker } from "@/components/hemora/MobileCampaignsTracker";
-import { CivicPointsLedger } from "@/components/hemora/CivicPointsLedger";
-import { BloodTransferHub } from "@/components/hemora/BloodTransferHub";
+import {
+  Patient,
+  Ordonnance,
+  DonneurHemora,
+  StockSang,
+  AuditLog,
+  CampagneDon,
+  TransfertSang,
+  PointTransaction,
+} from "@/lib/types";
+import { SimulatedSmsResult } from "@/lib/simulation";
+import { MEDICAMENTS_MTA_CERTIFIES } from "@/data/referentiels";
 
 export default function GbEMainPage() {
-  const [activeTab, setActiveTab] = useState("scenario");
+  // L'onglet par défaut démarre sur la vitrine nationale moderne inspirée de BMM
+  const [activeTab, setActiveTab] = useState("vitrine");
 
-  // Données d'état chargées depuis l'API
+  // Données d'état chargées depuis les API
   const [patient, setPatient] = useState<Patient | null>(null);
   const [ordonnance, setOrdonnance] = useState<Ordonnance | null>(null);
   const [donneurs, setDonneurs] = useState<DonneurHemora[]>([]);
@@ -43,10 +57,16 @@ export default function GbEMainPage() {
   const [pointsTransactions, setPointsTransactions] = useState<PointTransaction[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [smsLogs, setSmsLogs] = useState<SimulatedSmsResult[]>([]);
-  const [momoOpen, setMomoOpen] = useState(false);
-  const [momoParams, setMomoParams] = useState({ montant: 5000, motif: "Versement Gbɛ", telephone: "+229 01 97 00 12 34" });
 
-  // État du scénario interactif Bio à Kalalé
+  // Simulateur Mobile Money
+  const [momoOpen, setMomoOpen] = useState(false);
+  const [momoParams, setMomoParams] = useState({
+    montant: 2000,
+    motif: "Défraiement Transport Donneur HEMORA",
+    telephone: "+229 01 97 00 12 34",
+  });
+
+  // État du scénario interactif officiel Bio GOUDA à Kalalé
   const [currentStep, setCurrentStep] = useState(1);
   const [stepLoading, setStepLoading] = useState(false);
   const [scenarioMessage, setScenarioMessage] = useState<string | null>(null);
@@ -57,26 +77,28 @@ export default function GbEMainPage() {
 
   // État Matching HEMORA
   const [matchingResults, setMatchingResults] = useState<any[]>([]);
-  const [isMatching, setIsMatching] = useState(false);
 
-  // État Triage IA
-  const [triageInput, setTriageInput] = useState("La patiente présente de forts saignements utérins après l'accouchement avec vertiges et pâleur.");
+  // État Triage IA Clinique
+  const [triageInput, setTriageInput] = useState(
+    "La patiente présente de forts saignements utérins après l'accouchement avec vertiges et pâleur."
+  );
   const [triageResult, setTriageResult] = useState<any>(null);
 
-  // Chargement initial des données
+  // Chargement des données au démarrage
   const refreshData = async () => {
     try {
-      const [patRes, ordRes, donRes, stRes, audRes, smsRes, campRes, trfRes, ptsRes] = await Promise.all([
-        fetch("/api/v1/patients?npi=2026-KAL-9821-BIO").then((r) => r.json()),
-        fetch("/api/v1/ordonnances?code=ORD-2026-KAL-042").then((r) => r.json()),
-        fetch("/api/v1/hemora/donors").then((r) => r.json()),
-        fetch("/api/v1/hemora/stocks").then((r) => r.json()),
-        fetch("/api/v1/audit-logs").then((r) => r.json()),
-        fetch("/api/v1/simulation/sms").then((r) => r.json()),
-        fetch("/api/v1/hemora/campaigns").then((r) => r.json()),
-        fetch("/api/v1/hemora/transfers").then((r) => r.json()),
-        fetch("/api/v1/hemora/points").then((r) => r.json()),
-      ]);
+      const [patRes, ordRes, donRes, stRes, audRes, smsRes, campRes, trfRes, ptsRes] =
+        await Promise.all([
+          fetch("/api/v1/patients?npi=2026-KAL-9821-BIO").then((r) => r.json()),
+          fetch("/api/v1/ordonnances?code=ORD-2026-KAL-042").then((r) => r.json()),
+          fetch("/api/v1/hemora/donors").then((r) => r.json()),
+          fetch("/api/v1/hemora/stocks").then((r) => r.json()),
+          fetch("/api/v1/audit-logs").then((r) => r.json()),
+          fetch("/api/v1/simulation/sms").then((r) => r.json()),
+          fetch("/api/v1/hemora/campaigns").then((r) => r.json()),
+          fetch("/api/v1/hemora/transfers").then((r) => r.json()),
+          fetch("/api/v1/hemora/points").then((r) => r.json()),
+        ]);
 
       if (patRes.data) setPatient(patRes.data);
       if (ordRes.data) setOrdonnance(ordRes.data);
@@ -103,17 +125,18 @@ export default function GbEMainPage() {
 
     try {
       if (currentStep === 1) {
-        // Étape 1 : Visite à domicile ASC et délivrance de la carte QR
-        setScenarioMessage("✅ Étape 1 validée : L'Agent Communautaire Ousmane Yarou a enregistré la visite prénatale à domicile à Basso (Kalalé). Carte QR remise.");
+        setScenarioMessage(
+          "✅ Étape 1 validée : L'Agent Communautaire Ousmane Yarou a enregistré la visite prénatale à domicile à Basso (Kalalé). Carte QR remise."
+        );
         setCurrentStep(2);
       } else if (currentStep === 2) {
-        // Étape 2 : Rappel vocal / SMS en Bariba
         const res = await fetch("/api/v1/simulation/sms", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             telephone: patient?.telephone || "+229 01 97 00 12 34",
-            message: "Gbɛ Santé : Fofo Bio ! CPN3 waasi gari Kalalé CSC suba. Munissez-vous de votre carte QR.",
+            message:
+              "Gbɛ Santé : Fofo Bio ! CPN3 waasi gari Kalalé CSC suba. Munissez-vous de votre carte QR.",
             langue: "bariba",
           }),
         });
@@ -121,14 +144,16 @@ export default function GbEMainPage() {
         if (data.data) {
           setSmsLogs((prev) => [data.data, ...prev]);
         }
-        setScenarioMessage("✅ Étape 2 validée : Notification SMS et message vocal en langue Bariba reçus avec succès.");
+        setScenarioMessage(
+          "✅ Étape 2 validée : Notification SMS et message vocal en langue Bariba reçus avec succès."
+        );
         setCurrentStep(3);
       } else if (currentStep === 3) {
-        // Étape 3 : Consultation au CS Kalalé & Ordonnance
-        setScenarioMessage("✅ Étape 3 validée : Consultation effectuée par Dr Tossou & SF Amina. Ordonnance sécurisée émise avec QR code infalsifiable.");
+        setScenarioMessage(
+          "✅ Étape 3 validée : Consultation effectuée par Dr Tossou & SF Amina. Ordonnance sécurisée émise avec QR code infalsifiable."
+        );
         setCurrentStep(4);
       } else if (currentStep === 4) {
-        // Étape 4 : Retrait en pharmacie couvert par ARCH (Usage unique)
         const res = await fetch("/api/v1/ordonnances/delivrer", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -140,13 +165,14 @@ export default function GbEMainPage() {
         const data = await res.json();
         if (data.success) {
           setOrdonnance(data.data);
-          setScenarioMessage("✅ Étape 4 validée : Ordonnance délivrée sans reste à charge (couverte à 100% par ARCH). Usage unique scellé en base.");
+          setScenarioMessage(
+            "✅ Étape 4 validée : Ordonnance délivrée sans reste à charge (couverte à 100% par ARCH). Usage unique scellé en base."
+          );
           setCurrentStep(5);
         } else {
           setScenarioMessage(`⚠️ ${data.error}`);
         }
       } else if (currentStep === 5) {
-        // Étape 5 : Transfert monétaire fléché GBESSOKE (5 000 FCFA)
         const res = await fetch("/api/v1/transfers/fleches", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -158,11 +184,12 @@ export default function GbEMainPage() {
         });
         const data = await res.json();
         if (data.success) {
-          setScenarioMessage("✅ Étape 5 validée : Transfert de 5 000 FCFA versé par Mobile Money à Bio pour incitation nutritionnelle (GBESSOKE).");
+          setScenarioMessage(
+            "✅ Étape 5 validée : Transfert de 5 000 FCFA versé par Mobile Money à Bio pour incitation nutritionnelle (GBESSOKE)."
+          );
           setCurrentStep(6);
         }
       } else if (currentStep === 6) {
-        // Étape 6 : Urgence obstétricale à Nikki -> Bris de Glace & Paiement différé
         const res = await fetch("/api/v1/encounters/bris-de-glace", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -179,7 +206,6 @@ export default function GbEMainPage() {
           setBrisDeGlaceActive(true);
           setBrisDeGlaceData(data.profilVital);
 
-          // Admission sans caution
           await fetch("/api/v1/urgences/admission", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -190,18 +216,20 @@ export default function GbEMainPage() {
             }),
           });
 
-          setScenarioMessage("✅ Étape 6 validée : Mode Bris de Glace activé et tracé. Admission immédiate sans avance financière, prise en charge garantie par l'État.");
+          setScenarioMessage(
+            "✅ Étape 6 validée : Mode Bris de Glace activé et tracé. Admission immédiate sans avance financière, prise en charge garantie par l'État."
+          );
           setCurrentStep(7);
         }
       } else if (currentStep === 7) {
-        // Étape 7 : Matching HEMORA & Défraiement
-        const res = await fetch("/api/v1/hemora/matching?lat=9.9400&lng=3.2108&groupe=O+");
+        const res = await fetch(
+          "/api/v1/hemora/matching?lat=9.9400&lng=3.2108&groupe=O+"
+        );
         const data = await res.json();
         if (data.success && data.data) {
           setMatchingResults(data.data);
           const topDonneur = data.data[0];
 
-          // Enregistrement du don et versement du défraiement de transport (2000 FCFA)
           if (topDonneur) {
             await fetch("/api/v1/hemora/donations", {
               method: "POST",
@@ -214,7 +242,9 @@ export default function GbEMainPage() {
             });
           }
 
-          setScenarioMessage(`🎉 Félicitations ! Scénario complet achevé avec succès. 2 poches de sang O+ mobilisées pour Bio. Donneur ${topDonneur?.donneur.nomComplet} indemnisé de 2.000 FCFA en Mobile Money. Preuve Bitcoin OTS générée.`);
+          setScenarioMessage(
+            `🎉 Félicitations ! Scénario complet achevé avec succès. 2 poches de sang O+ mobilisées pour Bio. Donneur ${topDonneur?.donneur.nomComplet} indemnisé de 2 000 FCFA en Mobile Money. Preuve Bitcoin OTS générée.`
+          );
         }
       }
       refreshData();
@@ -242,432 +272,60 @@ export default function GbEMainPage() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", backgroundColor: "#f8fafc", paddingBottom: "60px" }}>
-      <Header activeTab={activeTab} onTabChange={setActiveTab} />
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-emerald-500 selection:text-white">
+      <div>
+        {/* Navigation & En-tête Supérieur */}
+        <Header activeTab={activeTab} onTabChange={setActiveTab} />
 
-      <main style={{ maxWidth: "1280px", margin: "24px auto", padding: "0 20px" }}>
-        {/* Résumé Statut National */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "16px", marginBottom: "24px" }}>
-          <StatCard title="Structures Connectées" value="77 Communes" subtitle="Cartographie IASO 2026" accentColor="#008751" />
-          <StatCard title="Urgences Vitales" value="Zéro Refus" subtitle="Garantie Paiement Différé" accentColor="#e8112d" />
-          <StatCard title="Réseau HEMORA" value="Matching ABO/Rh" subtitle="Distance Haversine" accentColor="#fcd116" />
-          <StatCard title="Couverture ARCH" value="100% Tiers-Payant" subtitle="Maternité & Urgences" accentColor="#0284c7" />
-        </div>
+        {/* Conteneur Principal */}
+        <main className="mx-auto max-w-7xl px-4 py-6">
+          {/* ONGLET 1 : VITRINE & PRÉSENTATION NATIONALE */}
+          {activeTab === "vitrine" && (
+            <NationalShowcase onNavigateToTab={(t) => setActiveTab(t)} />
+          )}
 
-        {/* ONGLET 1 : SCÉNARIO OFFICIEL DE DÉMONSTRATION (BIO À KALALÉ) */}
-        {activeTab === "scenario" && (
-          <div>
-            <Card style={{ marginBottom: "24px", borderLeft: "6px solid #008751" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "12px", marginBottom: "16px" }}>
-                <div>
-                  <Badge variant="benin">Scénario de Validation Officiel</Badge>
-                  <h2 style={{ fontSize: "20px", fontWeight: "bold", color: "#0f172a", marginTop: "8px" }}>
-                    🎬 Parcours de Soins de Bio GOUDA à Kalalé (Borgou)
-                  </h2>
-                  <p style={{ fontSize: "14px", color: "#64748b" }}>
-                    Persona : Bio, 28 ans, enceinte de 7 mois (34 SA), village de Basso, commune de Kalalé, locutrice Bariba.
-                  </p>
-                </div>
-                <div style={{ textAlign: "right" }}>
-                  <div style={{ fontSize: "12px", color: "#64748b" }}>Progression du Parcours</div>
-                  <div style={{ fontSize: "22px", fontWeight: "bold", color: "#008751" }}>Étape {currentStep} / 7</div>
-                </div>
-              </div>
-
-              {/* Indicateur d'étapes */}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: "8px", marginBottom: "20px" }}>
-                {[
-                  { step: 1, label: "1. Visite ASC" },
-                  { step: 2, label: "2. Rappel Bariba" },
-                  { step: 3, label: "3. CS Kalalé" },
-                  { step: 4, label: "4. Pharmacie ARCH" },
-                  { step: 5, label: "5. Prime GBESSOKE" },
-                  { step: 6, label: "6. Urgence Nikki" },
-                  { step: 7, label: "7. Sang HEMORA" },
-                ].map((s) => (
-                  <div
-                    key={s.step}
-                    style={{
-                      padding: "10px",
-                      borderRadius: "8px",
-                      fontSize: "12px",
-                      fontWeight: 600,
-                      backgroundColor: currentStep > s.step ? "#e6f4ea" : currentStep === s.step ? "#008751" : "#f1f5f9",
-                      color: currentStep === s.step ? "#ffffff" : currentStep > s.step ? "#006b40" : "#64748b",
-                      textAlign: "center",
-                      border: currentStep === s.step ? "2px solid #006b40" : "1px solid #e2e8f0",
-                    }}
-                  >
-                    {s.label}
-                  </div>
-                ))}
-              </div>
-
-              {/* Panneau d'action de l'étape courante */}
-              <div style={{ backgroundColor: "#f8fafc", border: "1px solid #e2e8f0", borderRadius: "12px", padding: "20px", marginBottom: "16px" }}>
-                {currentStep === 1 && (
-                  <div>
-                    <h3 style={{ fontSize: "16px", fontWeight: "bold", color: "#0f172a", marginBottom: "8px" }}>
-                      📍 Étape 1 : Visite communautaire à domicile (PWA Hors-Ligne à Basso)
-                    </h3>
-                    <p style={{ fontSize: "14px", color: "#475569", marginBottom: "16px" }}>
-                      L'Agent Communautaire Ousmane Yarou se rend au domicile de Bio dans le village de Basso. Il renseigne la fiche prénatale hors-ligne et lui remet une carte QR physique de santé imprimée.
-                    </p>
-                    <Button onClick={handleNextStep} disabled={stepLoading}>
-                      {stepLoading ? "Validation en cours..." : "Valider la visite à domicile & Enregistrer la carte QR ➔"}
-                    </Button>
-                  </div>
-                )}
-
-                {currentStep === 2 && (
-                  <div>
-                    <h3 style={{ fontSize: "16px", fontWeight: "bold", color: "#0f172a", marginBottom: "8px" }}>
-                      📞 Étape 2 : Rappel automatique par SMS et appel vocal en Bariba
-                    </h3>
-                    <p style={{ fontSize: "14px", color: "#475569", marginBottom: "12px" }}>
-                      Le système déclenche un rappel vocal et SMS en langue Bariba pour la Consultation Prénatale (CPN3) prévue demain au Centre de Santé Communal de Kalalé.
-                    </p>
-                    <IvrAudioPlayer
-                      titre="Appel automatisé de rappel CPN3 (Voix Bariba)"
-                      langue="Bariba (Kalalé)"
-                      transcription="Fofo Bio ! Gbɛ Santé nɔ CPN3 waasi gari Kalalé CSC suba. Munissez-vous de votre carte QR imprimée."
-                    />
-                    <div style={{ marginTop: "16px" }}>
-                      <Button onClick={handleNextStep} disabled={stepLoading}>
-                        {stepLoading ? "Envoi du rappel..." : "Simuler la réception du rappel Bariba & Continuer ➔"}
-                      </Button>
-                    </div>
-                  </div>
-                )}
-
-                {currentStep === 3 && (
-                  <div>
-                    <h3 style={{ fontSize: "16px", fontWeight: "bold", color: "#0f172a", marginBottom: "8px" }}>
-                      🩺 Étape 3 : Consultation au CS Kalalé & Ordonnance Numérique
-                    </h3>
-                    <p style={{ fontSize: "14px", color: "#475569", marginBottom: "16px" }}>
-                      La sage-femme Amina scanne la carte QR de Bio. Les antécédents s'affichent instantanément. Constantes : Tension 11/7, Périmètre brachial 245 mm. Prescription de Fer + Acide Folique et TPI Paludisme.
-                    </p>
-                    <Button onClick={handleNextStep} disabled={stepLoading}>
-                      {stepLoading ? "Prescription..." : "Générer l'Ordonnance Sécurisée ORD-2026-KAL-042 ➔"}
-                    </Button>
-                  </div>
-                )}
-
-                {currentStep === 4 && (
-                  <div>
-                    <h3 style={{ fontSize: "16px", fontWeight: "bold", color: "#0f172a", marginBottom: "8px" }}>
-                      💊 Étape 4 : Retrait en pharmacie couvert à 100% par ARCH
-                    </h3>
-                    <p style={{ fontSize: "14px", color: "#475569", marginBottom: "16px" }}>
-                      La pharmacie de Kalalé scanne le QR code de l'ordonnance. Éligibilité ARCH confirmée (Reste à charge : 0 FCFA). L'ordonnance passe au statut "DÉLIVRÉE" et son QR code est scellé pour bloquer toute réutilisation.
-                    </p>
-                    <Button onClick={handleNextStep} disabled={stepLoading}>
-                      {stepLoading ? "Validation officine..." : "Scanner & Délivrer les médicaments (Tiers-payant ARCH) ➔"}
-                    </Button>
-                  </div>
-                )}
-
-                {currentStep === 5 && (
-                  <div>
-                    <h3 style={{ fontSize: "16px", fontWeight: "bold", color: "#0f172a", marginBottom: "8px" }}>
-                      💰 Étape 5 : Transfert monétaire fléché GBESSOKE (5 000 FCFA MoMo)
-                    </h3>
-                    <p style={{ fontSize: "14px", color: "#475569", marginBottom: "16px" }}>
-                      La confirmation médicale de la CPN3 déclenche immédiatement un virement Mobile Money de 5 000 FCFA vers le compte de la famille pour le soutien nutritionnel de la femme enceinte.
-                    </p>
-                    <Button onClick={handleNextStep} disabled={stepLoading}>
-                      {stepLoading ? "Versement Mobile Money..." : "Déclencher le versement GBESSOKE (5.000 FCFA) ➔"}
-                    </Button>
-                  </div>
-                )}
-
-                {currentStep === 6 && (
-                  <div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "8px", color: "#e8112d", marginBottom: "8px" }}>
-                      <AlertTriangle size={20} />
-                      <h3 style={{ fontSize: "16px", fontWeight: "bold", margin: 0 }}>
-                        🚨 Étape 6 : Urgence obstétricale vitale — Transport & Bris de Glace à Nikki
-                      </h3>
-                    </div>
-                    <p style={{ fontSize: "14px", color: "#475569", marginBottom: "16px" }}>
-                      Le jour du travail, survenue d'une hémorragie de la délivrance. Transport d'urgence communautaire vers l'Hôpital de Zone de Nikki. L'urgentiste active le mode <strong>Bris de Glace</strong> (journalisé APDP) et admet Bio avec un <strong>Dossier de Paiement Différé</strong> garanti par l'État (zéro caution exigée).
-                    </p>
-                    <Button onClick={handleNextStep} variant="danger" disabled={stepLoading}>
-                      {stepLoading ? "Activation Bris de Glace..." : "Activer le Bris de Glace & Ouvrir le Paiement Différé ➔"}
-                    </Button>
-                  </div>
-                )}
-
-                {currentStep === 7 && (
-                  <div>
-                    <h3 style={{ fontSize: "16px", fontWeight: "bold", color: "#008751", marginBottom: "8px" }}>
-                      🩸 Étape 7 : Module HEMORA — Mobilisation de 2 poches O+ & Défraiement
-                    </h3>
-                    <p style={{ fontSize: "14px", color: "#475569", marginBottom: "16px" }}>
-                      Besoin vital urgent : 2 poches de sang O+. Le moteur HEMORA classe les donneurs volontaires les plus proches via la formule de Haversine. Le donneur arrive, donne son sang, reçoit 2 000 FCFA de défraiement Mobile Money, et la preuve OTS est ancrée sur Bitcoin.
-                    </p>
-                    <Button onClick={handleNextStep} variant="primary" disabled={stepLoading}>
-                      {stepLoading ? "Matching et mobilisation..." : "Lancer le Matching HEMORA & Clôturer l'Urgence ➔"}
-                    </Button>
-                  </div>
-                )}
-
-                {/* Message d'état */}
-                {scenarioMessage && (
-                  <div style={{ marginTop: "16px", padding: "12px 16px", borderRadius: "8px", backgroundColor: "#ffffff", border: "1px solid #bbf7d0", color: "#166534", fontSize: "13px", fontWeight: 500 }}>
-                    {scenarioMessage}
-                  </div>
-                )}
-              </div>
-
-              {/* Rétroactions de l'étape 6 et 7 */}
-              {brisDeGlaceActive && brisDeGlaceData && (
-                <div style={{ backgroundColor: "#fef2f2", border: "1px solid #fecaca", borderRadius: "12px", padding: "16px", marginBottom: "16px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                    <span style={{ fontWeight: "bold", color: "#991b1b" }}>🔓 Profil Vital Déverrouillé en Mode Bris de Glace</span>
-                    <Badge variant="danger">Accès Urgentiste Tracé APDP</Badge>
-                  </div>
-                  <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "10px", fontSize: "13px" }}>
-                    <div><strong>Patiente :</strong> {brisDeGlaceData.prenom} {brisDeGlaceData.nom}</div>
-                    <div><strong>Groupe Sanguin :</strong> <Badge variant="danger">{brisDeGlaceData.groupeSanguin}</Badge></div>
-                    <div><strong>Allergies :</strong> {brisDeGlaceData.allergies?.join(", ")}</div>
-                    <div><strong>État :</strong> Enceinte (Semaine {brisDeGlaceData.semaineAmenorrhee})</div>
-                    <div><strong>Assurance :</strong> ARCH N° {brisDeGlaceData.numeroArch}</div>
-                  </div>
-                </div>
-              )}
-
-              {matchingResults.length > 0 && (
-                <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "12px", padding: "16px" }}>
-                  <h4 style={{ fontSize: "14px", fontWeight: "bold", color: "#0f172a", marginBottom: "12px" }}>
-                    🩸 Donneurs Compatibles Identifiés par Matching Haversine (Nikki / Kalalé)
-                  </h4>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-                    {matchingResults.map((m, idx) => (
-                      <div key={idx} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px", backgroundColor: "#f8fafc", borderRadius: "8px", fontSize: "13px" }}>
-                        <div>
-                          <strong>{m.donneur.nomComplet}</strong> ({m.donneur.commune}) — Groupe : <Badge variant="benin">{m.donneur.groupeSanguin}</Badge>
-                          <div style={{ fontSize: "11px", color: "#64748b" }}>
-                            Distance : {m.distanceKm} km • Score Proximité : {m.scoreProximite}/100 • Bonus Assiduité : +{m.bonusAssiduite} pts
-                          </div>
-                        </div>
-                        <div style={{ textAlign: "right" }}>
-                          <span style={{ fontSize: "16px", fontWeight: "bold", color: "#008751" }}>Score {m.scoreTotal}</span>
-                          <div style={{ fontSize: "11px", color: "#166534" }}>Indemnité 2.000 FCFA versée</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </Card>
-
-            {/* Tiroir des SMS reçus */}
-            <SmsDrawer smsList={smsLogs} />
-          </div>
-        )}
-
-        {/* ONGLET 2 : CARNET PATIENT FHIR */}
-        {activeTab === "patient" && patient && (
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 2fr", gap: "24px" }}>
-            <Card>
-              <div style={{ textAlign: "center", paddingBottom: "16px", borderBottom: "1px solid #e2e8f0", marginBottom: "16px" }}>
-                <div style={{ fontSize: "56px" }}>👩🏾</div>
-                <h3 style={{ fontSize: "18px", fontWeight: "bold", color: "#0f172a" }}>
-                  {patient.prenom} {patient.nom}
-                </h3>
-                <p style={{ fontSize: "12px", color: "#64748b" }}>NPI : {patient.npi}</p>
-                <div style={{ marginTop: "8px" }}>
-                  <Badge variant="benin">ARCH Assuré Actif</Badge>
-                </div>
-              </div>
-
-              <div style={{ fontSize: "13px", display: "flex", flexDirection: "column", gap: "10px" }}>
-                <div><strong>Commune :</strong> {patient.commune} (Borgou)</div>
-                <div><strong>Téléphone :</strong> {patient.telephone}</div>
-                <div><strong>Groupe Sanguin :</strong> <Badge variant="danger">{patient.groupeSanguin}</Badge></div>
-                <div><strong>Allergies :</strong> {patient.allergies.join(", ")}</div>
-                <div><strong>Grossesse :</strong> {patient.estEnceinte ? `Oui (${patient.semaineAmenorrhee} SA)` : "Non"}</div>
-                <div><strong>N° ARCH :</strong> {patient.numeroArch}</div>
-              </div>
-
-              <div style={{ marginTop: "20px", padding: "12px", backgroundColor: "#f8fafc", borderRadius: "8px", textAlign: "center" }}>
-                <QrCode size={64} style={{ margin: "0 auto 8px" }} color="#008751" />
-                <div style={{ fontSize: "11px", color: "#64748b" }}>Carte Santé QR Infalsifiable</div>
-                <div style={{ fontSize: "10px", color: "#94a3b8" }}>Scannable hors-ligne par tout soignant</div>
-              </div>
-            </Card>
-
-            <div>
-              <Card style={{ marginBottom: "16px" }}>
-                <h3 style={{ fontSize: "16px", fontWeight: "bold", color: "#0f172a", marginBottom: "12px" }}>
-                  📋 Ordonnance Numérique en Cours
-                </h3>
-                {ordonnance ? (
-                  <div style={{ padding: "16px", border: "1px solid #cbd5e1", borderRadius: "8px" }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                      <span style={{ fontWeight: "bold", color: "#0284c7" }}>Code : {ordonnance.code}</span>
-                      <Badge variant={ordonnance.statut === "DELIVREE" ? "success" : "warning"}>
-                        Statut : {ordonnance.statut}
-                      </Badge>
-                    </div>
-                    <div style={{ fontSize: "13px", color: "#475569", marginBottom: "8px" }}>
-                      Prescripteur : {ordonnance.prescripteurNom} ({ordonnance.etablissement})
-                    </div>
-                    <div style={{ fontSize: "13px", fontWeight: 600, marginBottom: "4px" }}>Médicaments prescrits :</div>
-                    <ul style={{ fontSize: "13px", color: "#334155", paddingLeft: "20px", marginBottom: "8px" }}>
-                      {ordonnance.medicaments.map((m, i) => (
-                        <li key={i}>{m.nom} — {m.posologie} ({m.dureeJours} jours)</li>
-                      ))}
-                    </ul>
-                    <div style={{ fontSize: "11px", color: "#94a3b8" }}>
-                      Empreinte Hash : {ordonnance.empreinteHash.slice(0, 32)}... (Usage unique scellé)
-                    </div>
-                  </div>
-                ) : (
-                  <p style={{ fontSize: "13px", color: "#64748b" }}>Aucune ordonnance active.</p>
-                )}
-              </Card>
-
-              {/* Triage IA Clinique */}
-              <Card>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px" }}>
-                  <Sparkles size={18} color="#008751" />
-                  <h3 style={{ fontSize: "16px", fontWeight: "bold", color: "#0f172a", margin: 0 }}>
-                    Module Triage IA Médical & Aide à la Décision
-                  </h3>
-                </div>
-                <textarea
-                  value={triageInput}
-                  onChange={(e) => setTriageInput(e.target.value)}
-                  rows={3}
-                  style={{ width: "100%", padding: "10px", borderRadius: "8px", border: "1px solid #cbd5e1", fontSize: "13px", marginBottom: "12px" }}
-                />
-                <Button onClick={handleRunTriage}>
-                  Analyser les symptômes avec l'IA Clinique
-                </Button>
-
-                {triageResult && (
-                  <div style={{ marginTop: "16px", padding: "16px", borderRadius: "8px", backgroundColor: triageResult.niveauUrgence === "ROUGE_VITALE" ? "#fef2f2" : "#f0fdf4", border: `1px solid ${triageResult.niveauUrgence === "ROUGE_VITALE" ? "#fecaca" : "#bbf7d0"}` }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                      <span style={{ fontWeight: "bold", color: triageResult.niveauUrgence === "ROUGE_VITALE" ? "#991b1b" : "#166534" }}>
-                        Niveau d'Urgence : {triageResult.niveauUrgence} (Gravité {triageResult.scoreGravite}/100)
-                      </span>
-                    </div>
-                    <p style={{ fontSize: "13px", color: "#334155", marginBottom: "6px" }}>
-                      <strong>Orientation :</strong> {triageResult.orientationRecommandee}
-                    </p>
-                    <p style={{ fontSize: "13px", color: "#334155", marginBottom: "6px" }}>
-                      <strong>Protocole National :</strong> {triageResult.protocoleNational}
-                    </p>
-                    {triageResult.alertesCliniques?.length > 0 && (
-                      <div style={{ fontSize: "12px", color: "#b91c1c", fontWeight: 600 }}>
-                        ⚠️ Alertes : {triageResult.alertesCliniques.join(" | ")}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </Card>
-            </div>
-          </div>
-        )}
-
-        {/* ONGLET 3 : URGENCES VITALES & PAIEMENT DIFFÉRÉ */}
-        {activeTab === "urgences" && (
-          <div>
-            <Card style={{ marginBottom: "20px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "12px" }}>
-                <ShieldAlert size={22} color="#e8112d" />
-                <h3 style={{ fontSize: "18px", fontWeight: "bold", color: "#0f172a", margin: 0 }}>
-                  Prise en Charge des Urgences Vitales sans Avance Financière (Règle Zéro Refus)
-                </h3>
-              </div>
-              <p style={{ fontSize: "14px", color: "#475569", marginBottom: "16px" }}>
-                Conformément au Programme Wadagni-Talata 2026, aucun patient en détresse vitale ne peut être refusé ou retardé pour motif financier. L'admission immédiate ouvre un dossier de paiement différé garanti par l'État.
-              </p>
-
-              <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-                <Button
-                  variant="danger"
-                  onClick={() => {
-                    fetch("/api/v1/encounters/bris-de-glace", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({
-                        patientNpi: "2026-KAL-9821-BIO",
-                        praticienNpi: "NPI-MED-2026-0042",
-                        praticienNom: "Dr. Emmanuel Tossou",
-                        motifUrgence: "Urgence vitale polytraumatisé / hémorragie",
-                      }),
-                    })
-                      .then((r) => r.json())
-                      .then((d) => {
-                        setBrisDeGlaceActive(true);
-                        setBrisDeGlaceData(d.profilVital);
-                        refreshData();
-                      });
-                  }}
-                >
-                  <Lock size={16} /> Déclencher un Accès « Bris de Glace » Tracé
-                </Button>
-
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setMomoParams({
-                      montant: 85000,
-                      motif: "Apurement Paiement Différé État",
-                      telephone: "+229 01 97 00 12 34",
-                    });
-                    setMomoOpen(true);
-                  }}
-                >
-                  💳 Simuler Apurement par Mobile Money
-                </Button>
-              </div>
-            </Card>
-
-            {/* Dossiers de paiement différé */}
-            <Card>
-              <h4 style={{ fontSize: "16px", fontWeight: "bold", color: "#0f172a", marginBottom: "12px" }}>
-                Dossiers de Paiement Différé Garantis par l'État (Actifs)
-              </h4>
-              <div style={{ overflowX: "auto" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
-                  <thead>
-                    <tr style={{ borderBottom: "2px solid #e2e8f0", textAlign: "left", color: "#64748b" }}>
-                      <th style={{ padding: "8px" }}>N° Garantie État</th>
-                      <th style={{ padding: "8px" }}>Patient</th>
-                      <th style={{ padding: "8px" }}>Montant</th>
-                      <th style={{ padding: "8px" }}>Statut</th>
-                      <th style={{ padding: "8px" }}>Échéance</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr style={{ borderBottom: "1px solid #f1f5f9" }}>
-                      <td style={{ padding: "10px 8px", fontWeight: 600 }}>GARANTIE-ETAT-2026-KAL-9821</td>
-                      <td style={{ padding: "10px 8px" }}>Bio GOUDA (Kalalé)</td>
-                      <td style={{ padding: "10px 8px", fontWeight: "bold" }}>85 000 FCFA</td>
-                      <td style={{ padding: "10px 8px" }}><Badge variant="success">Couvert ARCH 100%</Badge></td>
-                      <td style={{ padding: "10px 8px", color: "#64748b" }}>2026-10-30</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </Card>
-          </div>
-        )}
-
-        {/* ONGLET 4 : URGENCE SANG HEMORA (REFONTE TOTALE BMM) */}
-        {activeTab === "hemora" && (
-          <div className="space-y-6">
-            {/* Console de Régulation & Dispatch d'Urgence */}
-            <EmergencyDispatchConsole
-              onSearchMatch={async (latVal, lngVal, grp) => {
-                const res = await fetch(`/api/v1/hemora/matching?lat=${latVal}&lng=${lngVal}&groupe=${encodeURIComponent(grp)}`);
-                const json = await res.json();
-                return json.data || [];
+          {/* ONGLET 2 : TABLEAU DE BORD HOSPITALIER & RÉGULATION TRANSFUSIONNELLE */}
+          {activeTab === "dashboard" && (
+            <NationalDashboard
+              stocks={stocks}
+              transferts={transferts}
+              campagnes={campagnes}
+              donneurs={donneurs}
+              onTriggerTransfer={async (sourceHopital, grp) => {
+                await fetch("/api/v1/hemora/transfers", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    sourceHopital: "CHIC (Calavi)",
+                    destinationHopital: sourceHopital,
+                    groupeSanguin: grp,
+                    quantitePoches: 3,
+                    urgenceLevel: "VITALE",
+                  }),
+                });
+                refreshData();
+              }}
+              onNewTransfer={async (data) => {
+                await fetch("/api/v1/hemora/transfers", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(data),
+                });
+                refreshData();
+              }}
+              onAddCampaign={async () => {
+                await fetch("/api/v1/hemora/campaigns", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    titre: "Collecte de Proximité Grand Nord",
+                    commune: "Kalalé",
+                    departement: "Borgou",
+                    lieuCollecte: "Place du Marché de Basso",
+                    objectifPoches: 150,
+                  }),
+                });
+                refreshData();
               }}
               onTriggerMobileMoney={(donneur) => {
                 setMomoParams({
@@ -684,7 +342,7 @@ export default function GbEMainPage() {
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                       telephone: d.telephone,
-                      message: `URGENCE VITALE HEMORA : Besoin immédiat de sang ${d.groupeSanguin} à ${hopital}. Défraiement transport 2 000 F garanti. Présentez-vous sans délai.`,
+                      message: `URGENCE VITALE HEMORA : Besoin immédiat de sang ${d.groupeSanguin} à ${hopital}. Défraiement transport 2 000 F garanti.`,
                     }),
                   });
                 }
@@ -698,299 +356,489 @@ export default function GbEMainPage() {
                     body: JSON.stringify({
                       telephone: d.telephone,
                       langue: "bariba",
-                      messageVocal: `Alerte urgente transfusion ${hopital}`,
+                      messageVocal: `Alerte transfusionnelle ${hopital}`,
                     }),
                   });
                 }
                 refreshData();
               }}
             />
+          )}
 
-            {/* Suivi Prédictif des Stocks par Établissement */}
-            <BloodStockMonitor
-              stocks={stocks}
-              onTriggerTransfer={async (sourceHopital, grp) => {
-                await fetch("/api/v1/hemora/transfers", {
+          {/* ONGLET 3 : SCÉNARIO OFFICIEL DE VALIDATION (BIO À KALALÉ) */}
+          {activeTab === "scenario" && (
+            <div className="space-y-6">
+              <Card className="border-emerald-500/30 bg-slate-900/80 shadow-2xl">
+                <CardHeader className="border-b border-slate-800 pb-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <Badge className="bg-emerald-600 text-white font-bold text-xs">
+                          Scénario Officiel Wadagni - Talata 2026
+                        </Badge>
+                        <Badge variant="outline" className="border-amber-500/40 text-amber-300 bg-amber-950/30 text-xs">
+                          Kalalé (Borgou)
+                        </Badge>
+                      </div>
+                      <CardTitle as="h2" className="text-xl sm:text-2xl font-extrabold text-white">
+                        🎬 Parcours Intégral de Soins de Bio GOUDA
+                      </CardTitle>
+                      <CardDescription className="text-xs sm:text-sm text-slate-300">
+                        Persona : Bio, 28 ans, enceinte de 7 mois (34 SA), village de Basso, commune de Kalalé.
+                      </CardDescription>
+                    </div>
+
+                    <div className="text-left sm:text-right p-3 rounded-xl bg-slate-950 border border-slate-800">
+                      <p className="text-[11px] text-slate-400">Progression du Parcours</p>
+                      <p className="font-display text-xl font-bold text-emerald-400">
+                        Étape {currentStep} / 7
+                      </p>
+                    </div>
+                  </div>
+                </CardHeader>
+
+                <CardContent className="pt-6 space-y-6">
+                  {/* Indicateur de Progression 7 Étapes */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+                    {[
+                      { step: 1, label: "1. Visite ASC Basso" },
+                      { step: 2, label: "2. Rappel Bariba" },
+                      { step: 3, label: "3. CS Kalalé" },
+                      { step: 4, label: "4. Pharmacie ARCH" },
+                      { step: 5, label: "5. Prime Gbèssoké" },
+                      { step: 6, label: "6. Urgence Nikki" },
+                      { step: 7, label: "7. Sang HEMORA" },
+                    ].map((s) => (
+                      <div
+                        key={s.step}
+                        className={`p-3 rounded-xl border text-xs font-semibold text-center transition-all ${
+                          currentStep > s.step
+                            ? "border-emerald-500/50 bg-emerald-950/40 text-emerald-300"
+                            : currentStep === s.step
+                            ? "border-emerald-400 bg-emerald-600 text-white shadow-lg shadow-emerald-950/60 font-bold scale-102"
+                            : "border-slate-800 bg-slate-950/50 text-slate-500"
+                        }`}
+                      >
+                        {s.label}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Panneau d'action de l'étape courante */}
+                  <div className="p-6 rounded-2xl border border-slate-800 bg-slate-950/70 space-y-4">
+                    {currentStep === 1 && (
+                      <div className="space-y-4">
+                        <h3 className="text-base font-bold text-white flex items-center gap-2">
+                          <MapPin className="h-5 w-5 text-emerald-400" />
+                          <span>Étape 1 : Visite communautaire à domicile (PWA Hors-Ligne à Basso)</span>
+                        </h3>
+                        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                          L&apos;Agent Communautaire Ousmane Yarou se rend au domicile de Bio dans le village de Basso. Il renseigne la fiche prénatale hors-ligne et lui remet une carte QR physique de santé imprimée.
+                        </p>
+                        <Button
+                          size="lg"
+                          onClick={handleNextStep}
+                          disabled={stepLoading}
+                          className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold"
+                        >
+                          {stepLoading ? "Validation en cours..." : "Valider la visite à domicile & Enregistrer la carte QR ➔"}
+                        </Button>
+                      </div>
+                    )}
+
+                    {currentStep === 2 && (
+                      <div className="space-y-4">
+                        <h3 className="text-base font-bold text-white flex items-center gap-2">
+                          <Clock className="h-5 w-5 text-amber-400" />
+                          <span>Étape 2 : Rappel automatique par SMS et appel vocal en Bariba</span>
+                        </h3>
+                        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                          Le système déclenche un rappel vocal et SMS en langue Bariba pour la Consultation Prénatale (CPN3) prévue demain au Centre de Santé Communal de Kalalé.
+                        </p>
+                        <IvrAudioPlayer
+                          titre="Appel automatisé de rappel CPN3 (Voix Bariba)"
+                          langue="Bariba (Kalalé)"
+                          transcription="Fofo Bio ! Gbɛ Santé nɔ CPN3 waasi gari Kalalé CSC suba. Munissez-vous de votre carte QR imprimée."
+                        />
+                        <div className="pt-2">
+                          <Button
+                            size="lg"
+                            onClick={handleNextStep}
+                            disabled={stepLoading}
+                            className="bg-amber-600 hover:bg-amber-500 text-white font-bold"
+                          >
+                            {stepLoading ? "Envoi du rappel..." : "Simuler la réception du rappel Bariba & Continuer ➔"}
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+
+                    {currentStep === 3 && (
+                      <div className="space-y-4">
+                        <h3 className="text-base font-bold text-white flex items-center gap-2">
+                          <Sparkles className="h-5 w-5 text-cyan-400" />
+                          <span>Étape 3 : Consultation au CS Kalalé & Ordonnance Numérique</span>
+                        </h3>
+                        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                          La sage-femme Amina scanne la carte QR de Bio. Les antécédents s&apos;affichent instantanément. Constantes : Tension 11/7, Périmètre brachial 245 mm. Prescription de Fer + Acide Folique et TPI Paludisme.
+                        </p>
+                        <Button
+                          size="lg"
+                          onClick={handleNextStep}
+                          disabled={stepLoading}
+                          className="bg-cyan-600 hover:bg-cyan-500 text-white font-bold"
+                        >
+                          {stepLoading ? "Prescription..." : "Générer l'Ordonnance Sécurisée ORD-2026-KAL-042 ➔"}
+                        </Button>
+                      </div>
+                    )}
+
+                    {currentStep === 4 && (
+                      <div className="space-y-4">
+                        <h3 className="text-base font-bold text-white flex items-center gap-2">
+                          <CheckCircle2 className="h-5 w-5 text-emerald-400" />
+                          <span>Étape 4 : Retrait en pharmacie couvert à 100% par ARCH</span>
+                        </h3>
+                        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                          La pharmacie de Kalalé scanne le QR code de l&apos;ordonnance. Éligibilité ARCH confirmée (Reste à charge : 0 FCFA). L&apos;ordonnance passe au statut &quot;DÉLIVRÉE&quot; et son QR code est scellé pour bloquer toute réutilisation.
+                        </p>
+                        <Button
+                          size="lg"
+                          onClick={handleNextStep}
+                          disabled={stepLoading}
+                          className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold"
+                        >
+                          {stepLoading ? "Validation officine..." : "Scanner & Délivrer les médicaments (Tiers-payant ARCH) ➔"}
+                        </Button>
+                      </div>
+                    )}
+
+                    {currentStep === 5 && (
+                      <div className="space-y-4">
+                        <h3 className="text-base font-bold text-white flex items-center gap-2">
+                          <Activity className="h-5 w-5 text-amber-400" />
+                          <span>Étape 5 : Transfert monétaire fléché GBESSOKE (5 000 FCFA MoMo)</span>
+                        </h3>
+                        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                          La confirmation médicale de la CPN3 déclenche immédiatement un virement Mobile Money de 5 000 FCFA vers le compte de la famille pour le soutien nutritionnel de la femme enceinte.
+                        </p>
+                        <Button
+                          size="lg"
+                          onClick={handleNextStep}
+                          disabled={stepLoading}
+                          className="bg-amber-600 hover:bg-amber-500 text-white font-bold"
+                        >
+                          {stepLoading ? "Versement Mobile Money..." : "Déclencher le versement GBESSOKE (5.000 FCFA) ➔"}
+                        </Button>
+                      </div>
+                    )}
+
+                    {currentStep === 6 && (
+                      <div className="space-y-4">
+                        <div className="flex items-center gap-2 text-rose-400">
+                          <AlertTriangle className="h-5 w-5" />
+                          <h3 className="text-base font-bold text-white">
+                            Étape 6 : Urgence obstétricale vitale — Transport & Bris de Glace à Nikki
+                          </h3>
+                        </div>
+                        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                          Le jour du travail, survenue d&apos;une hémorragie de la délivrance. Transport d&apos;urgence communautaire vers l&apos;Hôpital de Zone de Nikki. L&apos;urgentiste active le mode <strong>Bris de Glace</strong> (journalisé APDP) et admet Bio avec un <strong>Dossier de Paiement Différé</strong> garanti par l&apos;État (zéro caution exigée).
+                        </p>
+                        <Button
+                          size="lg"
+                          variant="destructive"
+                          onClick={handleNextStep}
+                          disabled={stepLoading}
+                          className="bg-rose-600 hover:bg-rose-500 text-white font-bold"
+                        >
+                          {stepLoading ? "Activation Bris de Glace..." : "Activer le Bris de Glace & Ouvrir le Paiement Différé ➔"}
+                        </Button>
+                      </div>
+                    )}
+
+                    {currentStep === 7 && (
+                      <div className="space-y-4">
+                        <h3 className="text-base font-bold text-emerald-400 flex items-center gap-2">
+                          <HeartHandshake className="h-5 w-5" />
+                          <span>Étape 7 : Module HEMORA — Mobilisation de 2 poches O+ & Défraiement</span>
+                        </h3>
+                        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                          Besoin vital urgent : 2 poches de sang O+. Le moteur HEMORA classe les donneurs volontaires les plus proches via la formule de Haversine. Le donneur arrive, donne son sang, reçoit 2 000 FCFA de défraiement Mobile Money, et la preuve OTS est ancrée sur Bitcoin.
+                        </p>
+                        <Button
+                          size="lg"
+                          onClick={handleNextStep}
+                          disabled={stepLoading}
+                          className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold"
+                        >
+                          {stepLoading ? "Matching et mobilisation..." : "Lancer le Matching HEMORA & Clôturer l'Urgence ➔"}
+                        </Button>
+                      </div>
+                    )}
+
+                    {/* Rétroaction en cas de message */}
+                    {scenarioMessage && (
+                      <div className="p-4 rounded-xl bg-emerald-950/40 border border-emerald-500/40 text-emerald-200 text-xs sm:text-sm font-medium">
+                        {scenarioMessage}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Rétroaction visuelle Bris de Glace si déverrouillé */}
+                  {brisDeGlaceActive && brisDeGlaceData && (
+                    <div className="p-4 rounded-xl bg-rose-950/30 border border-rose-500/40 space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="font-bold text-rose-300 text-sm flex items-center gap-2">
+                          <Lock className="h-4 w-4" />
+                          <span>Profil Vital Déverrouillé en Mode Bris de Glace</span>
+                        </span>
+                        <Badge variant="destructive">Accès Urgentiste Tracé APDP</Badge>
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+                        <div><strong className="text-slate-400">Patiente :</strong> {brisDeGlaceData.prenom} {brisDeGlaceData.nom}</div>
+                        <div><strong className="text-slate-400">Groupe :</strong> <span className="text-rose-400 font-bold">{brisDeGlaceData.groupeSanguin}</span></div>
+                        <div><strong className="text-slate-400">Allergies :</strong> {brisDeGlaceData.allergies?.join(", ")}</div>
+                        <div><strong className="text-slate-400">N° ARCH :</strong> {brisDeGlaceData.numeroArch}</div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Résultats du matching HEMORA */}
+                  {matchingResults.length > 0 && (
+                    <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-3">
+                      <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                        <span>🩸</span>
+                        <span>Donneurs Compatibles Mobilisés par Algorithme Haversine (Nikki / Kalalé)</span>
+                      </h4>
+                      <div className="space-y-2">
+                        {matchingResults.map((m, idx) => (
+                          <div
+                            key={idx}
+                            className="p-3 rounded-lg border border-slate-800 bg-slate-900/60 flex items-center justify-between text-xs"
+                          >
+                            <div>
+                              <p className="font-bold text-white">
+                                {m.donneur.nomComplet} ({m.donneur.commune}) — Groupe : <span className="text-rose-400">{m.donneur.groupeSanguin}</span>
+                              </p>
+                              <p className="text-[11px] text-slate-400">
+                                Distance : {m.distanceKm} km • Score Proximité : {m.scoreProximite}/100 • Bonus Assiduité : +{m.bonusAssiduite} pts
+                              </p>
+                            </div>
+                            <Badge className="bg-emerald-600/30 text-emerald-300 border-emerald-500/40">
+                              Indemnité 2.000 F MoMo Versée
+                            </Badge>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+
+              {/* Tiroir des notifications SMS reçues */}
+              <SmsDrawer smsList={smsLogs} />
+            </div>
+          )}
+
+          {/* ONGLET 4 : ESPACE DONNEUR & CARTES QR CERTIFIÉES */}
+          {activeTab === "donneur" && (
+            <DonorPortal
+              donneurs={donneurs}
+              pointsTransactions={pointsTransactions}
+              onOrderCard={async (npi, commune) => {
+                await fetch("/api/v1/hemora/card-requests", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    sourceHopital: "CHIC (Calavi)",
-                    destinationHopital: sourceHopital,
-                    groupeSanguin: grp,
-                    quantitePoches: 3,
-                    urgenceLevel: "VITALE",
-                  }),
+                  body: JSON.stringify({ donneurNpi: npi, communeLivraison: commune }),
                 });
                 refreshData();
               }}
-            />
-
-            {/* Régulation des Transferts Inter-Hospitaliers (Refonte BMM) */}
-            <BloodTransferHub
-              transferts={transferts}
-              onNewTransfer={async (data) => {
-                await fetch("/api/v1/hemora/transfers", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify(data),
+              onTriggerMobileMoney={(donneur) => {
+                setMomoParams({
+                  montant: 2000,
+                  motif: `Retrait Défraiement Donneur (${donneur.nomComplet})`,
+                  telephone: donneur.telephone,
                 });
-                refreshData();
+                setMomoOpen(true);
               }}
-              onMarkDelivered={async (id) => {
-                refreshData();
-              }}
-            />
-
-            {/* Campagnes Mobiles de Don dans les 77 Communes */}
-            <MobileCampaignsTracker
-              campagnes={campagnes}
-              onAddCampaign={async () => {
-                await fetch("/api/v1/hemora/campaigns", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    titre: "Collecte de Proximité Grand Nord",
-                    commune: "Kalalé",
-                    departement: "Borgou",
-                    lieuCollecte: "Place du Marché de Basso",
-                    objectifPoches: 150,
-                  }),
-                });
-                refreshData();
-              }}
-            />
-
-            {/* Grand Livre Civique des Points & Ordre National du Don (Refonte BMM) */}
-            <CivicPointsLedger
-              transactions={pointsTransactions}
-              onRedeemPoints={async (points, motif) => {
+              onRedeemPoints={async (pts, motif) => {
                 await fetch("/api/v1/hemora/points", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({
                     donneurNpi: "2026-COT-3310-MAT",
                     action: "REDEEM",
-                    points,
+                    points: pts,
                     motif,
                   }),
                 });
                 refreshData();
               }}
             />
+          )}
 
-            {/* Répertoire des Donneurs Volontaires Actifs */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h4 className="text-base font-bold text-white flex items-center gap-2">
-                    <span>👥</span>
-                    <span>Donneurs Volontaires Répertoriés & Cartes Physiques QR</span>
-                  </h4>
-                  <p className="text-xs text-slate-400">
-                    Profils salés SHA-256 conformes au Code du Numérique et à l&apos;APDP (Loi 2017-20).
-                  </p>
-                </div>
-                <Badge variant="benin">{donneurs.length} donneurs actifs</Badge>
-              </div>
+          {/* ONGLET 5 : URGENCES VITALES & PAIEMENT DIFFÉRÉ */}
+          {activeTab === "urgences" && (
+            <div className="space-y-6">
+              <Card className="border-rose-500/30 bg-slate-900/80 shadow-xl">
+                <CardHeader className="space-y-2">
+                  <div className="flex items-center gap-2 text-rose-400">
+                    <ShieldAlert className="h-6 w-6" />
+                    <CardTitle as="h3" className="text-xl text-white">
+                      Règle d&apos;Or Républicaine : Zéro Refus d&apos;Urgence Vitale
+                    </CardTitle>
+                  </div>
+                  <CardDescription className="text-xs sm:text-sm text-slate-300">
+                    Conformément aux engagements du Programme Wadagni-Talata 2026, aucun patient en détresse vitale ne peut être rejeté ou conditionné au versement préalable d&apos;une caution financière.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex flex-wrap gap-3">
+                    <Button
+                      variant="destructive"
+                      onClick={() => {
+                        fetch("/api/v1/encounters/bris-de-glace", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({
+                            patientNpi: "2026-KAL-9821-BIO",
+                            praticienNpi: "NPI-MED-2026-0042",
+                            praticienNom: "Dr. Emmanuel Tossou",
+                            motifUrgence: "Urgence vitale polytraumatisé / choc hémorragique",
+                          }),
+                        })
+                          .then((r) => r.json())
+                          .then((d) => {
+                            setBrisDeGlaceActive(true);
+                            setBrisDeGlaceData(d.profilVital);
+                            refreshData();
+                          });
+                      }}
+                    >
+                      <Lock className="mr-2 h-4 w-4" />
+                      Déclencher un Accès « Bris de Glace » Tracé APDP
+                    </Button>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                {donneurs.map((d) => (
-                  <DonorBadgeCard
-                    key={d.id}
-                    donneur={d}
-                    onCall={(tel) => {
-                      fetch("/api/v1/simulation/ivr", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ telephone: tel, langue: "bariba", messageVocal: "Convocation don d'urgence" }),
-                      }).then(() => refreshData());
-                    }}
-                    onSendSms={(tel) => {
-                      fetch("/api/v1/simulation/sms", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ telephone: tel, message: "HEMORA: Convocation don de sang urgent." }),
-                      }).then(() => refreshData());
-                    }}
-                    onRequestCard={(npi) => {
-                      fetch("/api/v1/hemora/card-requests", {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({ donneurNpi: npi, communeLivraison: d.commune }),
-                      }).then(() => refreshData());
-                    }}
-                  />
+                    <Button
+                      variant="outline"
+                      className="border-slate-700 text-slate-200 hover:bg-slate-800"
+                      onClick={() => {
+                        setMomoParams({
+                          montant: 85000,
+                          motif: "Apurement Garantie État Paiement Différé",
+                          telephone: "+229 01 97 00 12 34",
+                        });
+                        setMomoOpen(true);
+                      }}
+                    >
+                      Simuler Apurement par Mobile Money (85 000 F)
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Table des Dossiers de Paiement Différé Garantis par l'État */}
+              <Card className="border-slate-800 bg-slate-900/60">
+                <CardHeader>
+                  <CardTitle as="h4" className="text-base text-white">
+                    Dossiers de Paiement Différé Garantis par l&apos;État (Actifs)
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="overflow-x-auto rounded-lg border border-slate-800 bg-slate-950/60">
+                    <table className="w-full text-left text-xs text-slate-300">
+                      <thead className="bg-slate-900 text-slate-400 border-b border-slate-800">
+                        <tr>
+                          <th className="p-3">N° Garantie État</th>
+                          <th className="p-3">Patient</th>
+                          <th className="p-3">Montant Pris en Charge</th>
+                          <th className="p-3">Statut Protection</th>
+                          <th className="p-3">Échéance</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800/60">
+                        <tr className="hover:bg-slate-900/40">
+                          <td className="p-3 font-mono font-bold text-emerald-400">
+                            GARANTIE-ETAT-2026-KAL-9821
+                          </td>
+                          <td className="p-3 font-semibold text-white">Bio GOUDA (Kalalé)</td>
+                          <td className="p-3 font-mono font-extrabold text-white">85 000 FCFA</td>
+                          <td className="p-3">
+                            <Badge className="bg-emerald-600/30 text-emerald-300 border-emerald-500/40">
+                              Couvert ARCH 100%
+                            </Badge>
+                          </td>
+                          <td className="p-3 text-slate-400">2026-10-30</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          {/* ONGLET 6 : PHARMACOPÉE TRADITIONNELLE ARS (MTA) */}
+          {activeTab === "pharmacopee" && (
+            <div className="space-y-6">
+              <Card className="border-emerald-500/30 bg-slate-900/80 shadow-xl">
+                <CardHeader className="space-y-2">
+                  <div className="flex items-center gap-2 text-emerald-400">
+                    <Leaf className="h-6 w-6" />
+                    <CardTitle as="h3" className="text-xl text-white">
+                      Filière Nationale de Pharmacopée Traditionnelle & Accréditation ARS
+                    </CardTitle>
+                  </div>
+                  <CardDescription className="text-xs sm:text-sm text-slate-300">
+                    Registre des Médicaments Traditionnels Améliorés (MTA) homologués par l&apos;Autorité de Régulation du secteur de la Santé (ARS) et prescriptibles sur ordonnance numérique.
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {MEDICAMENTS_MTA_CERTIFIES.map((mta) => (
+                  <Card key={mta.code} className="border-slate-800 bg-slate-900/60 hover:border-emerald-500/40 transition-colors">
+                    <CardHeader className="space-y-1 pb-3">
+                      <div className="flex justify-between items-start">
+                        <span className="font-mono text-xs text-emerald-400 font-bold">{mta.code}</span>
+                        <Badge variant="outline" className="border-emerald-500/30 text-emerald-300 bg-emerald-950/20 text-[10px]">
+                          Homologué ARS
+                        </Badge>
+                      </div>
+                      <CardTitle as="h4" className="text-base text-white">{mta.nom}</CardTitle>
+                      <CardDescription className="text-xs text-slate-400">{mta.forme}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-2 text-xs">
+                      <div>
+                        <strong className="text-slate-300">Indication :</strong>{" "}
+                        <span className="text-slate-400">{mta.indication}</span>
+                      </div>
+                      <div>
+                        <strong className="text-slate-300">Posologie :</strong>{" "}
+                        <span className="text-slate-400">{mta.posologie}</span>
+                      </div>
+                      <div className="pt-2 border-t border-slate-800 text-[11px] text-slate-500">
+                        Producteur : {mta.producteur}
+                      </div>
+                    </CardContent>
+                  </Card>
                 ))}
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </main>
+      </div>
 
-        {/* ONGLET 5 : PHARMACOPÉE TRADITIONNELLE ARS */}
-        {activeTab === "pharmacopee" && (
-          <div>
-            <Card style={{ marginBottom: "20px" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
-                <span style={{ fontSize: "24px" }}>🌿</span>
-                <h3 style={{ fontSize: "18px", fontWeight: "bold", color: "#0f172a", margin: 0 }}>
-                  Filière Nationale de Pharmacopée Traditionnelle & Accréditation ARS
-                </h3>
-              </div>
-              <p style={{ fontSize: "14px", color: "#475569" }}>
-                Registre officiel sous la supervision de l'Autorité de Régulation du secteur de la Santé (ARS) et du Ministère de la Santé. Seuls les Médicaments Traditionnels Améliorés (MTA) certifiés peuvent faire l'objet d'une ordonnance numérique sécurisée.
-              </p>
-            </Card>
+      {/* Footer Officiel de Marque */}
+      <Footer />
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "16px" }}>
-              <Card>
-                <h4 style={{ fontSize: "15px", fontWeight: "bold", color: "#0f172a", marginBottom: "12px" }}>
-                  MTA Certifiés Homologués au Bénin
-                </h4>
-                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-                  <div style={{ padding: "12px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "13px" }}>
-                    <div style={{ fontWeight: "bold", color: "#166534" }}>FACA / Drepano-Cure (Fagara zanthoxyloides)</div>
-                    <div style={{ fontSize: "11px", color: "#64748b" }}>Certification : ARS-MTA-HOMOLOGUE-0012</div>
-                    <div style={{ marginTop: "4px" }}>Indication : Prévention des crises vaso-occlusives de la drépanocytose.</div>
-                  </div>
-                  <div style={{ padding: "12px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "13px" }}>
-                    <div style={{ fontWeight: "bold", color: "#166534" }}>Paludi-Tisane ARS (Artemisia annua béninoise)</div>
-                    <div style={{ fontSize: "11px", color: "#64748b" }}>Certification : ARS-MTA-HOMOLOGUE-0045</div>
-                    <div style={{ marginTop: "4px" }}>Indication : Traitement d'appoint des accès palustres simples.</div>
-                  </div>
-                  <div style={{ padding: "12px", border: "1px solid #cbd5e1", borderRadius: "8px", fontSize: "13px" }}>
-                    <div style={{ fontWeight: "bold", color: "#166534" }}>Hepato-Bénin (Phyllanthus amarus)</div>
-                    <div style={{ fontSize: "11px", color: "#64748b" }}>Certification : ARS-MTA-HOMOLOGUE-0089</div>
-                    <div style={{ marginTop: "4px" }}>Indication : Protection hépatique et convalescence infectieuse.</div>
-                  </div>
-                </div>
-              </Card>
-
-              <Card>
-                <h4 style={{ fontSize: "15px", fontWeight: "bold", color: "#0f172a", marginBottom: "12px" }}>
-                  Tradipraticien Accrédité ARS en Exercice
-                </h4>
-                <div style={{ padding: "14px", backgroundColor: "#f8fafc", borderRadius: "8px", fontSize: "13px" }}>
-                  <div style={{ fontSize: "16px", fontWeight: "bold", color: "#0f172a" }}>Dah Sèssinou Dako</div>
-                  <div style={{ color: "#008751", fontWeight: 600 }}>N° Accréditation : ARS-TRADI-BOR-2026-04</div>
-                  <div style={{ color: "#64748b", marginTop: "4px" }}>Spécialité : Phytothérapie pédiatrique & drépanocytose</div>
-                  <div style={{ color: "#64748b" }}>Cabinet : Centre Gnonnan (Parakou)</div>
-                  <div style={{ marginTop: "12px" }}>
-                    <Badge variant="success">Habilité Prescriptions MTA ARS</Badge>
-                  </div>
-                </div>
-              </Card>
-            </div>
-          </div>
-        )}
-
-        {/* ONGLET 6 : ASC HORS-LIGNE */}
-        {activeTab === "asc" && (
-          <div>
-            <Card style={{ marginBottom: "20px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
-                <div>
-                  <h3 style={{ fontSize: "18px", fontWeight: "bold", color: "#0f172a", margin: 0 }}>
-                    Application PWA Hors-Ligne pour les 16 000 ASC
-                  </h3>
-                  <p style={{ fontSize: "13px", color: "#64748b", margin: 0 }}>
-                    Fonctionnement autonome sans connexion réseau • Synchronisation automatique dès retour réseau
-                  </p>
-                </div>
-                <Badge variant="benin">Statut PWA : Prêt Hors-Ligne (IndexedDB)</Badge>
-              </div>
-            </Card>
-
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-              <Card>
-                <h4 style={{ fontSize: "15px", fontWeight: "bold", color: "#0f172a", marginBottom: "12px" }}>
-                  Formulaire Terrain de Suivi Prénatal (Offline)
-                </h4>
-                <div style={{ display: "flex", flexDirection: "column", gap: "10px", fontSize: "13px" }}>
-                  <div><strong>NPI Patiente :</strong> 2026-KAL-9821-BIO</div>
-                  <div><strong>Périmètre Brachial (PB) :</strong> 245 mm (Nutrition Normale)</div>
-                  <div><strong>Tension Artérielle :</strong> 11/7 mmHg</div>
-                  <div><strong>Mouvement Fœtal :</strong> Présent et actif</div>
-                  <Button variant="primary" style={{ marginTop: "8px" }}>
-                    Enregistrer la fiche hors-ligne (Sync en attente)
-                  </Button>
-                </div>
-              </Card>
-
-              <Card>
-                <h4 style={{ fontSize: "15px", fontWeight: "bold", color: "#0f172a", marginBottom: "12px" }}>
-                  Messages Vocaux en Langues Nationales
-                </h4>
-                <IvrAudioPlayer
-                  titre="Message Paludisme & Moustiquaire (Fon)"
-                  langue="Fon (Sud & Centre)"
-                  transcription="Mi ku do gbe me ! E bio do a na zun zan nu ason bo xo mi nu vi we le. (Dormez toujours sous moustiquaire imprégnée pour protéger vos enfants)."
-                />
-              </Card>
-            </div>
-          </div>
-        )}
-
-        {/* ONGLET 7 : JOURNAL D'AUDIT APDP */}
-        {activeTab === "audit" && (
-          <Card>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "10px" }}>
-              <div>
-                <h3 style={{ fontSize: "18px", fontWeight: "bold", color: "#0f172a", margin: 0 }}>
-                  Journal d'Audit Immuable — Conformité APDP (Loi n° 2017-20)
-                </h3>
-                <p style={{ fontSize: "13px", color: "#64748b", margin: 0 }}>
-                  Traçabilité cryptographique de chaque accès bris de glace, délivrance et versement
-                </p>
-              </div>
-              <Badge variant="benin">{auditLogs.length} Événements Audités</Badge>
-            </div>
-
-            <div style={{ overflowX: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "12px" }}>
-                <thead>
-                  <tr style={{ borderBottom: "2px solid #e2e8f0", textAlign: "left", color: "#64748b" }}>
-                    <th style={{ padding: "8px" }}>Horodatage</th>
-                    <th style={{ padding: "8px" }}>Action</th>
-                    <th style={{ padding: "8px" }}>Acteur</th>
-                    <th style={{ padding: "8px" }}>Rôle</th>
-                    <th style={{ padding: "8px" }}>Cible NPI / ID</th>
-                    <th style={{ padding: "8px" }}>Détails</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {auditLogs.map((log) => (
-                    <tr key={log.id} style={{ borderBottom: "1px solid #f1f5f9" }}>
-                      <td style={{ padding: "8px", color: "#64748b", whiteSpace: "nowrap" }}>
-                        {new Date(log.timestamp).toLocaleTimeString()}
-                      </td>
-                      <td style={{ padding: "8px" }}>
-                        <Badge variant={log.action === "BRIS_DE_GLACE" ? "danger" : "info"}>
-                          {log.action}
-                        </Badge>
-                      </td>
-                      <td style={{ padding: "8px", fontWeight: 600 }}>{log.acteurNom}</td>
-                      <td style={{ padding: "8px" }}>{log.role}</td>
-                      <td style={{ padding: "8px", fontFamily: "monospace" }}>{log.cibleId}</td>
-                      <td style={{ padding: "8px", color: "#334155" }}>
-                        {JSON.stringify(log.details)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </Card>
-        )}
-      </main>
-
-      {/* Modal Mobile Money */}
+      {/* Modale Simulateur Mobile Money MTN/Moov */}
       <MobileMoneyModal
         isOpen={momoOpen}
         onClose={() => setMomoOpen(false)}
         montantDefault={momoParams.montant}
         motifDefault={momoParams.motif}
         telephoneDefault={momoParams.telephone}
-        onSuccess={() => refreshData()}
       />
     </div>
   );

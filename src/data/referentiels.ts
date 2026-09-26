@@ -1,4 +1,4 @@
-import { Etablissement, Soignant, Patient, DonneurHemora, StockSang, Ordonnance } from "@/lib/types";
+import { Etablissement, Soignant, Patient, DonneurHemora, StockSang, Ordonnance, CampagneDon, TransfertSang, DemandeCarte } from "@/lib/types";
 
 export const ETABLISSEMENTS_REF: Etablissement[] = [
   {
@@ -394,5 +394,112 @@ export const ORDONNANCES_REF: Ordonnance[] = [
     dateEmission: "2026-09-25",
     qrPayload: "https://gbe.sante.gouv.bj/v/ORD-2026-MTA-008",
     empreinteHash: "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
+  },
+];
+
+export const CAMPAGNES_REF: CampagneDon[] = [
+  {
+    id: "camp-2026-borgou-01",
+    codeCampagne: "CAMP-2026-BORGOU-01",
+    titre: "Grande Collecte Solidaire du Borgou",
+    description: "Mobilisation citoyenne d'urgence pour reconstituer les stocks de globules rouges avant la saison des pluies.",
+    etablissementOrganisateur: "Centre Hospitalier Universitaire Départemental du Borgou (CHUD-B)",
+    commune: "Parakou",
+    departement: "Borgou",
+    lieuCollecte: "Esplanade de la Mairie de Parakou",
+    lat: 9.3372,
+    lng: 2.6303,
+    dateDebut: "2026-10-01",
+    dateFin: "2026-10-05",
+    objectifPoches: 350,
+    pochesCollectees: 214,
+    statut: "EN_COURS",
+  },
+  {
+    id: "camp-2026-atlantique-02",
+    codeCampagne: "CAMP-2026-ATL-02",
+    titre: "Collecte Nationale d'Excellence CHIC",
+    description: "Opération Don de Vie pour alimenter le pôle mère-enfant et la chirurgie cardiovasculaire.",
+    etablissementOrganisateur: "Centre Hospitalier International de Calavi (CHIC)",
+    commune: "Abomey-Calavi",
+    departement: "Atlantique",
+    lieuCollecte: "Hall Principal CHIC Calavi",
+    lat: 6.4485,
+    lng: 2.3556,
+    dateDebut: "2026-10-10",
+    dateFin: "2026-10-12",
+    objectifPoches: 500,
+    pochesCollectees: 0,
+    statut: "PLANIFIEE",
+  },
+  {
+    id: "camp-2026-nikki-03",
+    codeCampagne: "CAMP-2026-NIK-03",
+    titre: "Urgence Maternité Sans Risque Nikki-Kalalé",
+    description: "Sécurisation transfusionnelle des accouchements compliqués dans le haut Borgou.",
+    etablissementOrganisateur: "Hôpital de Zone de Nikki",
+    commune: "Nikki",
+    departement: "Borgou",
+    lieuCollecte: "Centre de Santé de Nikki Centre",
+    lat: 9.94,
+    lng: 3.2108,
+    dateDebut: "2026-09-20",
+    dateFin: "2026-09-25",
+    objectifPoches: 120,
+    pochesCollectees: 135,
+    statut: "TERMINEE",
+  },
+];
+
+export const TRANSFERTS_REF: TransfertSang[] = [
+  {
+    id: "trf-2026-001",
+    codeTransfert: "TRF-2026-001",
+    sourceHopital: "CHUD Borgou (Parakou)",
+    destinationHopital: "Hôpital de Zone de Nikki",
+    groupeSanguin: "O+",
+    quantitePoches: 4,
+    urgenceLevel: "VITALE",
+    statut: "RECEPTIONNE",
+    dateEnvoi: "2026-09-25T14:30:00Z",
+    dateReception: "2026-09-25T16:15:00Z",
+  },
+  {
+    id: "trf-2026-002",
+    codeTransfert: "TRF-2026-002",
+    sourceHopital: "CHIC Calavi",
+    destinationHopital: "HZ Allada",
+    groupeSanguin: "O-",
+    quantitePoches: 2,
+    urgenceLevel: "STANDARD",
+    statut: "EN_TRANSIT",
+    dateEnvoi: "2026-09-26T08:00:00Z",
+  },
+];
+
+export const DEMANDES_CARTES_REF: DemandeCarte[] = [
+  {
+    id: "req-card-001",
+    donneurNpi: "2026-KAL-4412-KOR",
+    donneurNom: "Kora BIAOU",
+    groupeSanguin: "O+",
+    communeLivraison: "Kalalé",
+    statut: "IMPRIMEE",
+    qrCodeData: "https://gbe.sante.gouv.bj/v/donor/2026-KAL-4412-KOR",
+    hashVerification: "0xd4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3",
+    otsProof: "OTS-PROOF-BITCOIN-MERKLE-2026-KALALE-01",
+    dateDemande: "2026-09-20",
+  },
+  {
+    id: "req-card-002",
+    donneurNpi: "2026-COT-3310-MAT",
+    donneurNom: "Mathieu SOSSA",
+    groupeSanguin: "O-",
+    communeLivraison: "Cotonou",
+    statut: "REMISE",
+    qrCodeData: "https://gbe.sante.gouv.bj/v/donor/2026-COT-3310-MAT",
+    hashVerification: "0xa1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90",
+    otsProof: "OTS-PROOF-BITCOIN-MERKLE-2026-COTONOU-02",
+    dateDemande: "2026-09-18",
   },
 ];

@@ -21,8 +21,12 @@ import {
   Send,
   Lock,
 } from "lucide-react";
-import { Patient, Ordonnance, DonneurHemora, StockSang, AuditLog } from "@/lib/types";
+import { Patient, Ordonnance, DonneurHemora, StockSang, AuditLog, CampagneDon, TransfertSang, DemandeCarte } from "@/lib/types";
 import { SimulatedSmsResult, SimulatedPaymentResult } from "@/lib/simulation";
+import { DonorBadgeCard } from "@/components/hemora/DonorBadgeCard";
+import { BloodStockMonitor } from "@/components/hemora/BloodStockMonitor";
+import { EmergencyDispatchConsole } from "@/components/hemora/EmergencyDispatchConsole";
+import { MobileCampaignsTracker } from "@/components/hemora/MobileCampaignsTracker";
 
 export default function GbEMainPage() {
   const [activeTab, setActiveTab] = useState("scenario");
@@ -32,6 +36,7 @@ export default function GbEMainPage() {
   const [ordonnance, setOrdonnance] = useState<Ordonnance | null>(null);
   const [donneurs, setDonneurs] = useState<DonneurHemora[]>([]);
   const [stocks, setStocks] = useState<StockSang[]>([]);
+  const [campagnes, setCampagnes] = useState<CampagneDon[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [smsLogs, setSmsLogs] = useState<SimulatedSmsResult[]>([]);
   const [momoOpen, setMomoOpen] = useState(false);
@@ -57,19 +62,21 @@ export default function GbEMainPage() {
   // Chargement initial des données
   const refreshData = async () => {
     try {
-      const [patRes, ordRes, donRes, stRes, audRes, smsRes] = await Promise.all([
+      const [patRes, ordRes, donRes, stRes, audRes, smsRes, campRes] = await Promise.all([
         fetch("/api/v1/patients?npi=2026-KAL-9821-BIO").then((r) => r.json()),
         fetch("/api/v1/ordonnances?code=ORD-2026-KAL-042").then((r) => r.json()),
         fetch("/api/v1/hemora/donors").then((r) => r.json()),
         fetch("/api/v1/hemora/stocks").then((r) => r.json()),
         fetch("/api/v1/audit-logs").then((r) => r.json()),
         fetch("/api/v1/simulation/sms").then((r) => r.json()),
+        fetch("/api/v1/hemora/campaigns").then((r) => r.json()),
       ]);
 
       if (patRes.data) setPatient(patRes.data);
       if (ordRes.data) setOrdonnance(ordRes.data);
       if (donRes.data) setDonneurs(donRes.data);
       if (stRes.data) setStocks(stRes.data);
+      if (campRes.data) setCampagnes(campRes.data);
       if (audRes.data) setAuditLogs(audRes.data);
       if (smsRes.data) setSmsLogs(smsRes.data);
     } catch (e) {
@@ -644,110 +651,136 @@ export default function GbEMainPage() {
           </div>
         )}
 
-        {/* ONGLET 4 : URGENCE SANG HEMORA */}
+        {/* ONGLET 4 : URGENCE SANG HEMORA (REFONTE TOTALE BMM) */}
         {activeTab === "hemora" && (
-          <div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "16px", marginBottom: "20px" }}>
-              {stocks.map((st) => (
-                <Card key={st.id} style={{ borderLeft: st.quantitePoches <= st.seuilAlerte ? "5px solid #e8112d" : "5px solid #008751" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
-                    <span style={{ fontSize: "13px", fontWeight: 600, color: "#64748b" }}>{st.hopitalNom}</span>
-                    <Badge variant={st.quantitePoches <= st.seuilAlerte ? "danger" : "success"}>
-                      {st.quantitePoches <= st.seuilAlerte ? "Stock Critique < 48h" : "Stock Normal"}
-                    </Badge>
-                  </div>
-                  <div style={{ fontSize: "28px", fontWeight: "bold", color: "#0f172a" }}>
-                    {st.quantitePoches} poches <Badge variant="benin">Groupe {st.groupe}</Badge>
-                  </div>
-                  <div style={{ fontSize: "12px", color: "#64748b", marginTop: "4px" }}>
-                    Seuil d'alerte : {st.seuilAlerte} poches • Commune : {st.commune}
-                  </div>
-                </Card>
-              ))}
-            </div>
+          <div className="space-y-6">
+            {/* Console de Régulation & Dispatch d'Urgence */}
+            <EmergencyDispatchConsole
+              onSearchMatch={async (latVal, lngVal, grp) => {
+                const res = await fetch(`/api/v1/hemora/matching?lat=${latVal}&lng=${lngVal}&groupe=${encodeURIComponent(grp)}`);
+                const json = await res.json();
+                return json.data || [];
+              }}
+              onTriggerMobileMoney={(donneur) => {
+                setMomoParams({
+                  montant: 2000,
+                  motif: `Défraiement Transport Don Sang HEMORA (${donneur.groupeSanguin})`,
+                  telephone: donneur.telephone,
+                });
+                setMomoOpen(true);
+              }}
+              onBroadcastSms={async (donneursList, hopital) => {
+                for (const d of donneursList) {
+                  await fetch("/api/v1/simulation/sms", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      telephone: d.telephone,
+                      message: `URGENCE VITALE HEMORA : Besoin immédiat de sang ${d.groupeSanguin} à ${hopital}. Défraiement transport 2 000 F garanti. Présentez-vous sans délai.`,
+                    }),
+                  });
+                }
+                refreshData();
+              }}
+              onBroadcastCall={async (donneursList, hopital) => {
+                for (const d of donneursList) {
+                  await fetch("/api/v1/simulation/ivr", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      telephone: d.telephone,
+                      langue: "bariba",
+                      messageVocal: `Alerte urgente transfusion ${hopital}`,
+                    }),
+                  });
+                }
+                refreshData();
+              }}
+            />
 
-            <Card style={{ marginBottom: "20px" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
+            {/* Suivi Prédictif des Stocks par Établissement */}
+            <BloodStockMonitor
+              stocks={stocks}
+              onTriggerTransfer={async (sourceHopital, grp) => {
+                await fetch("/api/v1/hemora/transfers", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    sourceHopital: "CHIC (Calavi)",
+                    destinationHopital: sourceHopital,
+                    groupeSanguin: grp,
+                    quantitePoches: 3,
+                    urgenceLevel: "VITALE",
+                  }),
+                });
+                refreshData();
+              }}
+            />
+
+            {/* Campagnes Mobiles de Don dans les 77 Communes */}
+            <MobileCampaignsTracker
+              campagnes={campagnes}
+              onAddCampaign={async () => {
+                await fetch("/api/v1/hemora/campaigns", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    titre: "Collecte de Proximité Grand Nord",
+                    commune: "Kalalé",
+                    departement: "Borgou",
+                    lieuCollecte: "Place du Marché de Basso",
+                    objectifPoches: 150,
+                  }),
+                });
+                refreshData();
+              }}
+            />
+
+            {/* Répertoire des Donneurs Volontaires Actifs */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
                 <div>
-                  <h3 style={{ fontSize: "16px", fontWeight: "bold", color: "#0f172a", margin: 0 }}>
-                    Moteur de Matching Géodésique & Transfusionnel
-                  </h3>
-                  <p style={{ fontSize: "13px", color: "#64748b", margin: 0 }}>
-                    Calcul automatique de proximité Haversine et vérification de la règle des 60 jours
+                  <h4 className="text-base font-bold text-white flex items-center gap-2">
+                    <span>👥</span>
+                    <span>Donneurs Volontaires Répertoriés & Cartes Physiques QR</span>
+                  </h4>
+                  <p className="text-xs text-slate-400">
+                    Profils salés SHA-256 conformes au Code du Numérique et à l&apos;APDP (Loi 2017-20).
                   </p>
                 </div>
-                <Button
-                  onClick={() => {
-                    setIsMatching(true);
-                    fetch("/api/v1/hemora/matching?lat=9.9400&lng=3.2108&groupe=O+")
-                      .then((r) => r.json())
-                      .then((d) => {
-                        setMatchingResults(d.data || []);
-                        setIsMatching(false);
-                      });
-                  }}
-                  disabled={isMatching}
-                >
-                  {isMatching ? "Calcul géodésique..." : "Lancer le Matching pour Nikki (O+)"}
-                </Button>
+                <Badge variant="benin">{donneurs.length} donneurs actifs</Badge>
               </div>
 
-              {matchingResults.length > 0 && (
-                <div style={{ overflowX: "auto" }}>
-                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "13px" }}>
-                    <thead>
-                      <tr style={{ borderBottom: "2px solid #e2e8f0", textAlign: "left", color: "#64748b" }}>
-                        <th style={{ padding: "8px" }}>Donneur</th>
-                        <th style={{ padding: "8px" }}>Groupe</th>
-                        <th style={{ padding: "8px" }}>Commune</th>
-                        <th style={{ padding: "8px" }}>Distance</th>
-                        <th style={{ padding: "8px" }}>Score / 100</th>
-                        <th style={{ padding: "8px" }}>Règle 60 Jours</th>
-                        <th style={{ padding: "8px" }}>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {matchingResults.map((m, i) => (
-                        <tr key={i} style={{ borderBottom: "1px solid #f1f5f9" }}>
-                          <td style={{ padding: "10px 8px", fontWeight: 600 }}>{m.donneur.nomComplet}</td>
-                          <td style={{ padding: "10px 8px" }}><Badge variant="danger">{m.donneur.groupeSanguin}</Badge></td>
-                          <td style={{ padding: "10px 8px" }}>{m.donneur.commune}</td>
-                          <td style={{ padding: "10px 8px" }}>{m.distanceKm} km</td>
-                          <td style={{ padding: "10px 8px", fontWeight: "bold", color: "#008751" }}>{m.scoreTotal}</td>
-                          <td style={{ padding: "10px 8px" }}>
-                            {m.eligibleDelai ? (
-                              <Badge variant="success">Éligible</Badge>
-                            ) : (
-                              <Badge variant="warning">{m.joursAvantEligibilite} j restants</Badge>
-                            )}
-                          </td>
-                          <td style={{ padding: "10px 8px" }}>
-                            <Button
-                              variant="outline"
-                              style={{ padding: "4px 8px", fontSize: "11px" }}
-                              onClick={() => {
-                                fetch("/api/v1/hemora/donations", {
-                                  method: "POST",
-                                  headers: { "Content-Type": "application/json" },
-                                  body: JSON.stringify({
-                                    donneurNpi: m.donneur.npi,
-                                    typeDon: "PRELEVEMENT_REUSSI",
-                                  }),
-                                })
-                                  .then((r) => r.json())
-                                  .then(() => refreshData());
-                              }}
-                            >
-                              Valider Don (2.000 F)
-                            </Button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              )}
-            </Card>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                {donneurs.map((d) => (
+                  <DonorBadgeCard
+                    key={d.id}
+                    donneur={d}
+                    onCall={(tel) => {
+                      fetch("/api/v1/simulation/ivr", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ telephone: tel, langue: "bariba", messageVocal: "Convocation don d'urgence" }),
+                      }).then(() => refreshData());
+                    }}
+                    onSendSms={(tel) => {
+                      fetch("/api/v1/simulation/sms", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ telephone: tel, message: "HEMORA: Convocation don de sang urgent." }),
+                      }).then(() => refreshData());
+                    }}
+                    onRequestCard={(npi) => {
+                      fetch("/api/v1/hemora/card-requests", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ donneurNpi: npi, communeLivraison: d.commune }),
+                      }).then(() => refreshData());
+                    }}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         )}
 

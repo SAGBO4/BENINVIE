@@ -89,7 +89,7 @@ export const baseMetadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Guy Tibro",
+    title: "Gbɛ Santé Bénin",
   },
   manifest: "/manifest.webmanifest",
 };

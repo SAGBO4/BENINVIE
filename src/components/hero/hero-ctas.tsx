@@ -19,15 +19,13 @@ export function HeroCtas(): ReactNode {
         transition={{ layout: { duration: 0.55, ease: EASE } }}
         className="mt-2 flex flex-wrap items-center gap-3"
       >
-        <ContactButton />
-
         <motion.div
           layout
           transition={{ layout: { duration: 0.55, ease: EASE } }}
         >
           <Link
-            href="/projects"
-            className="focus-ring group inline-flex cursor-pointer items-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 text-sm font-medium text-white shadow-lg shadow-red-600/20 transition-all hover:bg-red-700"
+            href="/projects#matching"
+            className="focus-ring group inline-flex cursor-pointer items-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-red-600/25 transition-all hover:bg-red-700"
           >
             <span>Lancer un Matching d'Urgence</span>
             <ArrowRight
@@ -42,10 +40,22 @@ export function HeroCtas(): ReactNode {
           transition={{ layout: { duration: 0.55, ease: EASE } }}
         >
           <Link
-            href="/projects#stocks"
-            className="border border-foreground/10 focus-ring group inline-flex cursor-pointer items-center gap-2 rounded-xl bg-background px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-foreground/5 shadow-sm"
+            href="/projects#scenario"
+            className="border border-amber-500/30 focus-ring group inline-flex cursor-pointer items-center gap-2 rounded-xl bg-amber-500/10 px-4 py-2.5 text-sm font-semibold text-amber-600 dark:text-amber-400 transition-colors hover:bg-amber-500/20 shadow-xs"
           >
-            Supervision des Stocks (77 Communes)
+            <span>Scénario Bio à Kalalé (7 Étapes)</span>
+          </Link>
+        </motion.div>
+
+        <motion.div
+          layout
+          transition={{ layout: { duration: 0.55, ease: EASE } }}
+        >
+          <Link
+            href="/projects#stocks"
+            className="border border-foreground/10 focus-ring group inline-flex cursor-pointer items-center gap-2 rounded-xl bg-background px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-foreground/5 shadow-xs"
+          >
+            Stocks (77 Communes)
           </Link>
         </motion.div>
 

@@ -21,9 +21,15 @@ const DEPARTEMENTS = [
   "Littoral",
   "Ouémé",
   "Borgou",
-  "Atacora",
-  "Zou",
   "Atlantique",
+  "Zou",
+  "Atacora",
+  "Alibori",
+  "Donga",
+  "Collines",
+  "Mono",
+  "Couffo",
+  "Plateau",
 ];
 
 export function NationalStockConsole(): ReactNode {

@@ -2,16 +2,16 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Guy Tibro | Web3 Community Manager",
-    short_name: "Guy Tibro",
+    name: "Gbɛ (BENINVIE) • Système d'Information Sanitaire & HEMORA",
+    short_name: "Gbɛ Santé",
     description:
-      "Portfolio de Guy Tibro - Social Media & Community Manager spécialisé dans l'écosystème Web3.",
+      "Plateforme nationale de santé numérique, régulation transfusionnelle et gestion des urgences vitales en République du Bénin.",
     start_url: "/",
     id: "/",
     scope: "/",
     display: "standalone",
     background_color: "#0a0a0a",
-    theme_color: "#0a0a0a",
+    theme_color: "#008751",
     orientation: "portrait-primary",
     icons: [
       {

@@ -8,8 +8,11 @@
   --muted: #171717;
   --muted-foreground: #a3a3a3;
   --border: #262626;
-  --ring: #3b82f6;
+  --ring: #e8112d;
   --frame: #0a0a0a;
+  --benin-green: #008751;
+  --benin-yellow: #fcd116;
+  --benin-red: #e8112d;
   --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
@@ -21,8 +24,11 @@
   --muted: #171717;
   --muted-foreground: #a3a3a3;
   --border: #262626;
-  --ring: #3b82f6;
+  --ring: #e8112d;
   --frame: #0a0a0a;
+  --benin-green: #008751;
+  --benin-yellow: #fcd116;
+  --benin-red: #e8112d;
 }
 
 @theme inline {
@@ -32,6 +38,9 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
   --color-ring: var(--ring);
+  --color-benin-green: var(--benin-green);
+  --color-benin-yellow: var(--benin-yellow);
+  --color-benin-red: var(--benin-red);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);

@@ -31,6 +31,7 @@ const InfiniteMenu = dynamic(() => import("@/components/ui/InfiniteMenu"), {
 import { HaversineEmergencyConsole } from "@/components/hemora/haversine-emergency-console";
 import { NationalStockConsole } from "@/components/hemora/national-stock-console";
 import { DonorPassportConsole } from "@/components/hemora/donor-passport-console";
+import { InteractiveScenarioKalale } from "@/components/scenario/interactive-scenario-kalale";
 
 type Project = {
   id: string;
@@ -280,8 +281,13 @@ export function Projects({
       )}
 
       {/* Live Interactive Consoles Connected to Backend */}
-      <div id="matching" className="mx-auto w-full max-w-275 px-6 sm:px-10 mt-12 space-y-10">
-        <HaversineEmergencyConsole />
+      <div className="mx-auto w-full max-w-275 px-6 sm:px-10 mt-12 space-y-12">
+        <div id="scenario" className="scroll-mt-24">
+          <InteractiveScenarioKalale />
+        </div>
+        <div id="matching" className="scroll-mt-24">
+          <HaversineEmergencyConsole />
+        </div>
         <NationalStockConsole />
         {!viewMoreVisible && <DonorPassportConsole />}
       </div>

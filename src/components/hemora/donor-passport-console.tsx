@@ -51,6 +51,17 @@ export function DonorPassportConsole(): ReactNode {
   const handleSimulateMoMo = async () => {
     if (!donor) return;
     setMomoTriggered(true);
+    try {
+      await fetch("/api/v1/simulation/sms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          destinataire: donor.telephone,
+          message: `MTN MoMo Bénin : Vous avez reçu un virement de 2 000 FCFA du CNTS (Forfait transport don de sang bénévole - Décret Transfusionnel). Nouveau solde disponible.`,
+          type: "PAIEMENT_MOMO",
+        }),
+      });
+    } catch {}
   };
 
   return (
@@ -60,34 +71,43 @@ export function DonorPassportConsole(): ReactNode {
         <div>
           <div className="inline-flex items-center gap-1.5 rounded-full bg-red-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-red-600 dark:text-red-400">
             <UserCheck className="h-3.5 w-3.5" />
-            <span>Passeport Donneur Numérique • APDP & MoMo</span>
+            <span>SF-3.4 • Passeport Donneur Numérique & Forfait MoMo</span>
           </div>
           <h3 className="mt-2 font-serif text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
             Espace Citoyen Donneur de Sang
           </h3>
           <p className="mt-1 text-sm text-foreground/70">
-            Vérification de l&apos;éligibilité médicale (délai 60 jours) et déblocage du forfait de transport (2 000 FCFA).
+            Vérification de l&apos;éligibilité médicale (délai 60 jours) et déblocage du forfait de transport (2 000 FCFA MTN/Moov).
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-1.5">
           <button
             onClick={() => {
-              setNpiInput("109876543210");
-              fetchDonor("109876543210");
+              setNpiInput("NPI-DON-2026-001");
+              fetchDonor("NPI-DON-2026-001");
             }}
-            className="rounded-xl border border-foreground/10 bg-foreground/3 px-3 py-2 text-xs font-medium text-foreground hover:bg-foreground/6 transition-colors"
+            className="rounded-xl border border-foreground/10 bg-foreground/3 px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-foreground/6 transition-colors"
           >
-            Donneur Démo (O+)
+            Bio BONI (Nikki, O+)
+          </button>
+          <button
+            onClick={() => {
+              setNpiInput("NPI-DON-2026-002");
+              fetchDonor("NPI-DON-2026-002");
+            }}
+            className="rounded-xl border border-foreground/10 bg-foreground/3 px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-foreground/6 transition-colors"
+          >
+            Sabi KORA (Kalalé, O+)
           </button>
           <button
             onClick={() => {
               setNpiInput("104321876509");
               fetchDonor("104321876509");
             }}
-            className="rounded-xl border border-foreground/10 bg-foreground/3 px-3 py-2 text-xs font-medium text-foreground hover:bg-foreground/6 transition-colors"
+            className="rounded-xl border border-foreground/10 bg-foreground/3 px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-foreground/6 transition-colors"
           >
-            Donneur Démo (O-)
+            Estelle MENSAH (O-)
           </button>
         </div>
       </div>

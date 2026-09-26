@@ -10,7 +10,7 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 
 export function ContactButton(): ReactNode {
   const { data } = usePortfolio();
-  const email = data.profile?.email || "guyweb3cm@gmail.com";
+  const email = data.profile?.email || "contact@cnts.sante.gouv.bj";
   const [open, setOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 

@@ -59,12 +59,19 @@ export function BmmTelemetryRadar(): ReactNode {
 
   return (
     <div className="relative flex h-full w-full flex-col justify-between overflow-hidden rounded-[1.6rem] bg-gradient-to-br from-zinc-950 via-zinc-900 to-black p-6 text-white shadow-2xl">
+      {/* Sovereign Benin Tricolor Stripe */}
+      <div className="absolute top-0 inset-x-0 h-1.5 flex">
+        <div className="flex-1 bg-[#008751]" />
+        <div className="flex-1 bg-[#fcd116]" />
+        <div className="flex-1 bg-[#e8112d]" />
+      </div>
+
       {/* Dynamic Animated Radar Wave */}
       <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-red-600/15 blur-3xl" />
       <div className="pointer-events-none absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-emerald-600/15 blur-3xl" />
 
       {/* Top Header: System Status & Pulse */}
-      <div className="relative z-10 flex items-center justify-between border-b border-white/10 pb-4">
+      <div className="relative z-10 flex items-center justify-between border-b border-white/10 pb-4 pt-1">
         <div className="flex items-center gap-2.5">
           <span className="relative flex h-3 w-3">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
@@ -73,9 +80,9 @@ export function BmmTelemetryRadar(): ReactNode {
           <div>
             <div className="flex items-center gap-1.5 text-[11px] font-mono tracking-widest uppercase text-emerald-400">
               <Radio className="h-3 w-3 animate-pulse" />
-              CNTS LIVE TELEMETRY
+              CNTS • RÉGULATION BÉNIN
             </div>
-            <div className="text-xs text-zinc-400">77 Communes Interconnectées</div>
+            <div className="text-xs text-zinc-400 font-medium">77 Communes & Banques de Sang Interconnectées</div>
           </div>
         </div>
 

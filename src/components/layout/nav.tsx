@@ -18,7 +18,8 @@ type NavItem = {
 
 const NAV_ITEMS: readonly NavItem[] = [
   { label: "Accueil", href: "/" },
-  { label: "Modules & Urgences", href: "/projects" },
+  { label: "Consoles & Urgences", href: "/projects" },
+  { label: "Scénario Bio (Kalalé)", href: "/projects#scenario" },
   { label: "Supervision 77 Communes", href: "/about" },
 ];
 

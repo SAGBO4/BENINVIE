@@ -169,7 +169,7 @@ function VerifyContent() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 pb-20">
+    <div className="min-h-screen bg-slate-50 text-slate-900 pb-20 w-full max-w-full overflow-x-hidden">
       {/* Bandeau officiel République du Bénin */}
       <div className="h-1.5 w-full flex">
         <div className="flex-1 bg-[#008751]" />
@@ -177,10 +177,10 @@ function VerifyContent() {
         <div className="flex-1 bg-[#eb0000]" />
       </div>
 
-      <header className="border-b border-slate-200 bg-white shadow-xs">
+      <header className="border-b border-slate-200 bg-white shadow-xs w-full overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3 sm:gap-4">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="flex items-center gap-2 group">
+          <div className="flex items-center gap-3 min-w-0">
+            <Link href="/" className="flex items-center gap-2 group min-w-0">
               <div className="h-9 w-9 sm:h-10 sm:w-10 rounded-xl bg-[#0a3764] flex items-center justify-center text-white font-black text-lg sm:text-xl shadow-md shrink-0">
                 B
               </div>
@@ -195,21 +195,21 @@ function VerifyContent() {
             </Link>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-            <div className="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200 text-xs">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 w-full md:w-auto">
+            <div className="flex items-center gap-2 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200 text-xs shrink-0">
               <span className="text-slate-600 font-medium">Acteur actif :</span>
               <span className="font-bold text-[#0a3764] truncate max-w-[150px]">
                 {user ? `${user.nom} (${user.role})` : "Non connecté"}
               </span>
             </div>
 
-            <div className="flex flex-wrap items-center gap-1 bg-white border border-slate-300 rounded-lg p-1 text-xs">
-              <span className="px-1.5 text-slate-600 font-medium text-[11px] sm:text-xs">Rôle simulé :</span>
+            <div className="flex items-center gap-1 bg-white border border-slate-300 rounded-lg p-1 text-xs overflow-x-auto no-scrollbar max-w-full">
+              <span className="px-1.5 text-slate-600 font-medium text-[11px] sm:text-xs shrink-0">Rôle simulé :</span>
               {(["PHARMACIEN", "CNTS_AGENT", "MEDECIN", "CITOYEN"] as const).map((r) => (
                 <button
                   key={r}
                   onClick={() => handleRoleChange(r)}
-                  className={`min-h-[36px] sm:min-h-[38px] px-2.5 py-1 rounded-md text-xs font-bold transition-colors cursor-pointer ${
+                  className={`min-h-[36px] sm:min-h-[38px] px-2.5 py-1 rounded-md text-xs font-bold transition-colors cursor-pointer shrink-0 ${
                     selectedRole === r
                       ? "bg-[#0a3764] text-white shadow-xs"
                       : "text-slate-700 hover:bg-slate-100"
@@ -229,7 +229,7 @@ function VerifyContent() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 w-full overflow-x-hidden">
         {/* En-tête explicatif */}
         <div className="mb-6 sm:mb-8">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-xs font-bold text-[#0a3764] mb-3">

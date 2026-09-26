@@ -256,7 +256,7 @@ export function Projects({
       : PROJECTS;
 
   return (
-    <section className="relative w-full overflow-visible">
+    <section className="relative w-full overflow-x-hidden">
       {/* Element de transition en haut (Progression depuis Hero) */}
       {viewMoreVisible ? (
         <div className="flex flex-col items-center justify-center pt-2 pb-6">
@@ -269,7 +269,7 @@ export function Projects({
       ) : null}
 
       {withHeadline ? (
-        <div className="mx-auto w-full max-w-7xl px-6 sm:px-10 lg:px-12">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-8 lg:px-12">
           <FadeIn className="flex flex-col items-center gap-4 text-center pb-6 sm:pb-8">
             <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-900">
               Modules Opérationnels & Consoles d&apos;Urgence
@@ -303,7 +303,7 @@ export function Projects({
           </div>
         </div>
       ) : (
-        <div className="mx-auto w-full max-w-7xl px-6 sm:px-10 lg:px-12">
+        <div className="mx-auto w-full max-w-7xl px-4 sm:px-8 lg:px-12">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
             {dynamicProjectsList.map((project, index) => (
               <ProjectCard key={project.id} project={project} index={index} />
@@ -313,7 +313,7 @@ export function Projects({
       )}
 
       {/* Live Interactive Consoles with Clinical-Grade Tab Switcher */}
-      <div className="mx-auto w-full max-w-7xl px-6 sm:px-10 lg:px-12 mt-12 sm:mt-16">
+      <div className="mx-auto w-full max-w-7xl px-4 sm:px-8 lg:px-12 mt-8 sm:mt-16">
         {/* Module Switcher Header */}
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-4 sm:p-6 rounded-2xl border border-slate-200/90 bg-white shadow-xs mb-8 sm:mb-10">
           <div className="flex items-center gap-3">

@@ -259,38 +259,38 @@ export default function HomePage(): ReactNode {
   const { loginAs } = useAuth();
 
   return (
-    <main id="main-content" className="flex flex-1 flex-col overflow-hidden bg-[#f6f8fb] text-slate-900">
+    <main id="main-content" className="flex flex-1 flex-col overflow-x-hidden w-full max-w-full bg-[#f6f8fb] text-slate-900">
       {/* 1. HERO SECTION INSTITUTIONNELLE SPACIEUSE ET SOLENNELLE */}
-      <section className="relative w-full pt-10 pb-16 sm:pt-16 sm:pb-24 px-4 sm:px-8 lg:px-12 border-b border-slate-200/90 bg-white">
+      <section className="relative w-full pt-8 pb-12 sm:pt-16 sm:pb-24 px-4 sm:px-8 lg:px-12 border-b border-slate-200/90 bg-white overflow-hidden">
         <div className="mx-auto w-full max-w-7xl">
           <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-16">
             {/* Texte Gauche : Copywriter institutionnel humain, rigoureux et direct */}
-            <FadeIn className="flex flex-col gap-5 sm:gap-6 lg:col-span-7">
-              <div className="inline-flex items-center gap-2 self-start rounded-full border border-[#0a3764]/20 bg-[#0a3764]/5 px-3.5 py-1.5 text-xs font-bold text-[#0a3764] shadow-xs max-w-full">
+            <FadeIn className="flex flex-col gap-4 sm:gap-6 lg:col-span-7">
+              <div className="inline-flex items-center gap-2 self-start rounded-full border border-[#0a3764]/20 bg-[#0a3764]/5 px-3 sm:px-3.5 py-1 sm:py-1.5 text-[11px] sm:text-xs font-bold text-[#0a3764] shadow-xs max-w-full overflow-hidden">
                 <span className="h-2 w-2 rounded-full bg-[#008751] animate-pulse shrink-0" />
                 <span className="uppercase tracking-wider truncate">République du Bénin • Système National d&apos;Information Sanitaire</span>
               </div>
 
-              <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[1.14] sm:leading-[1.12] tracking-tight text-slate-900">
+              <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[1.15] sm:leading-[1.12] tracking-tight text-slate-900">
                 BENINVIE <br />
                 <span className="text-[#0a3764]">
                   Chaque seconde compte.
                 </span>{" "}
                 <br />
-                <span className="text-slate-800 text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold">
+                <span className="text-slate-800 text-lg sm:text-3xl md:text-4xl lg:text-5xl font-bold">
                   Zéro refus de soin pour motif financier.
                 </span>
               </h1>
 
-              <p className="max-w-[54ch] text-sm sm:text-base md:text-lg leading-relaxed text-slate-700">
+              <p className="max-w-[54ch] text-xs sm:text-base md:text-lg leading-relaxed text-slate-700">
                 Le portail régalien de santé numérique de la République du Bénin. Il unifie le déverrouillage d&apos;urgence vitale sans caution (<strong>Bris de Glace</strong>), le réseau transfusionnel <strong>HEMORA</strong> adossé au CNTS, le carnet de santé <strong>HL7 FHIR</strong> indexé sur le NPI ANIP et la régulation de la pharmacopée traditionnelle béninoise (<strong>MTA</strong>).
               </p>
 
-              {/* Actions Métier Directes */}
-              <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 pt-2">
+              {/* Actions Métier Directes (Full width on mobile, stacked nicely) */}
+              <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2.5 sm:gap-3 pt-2 w-full">
                 <Link
                   href="/login"
-                  className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-[#0a3764] hover:bg-[#082a4d] px-5 sm:px-6 py-3 text-xs sm:text-sm font-bold text-white shadow-md shadow-[#0a3764]/20 transition-all active:scale-95 text-center"
+                  className="w-full sm:w-auto inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-[#0a3764] hover:bg-[#082a4d] px-5 sm:px-6 py-3 text-xs sm:text-sm font-bold text-white shadow-md shadow-[#0a3764]/20 transition-all active:scale-95 text-center"
                 >
                   <Lock className="h-4 w-4 shrink-0" />
                   <span>ESPACE PROFESSIONNEL & CITOYEN</span>
@@ -299,7 +299,7 @@ export default function HomePage(): ReactNode {
 
                 <Link
                   href="/projects"
-                  className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 px-5 sm:px-6 py-3 text-xs sm:text-sm font-bold text-slate-800 shadow-xs transition-all hover:border-[#0a3764]/50 text-center"
+                  className="w-full sm:w-auto inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 px-5 sm:px-6 py-3 text-xs sm:text-sm font-bold text-slate-800 shadow-xs transition-all hover:border-[#0a3764]/50 text-center"
                 >
                   <Droplet className="h-4 w-4 text-red-600 shrink-0" />
                   <span>Consoles HEMORA & Urgences</span>
@@ -307,7 +307,7 @@ export default function HomePage(): ReactNode {
 
                 <Link
                   href="/projects?module=scenario"
-                  className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 px-4 sm:px-5 py-3 text-xs font-bold text-amber-900 transition-colors text-center"
+                  className="w-full sm:w-auto inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 px-4 sm:px-5 py-3 text-xs font-bold text-amber-900 transition-colors text-center"
                 >
                   <Compass className="h-4 w-4 text-amber-700 shrink-0" />
                   <span>Scénario Bio à Kalalé</span>
@@ -315,24 +315,24 @@ export default function HomePage(): ReactNode {
               </div>
 
               {/* Références Réglementaires Officielles */}
-              <div className="pt-4 border-t border-slate-200/90 flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-slate-600">
+              <div className="pt-4 border-t border-slate-200/90 grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2.5 sm:gap-6 text-[11px] sm:text-xs text-slate-600">
                 <span className="flex items-center gap-1.5 font-bold text-slate-800">
-                  <CheckCircle className="h-4 w-4 text-[#008751] shrink-0" /> Loi n° 2017-20 APDP
+                  <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#008751] shrink-0" /> Loi 2017-20 APDP
                 </span>
                 <span className="flex items-center gap-1.5 font-bold text-slate-800">
-                  <CheckCircle className="h-4 w-4 text-[#ffbe00] shrink-0" /> Régulation Sanitaire ARS
+                  <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#ffbe00] shrink-0" /> Régulation ARS
                 </span>
                 <span className="flex items-center gap-1.5 font-bold text-slate-800">
-                  <CheckCircle className="h-4 w-4 text-[#0a3764] shrink-0" /> Référentiel NPI ANIP
+                  <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#0a3764] shrink-0" /> Référentiel NPI ANIP
                 </span>
                 <span className="flex items-center gap-1.5 font-bold text-slate-800">
-                  <CheckCircle className="h-4 w-4 text-[#eb0000] shrink-0" /> Ligne d&apos;Urgence 136
+                  <CheckCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-[#eb0000] shrink-0" /> Urgences 136
                 </span>
               </div>
             </FadeIn>
 
             {/* Console Télémétrique Droite */}
-            <ScaleUnblur className="lg:col-span-5 flex justify-center w-full">
+            <ScaleUnblur className="lg:col-span-5 flex justify-center w-full mt-4 lg:mt-0">
               <div className="relative aspect-square w-full max-w-[320px] sm:max-w-[400px] lg:max-w-[440px] rounded-3xl border border-slate-200/90 bg-white p-2.5 sm:p-3.5 shadow-xl overflow-hidden">
                 <BmmTelemetryRadar />
               </div>
@@ -574,14 +574,17 @@ export default function HomePage(): ReactNode {
             </p>
           </FadeIn>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 sm:gap-4">
-            {ACTORS_SHORTCUTS.map((act) => {
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-2.5 sm:gap-4">
+            {ACTORS_SHORTCUTS.map((act, index) => {
               const Icon = act.icon;
+              const isLastOdd = index === ACTORS_SHORTCUTS.length - 1;
               return (
                 <button
                   key={act.role}
                   onClick={() => loginAs(act.role)}
-                  className="min-h-[44px] p-3.5 sm:p-5 rounded-2xl border border-slate-200/90 bg-[#f6f8fb] hover:border-[#0a3764]/50 hover:bg-white text-left transition-all duration-200 flex flex-col justify-between gap-3 sm:gap-4 group shadow-xs hover:shadow-md cursor-pointer overflow-hidden"
+                  className={`min-h-[44px] p-3 sm:p-5 rounded-2xl border border-slate-200/90 bg-[#f6f8fb] hover:border-[#0a3764]/50 hover:bg-white text-left transition-all duration-200 flex flex-col justify-between gap-2.5 sm:gap-4 group shadow-xs hover:shadow-md cursor-pointer overflow-hidden ${
+                    isLastOdd ? "col-span-2 sm:col-span-1" : ""
+                  }`}
                 >
                   <div className={`h-10 w-10 sm:h-11 sm:w-11 rounded-xl ${act.bg} flex items-center justify-center group-hover:scale-105 transition-transform shrink-0`}>
                     <Icon className={`h-5 w-5 ${act.color}`} />

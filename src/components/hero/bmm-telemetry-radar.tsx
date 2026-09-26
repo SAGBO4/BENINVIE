@@ -108,38 +108,38 @@ export function BmmTelemetryRadar(): ReactNode {
           </span>
         </div>
 
-        <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5">
+        <div className="grid grid-cols-3 gap-1 sm:gap-2.5">
           {Object.entries(summary.groupes).map(([grp, qty]) => {
             const isUniversal = grp === "O-";
             return (
               <div
                 key={grp}
-                className={`relative flex flex-col justify-between rounded-xl border p-2 sm:p-3 transition-all ${
+                className={`relative flex flex-col justify-between rounded-xl border p-1.5 sm:p-3 transition-all ${
                   isUniversal
                     ? "border-red-500/50 bg-red-500/10 shadow-xs shadow-red-500/20"
                     : "border-white/10 bg-white/5 hover:border-white/20"
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs sm:text-sm font-bold text-white">{grp}</span>
+                  <span className="text-[11px] sm:text-sm font-bold text-white">{grp}</span>
                   {isUniversal && (
-                    <span className="rounded bg-red-500 px-1 text-[8px] sm:text-[9px] font-bold text-white uppercase">
+                    <span className="rounded bg-red-500 px-1 text-[7px] sm:text-[9px] font-bold text-white uppercase">
                       Univ.
                     </span>
                   )}
                 </div>
-                <div className="mt-1 sm:mt-2 text-base sm:text-xl font-extrabold tracking-tight text-zinc-100">
+                <div className="mt-0.5 sm:mt-2 text-xs sm:text-xl font-extrabold tracking-tight text-zinc-100">
                   {qty}{" "}
-                  <span className="text-[9px] sm:text-[10px] font-normal text-zinc-400">poches</span>
+                  <span className="text-[8px] sm:text-[10px] font-normal text-zinc-400">poches</span>
                 </div>
               </div>
             );
           })}
 
           {/* Quick Metric Widget */}
-          <div className="flex flex-col justify-between rounded-xl border border-white/10 bg-white/5 p-2 sm:p-3">
-            <span className="text-[9px] sm:text-[10px] font-mono text-zinc-400">Délai Dispatch</span>
-            <div className="text-sm sm:text-xl font-extrabold text-emerald-400">&lt; 15 min</div>
+          <div className="flex flex-col justify-between rounded-xl border border-white/10 bg-white/5 p-1.5 sm:p-3">
+            <span className="text-[8px] sm:text-[10px] font-mono text-zinc-400 leading-tight">Délai Dispatch</span>
+            <div className="text-xs sm:text-xl font-extrabold text-emerald-400">&lt; 15 min</div>
           </div>
         </div>
       </div>

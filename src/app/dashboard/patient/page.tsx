@@ -204,7 +204,7 @@ export default function PatientDashboardPage(): ReactNode {
   };
 
   return (
-    <main className="min-h-screen pt-28 pb-20 px-4 sm:px-8 max-w-7xl mx-auto flex flex-col gap-8">
+    <main className="min-h-screen pt-28 pb-20 px-4 sm:px-8 max-w-7xl mx-auto flex flex-col gap-8 w-full overflow-x-hidden">
       {/* 1. CARTE D'IDENTITÉ PATIENT & EN-TÊTE FHIR */}
       <FadeIn className="p-4 sm:p-6 lg:p-8 rounded-3xl sm:rounded-4xl border border-emerald-500/20 bg-gradient-to-br from-emerald-950/40 via-background to-background backdrop-blur-md shadow-xl flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">

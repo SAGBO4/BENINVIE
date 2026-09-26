@@ -196,6 +196,18 @@ export const donsHistorique = pgTable("gbe_dons_historique", {
   creeLe: timestamp("cree_le").defaultNow().notNull(),
 });
 
+export const pointsLedger = pgTable("gbe_points_ledger", {
+  id: serial("id").primaryKey(),
+  donneurNpi: text("donneur_npi").notNull(),
+  donneurNom: text("donneur_nom").notNull(),
+  action: text("action").notNull(), // AWARD, REDEEM
+  points: integer("points").notNull(),
+  motif: text("motif").notNull(), // DON_SANG, PARRAINAGE, BON_SANTE_ARCH, DEFRAIEMENT_MOMO
+  transactionHash: text("transaction_hash").notNull(),
+  otsProof: text("ots_proof"),
+  creeLe: timestamp("cree_le").defaultNow().notNull(),
+});
+
 export const auditLogs = pgTable("gbe_audit_logs", {
   id: serial("id").primaryKey(),
   action: text("action").notNull(),
@@ -206,3 +218,4 @@ export const auditLogs = pgTable("gbe_audit_logs", {
   details: jsonb("details").notNull(),
   timestamp: timestamp("timestamp").defaultNow().notNull(),
 });
+

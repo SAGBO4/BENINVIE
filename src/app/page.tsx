@@ -21,12 +21,14 @@ import {
   Send,
   Lock,
 } from "lucide-react";
-import { Patient, Ordonnance, DonneurHemora, StockSang, AuditLog, CampagneDon, TransfertSang, DemandeCarte } from "@/lib/types";
+import { Patient, Ordonnance, DonneurHemora, StockSang, AuditLog, CampagneDon, TransfertSang, DemandeCarte, PointTransaction } from "@/lib/types";
 import { SimulatedSmsResult, SimulatedPaymentResult } from "@/lib/simulation";
 import { DonorBadgeCard } from "@/components/hemora/DonorBadgeCard";
 import { BloodStockMonitor } from "@/components/hemora/BloodStockMonitor";
 import { EmergencyDispatchConsole } from "@/components/hemora/EmergencyDispatchConsole";
 import { MobileCampaignsTracker } from "@/components/hemora/MobileCampaignsTracker";
+import { CivicPointsLedger } from "@/components/hemora/CivicPointsLedger";
+import { BloodTransferHub } from "@/components/hemora/BloodTransferHub";
 
 export default function GbEMainPage() {
   const [activeTab, setActiveTab] = useState("scenario");
@@ -37,6 +39,8 @@ export default function GbEMainPage() {
   const [donneurs, setDonneurs] = useState<DonneurHemora[]>([]);
   const [stocks, setStocks] = useState<StockSang[]>([]);
   const [campagnes, setCampagnes] = useState<CampagneDon[]>([]);
+  const [transferts, setTransferts] = useState<TransfertSang[]>([]);
+  const [pointsTransactions, setPointsTransactions] = useState<PointTransaction[]>([]);
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [smsLogs, setSmsLogs] = useState<SimulatedSmsResult[]>([]);
   const [momoOpen, setMomoOpen] = useState(false);
@@ -62,7 +66,7 @@ export default function GbEMainPage() {
   // Chargement initial des données
   const refreshData = async () => {
     try {
-      const [patRes, ordRes, donRes, stRes, audRes, smsRes, campRes] = await Promise.all([
+      const [patRes, ordRes, donRes, stRes, audRes, smsRes, campRes, trfRes, ptsRes] = await Promise.all([
         fetch("/api/v1/patients?npi=2026-KAL-9821-BIO").then((r) => r.json()),
         fetch("/api/v1/ordonnances?code=ORD-2026-KAL-042").then((r) => r.json()),
         fetch("/api/v1/hemora/donors").then((r) => r.json()),
@@ -70,6 +74,8 @@ export default function GbEMainPage() {
         fetch("/api/v1/audit-logs").then((r) => r.json()),
         fetch("/api/v1/simulation/sms").then((r) => r.json()),
         fetch("/api/v1/hemora/campaigns").then((r) => r.json()),
+        fetch("/api/v1/hemora/transfers").then((r) => r.json()),
+        fetch("/api/v1/hemora/points").then((r) => r.json()),
       ]);
 
       if (patRes.data) setPatient(patRes.data);
@@ -77,6 +83,8 @@ export default function GbEMainPage() {
       if (donRes.data) setDonneurs(donRes.data);
       if (stRes.data) setStocks(stRes.data);
       if (campRes.data) setCampagnes(campRes.data);
+      if (trfRes.data) setTransferts(trfRes.data);
+      if (ptsRes.data) setPointsTransactions(ptsRes.data);
       if (audRes.data) setAuditLogs(audRes.data);
       if (smsRes.data) setSmsLogs(smsRes.data);
     } catch (e) {
@@ -717,6 +725,22 @@ export default function GbEMainPage() {
               }}
             />
 
+            {/* Régulation des Transferts Inter-Hospitaliers (Refonte BMM) */}
+            <BloodTransferHub
+              transferts={transferts}
+              onNewTransfer={async (data) => {
+                await fetch("/api/v1/hemora/transfers", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(data),
+                });
+                refreshData();
+              }}
+              onMarkDelivered={async (id) => {
+                refreshData();
+              }}
+            />
+
             {/* Campagnes Mobiles de Don dans les 77 Communes */}
             <MobileCampaignsTracker
               campagnes={campagnes}
@@ -730,6 +754,24 @@ export default function GbEMainPage() {
                     departement: "Borgou",
                     lieuCollecte: "Place du Marché de Basso",
                     objectifPoches: 150,
+                  }),
+                });
+                refreshData();
+              }}
+            />
+
+            {/* Grand Livre Civique des Points & Ordre National du Don (Refonte BMM) */}
+            <CivicPointsLedger
+              transactions={pointsTransactions}
+              onRedeemPoints={async (points, motif) => {
+                await fetch("/api/v1/hemora/points", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    donneurNpi: "2026-COT-3310-MAT",
+                    action: "REDEEM",
+                    points,
+                    motif,
                   }),
                 });
                 refreshData();

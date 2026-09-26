@@ -3,6 +3,8 @@ import { GET as getCampaigns, POST as postCampaign } from "@/app/api/v1/hemora/c
 import { GET as getTransfers, POST as postTransfer } from "@/app/api/v1/hemora/transfers/route";
 import { GET as getCards, POST as postCard } from "@/app/api/v1/hemora/card-requests/route";
 import { GET as verifyHash } from "@/app/api/v1/hemora/verify/route";
+import { GET as getPoints, POST as postPoints } from "@/app/api/v1/hemora/points/route";
+import { GET as getEmergencies, POST as postEmergency } from "@/app/api/v1/hemora/emergencies/route";
 import { NextRequest } from "next/server";
 
 describe("Refonte Complète BMM (HEMORA) - Tests d'Intégration", () => {
@@ -84,4 +86,51 @@ describe("Refonte Complète BMM (HEMORA) - Tests d'Intégration", () => {
     expect(json.data.ancrageOpenTimestamps.statut).toBe("VERIFIE_SUR_CHAINE");
     expect(json.data.conformiteApdp.statut).toBe("CONFORME_LOI_2017_20");
   });
+
+  it("doit gérer le grand livre des points civiques, calcul du rang d'honneur et preuves OTS", async () => {
+    // 1. Consulter les points d'un donneur
+    const reqGet = new NextRequest("http://localhost:3000/api/v1/hemora/points?npi=2026-COT-3310-MAT");
+    const resGet = await getPoints(reqGet);
+    const jsonGet = await resGet.json();
+    expect(jsonGet.success).toBe(true);
+    expect(jsonGet.totalPoints).toBeGreaterThanOrEqual(0);
+    expect(["BRONZE", "ARGENT", "OR", "PLATINE"]).toContain(jsonGet.tier);
+
+    // 2. Attribuer des points avec preuve OTS
+    const reqPost = new NextRequest("http://localhost:3000/api/v1/hemora/points", {
+      method: "POST",
+      body: JSON.stringify({
+        donneurNpi: "2026-COT-3310-MAT",
+        action: "AWARD",
+        points: 50,
+        motif: "Participation don d'urgence CNHU",
+      }),
+    });
+    const resPost = await postPoints(reqPost);
+    const jsonPost = await resPost.json();
+    expect(jsonPost.success).toBe(true);
+    expect(jsonPost.transaction.otsProof).toContain("OTS-PROOF-POINTS");
+    expect(jsonPost.transaction.transactionHash).toMatch(/^0x[a-f0-9]{64}$/);
+  });
+
+  it("doit déclarer une urgence transfusionnelle hospitalière et cibler les donneurs les plus proches", async () => {
+    const req = new NextRequest("http://localhost:3000/api/v1/hemora/emergencies", {
+      method: "POST",
+      body: JSON.stringify({
+        hopitalNom: "Hôpital de Zone de Tanguiéta",
+        commune: "Tanguiéta",
+        lat: 10.6167,
+        lng: 1.2667,
+        groupeRequis: "O+",
+        pochesRequises: 4,
+      }),
+    });
+    const res = await postEmergency(req);
+    const json = await res.json();
+    expect(json.success).toBe(true);
+    expect(json.emergency.statut).toBe("OUVERTE");
+    expect(json.emergency.groupeRequis).toBe("O+");
+    expect(json.donneursCibles.length).toBeGreaterThan(0);
+  });
 });
+

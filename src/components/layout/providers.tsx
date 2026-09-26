@@ -6,6 +6,8 @@ import { SmoothScroll } from "@/components/layout/smooth-scroll";
 import { ThemeProvider } from "next-themes";
 import type { ReactNode } from "react";
 
+import { AuthProvider } from "@/lib/auth-context";
+
 export function Providers({ children }: { children: ReactNode }): ReactNode {
   return (
     <ThemeProvider
@@ -17,7 +19,9 @@ export function Providers({ children }: { children: ReactNode }): ReactNode {
     >
       <ReducedMotionProvider>
         <SmoothScroll>
-          <PortfolioProvider>{children}</PortfolioProvider>
+          <AuthProvider>
+            <PortfolioProvider>{children}</PortfolioProvider>
+          </AuthProvider>
         </SmoothScroll>
       </ReducedMotionProvider>
     </ThemeProvider>

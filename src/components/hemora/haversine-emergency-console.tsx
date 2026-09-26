@@ -158,7 +158,7 @@ export function HaversineEmergencyConsole(): ReactNode {
       setSmsSendingNpi(donor.npi);
       setSmsSuccessMsg(null);
 
-      const message = `🚨 URGENCE VITALE CNTS BÉNIN : Besoin immédiat de sang ${selectedGroupe} à ${selectedHospital.nom}. Proximité : ${donor.distanceKm.toFixed(1)} km (~${donor.dureeAcheminementMinutes} min). Défraiement de déplacement forfaitaire 2 000 FCFA MoMo garanti (Règle OMS). Présentez-vous ou appelez le 136.`;
+      const message = `URGENCE VITALE CNTS BÉNIN : Besoin immédiat de sang ${selectedGroupe} à ${selectedHospital.nom}. Proximité : ${donor.distanceKm.toFixed(1)} km (~${donor.dureeAcheminementMinutes} min). Défraiement de déplacement forfaitaire 2 000 FCFA MoMo garanti (Règle OMS). Présentez-vous ou appelez le 136.`;
 
       const res = await fetch("/api/v1/simulation/sms", {
         method: "POST",
@@ -173,7 +173,7 @@ export function HaversineEmergencyConsole(): ReactNode {
       const json = await res.json();
       if (json.success) {
         setSmsSuccessMsg(
-          `✓ Alerte d'urgence transmise avec succès à ${donor.nomComplet} (${donor.telephone}) via passerelle GSM locale.`
+          `Alerte d'urgence transmise avec succès à ${donor.nomComplet} (${donor.telephone}) via passerelle GSM locale.`
         );
       }
     } catch {
@@ -352,8 +352,9 @@ export function HaversineEmergencyConsole(): ReactNode {
                     </div>
 
                     <div className="mt-3 flex items-center justify-between border-t border-foreground/6 pt-2.5 text-[11px]">
-                      <span className="text-emerald-600 dark:text-emerald-400 font-medium">
-                        ✓ Éligible médicalement (&gt; 60 jours)
+                      <span className="text-emerald-600 dark:text-emerald-400 font-medium inline-flex items-center gap-1">
+                        <CheckCircle2 className="h-3.5 w-3.5" />
+                        <span>Éligible médicalement (&gt; 60 jours)</span>
                       </span>
                       <span className="text-foreground/50">
                         Forfait transport : <strong>2 000 FCFA MoMo</strong>

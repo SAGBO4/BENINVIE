@@ -166,7 +166,14 @@ export interface CourseZemidjan {
 
 export interface AuditLog {
   id: string;
-  action: "BRIS_DE_GLACE" | "DELIVRANCE_ORDONNANCE" | "CREATION_DOSSIER_DIFFERE" | "APUREMENT_URGENCE" | "DON_SANG_VALIDE" | "TRANSFERT_FLECHE";
+  action:
+    | "BRIS_DE_GLACE"
+    | "DELIVRANCE_ORDONNANCE"
+    | "CREATION_DOSSIER_DIFFERE"
+    | "APUREMENT_URGENCE"
+    | "DON_SANG_VALIDE"
+    | "TRANSFERT_FLECHE"
+    | "DENONCIATION_CITOYENNE";
   acteurNpi: string;
   acteurNom: string;
   role: string;
@@ -250,5 +257,34 @@ export interface PointTransaction {
   transactionHash: string;
   otsProof?: string;
   dateTransaction: string;
+}
+
+export type TypeInfraction =
+  | "REFUS_ADMISSION_URGENCE"
+  | "EXIGENCE_CAUTION_ILLEGALE"
+  | "RANCONNEMENT_CORRUPTION"
+  | "ABSENCE_INJUSTIFIEE_PERSONNEL"
+  | "REFUS_DELIVRANCE_ARCH"
+  | "DEFAUT_PRISE_EN_CHARGE"
+  | "AUTRE_MANQUEMENT";
+
+export interface SignalementCitoyen {
+  id: string;
+  codeDossier: string;
+  typeInfraction: TypeInfraction;
+  typeInfractionLabel: string;
+  etablissementNom: string;
+  commune: string;
+  departement: string;
+  dateFaits: string;
+  description: string;
+  anonyme: boolean;
+  declarantNpi?: string;
+  declarantNom?: string;
+  declarantTelephone?: string;
+  gravite: "CRITIQUE" | "ELEVEE" | "MOYENNE";
+  statut: "TRANSMIS_MINISTERE" | "EN_INSTRUCTION" | "INSPECTEUR_DEPECHE" | "SANCTION_PRONONCEE" | "CLASSE";
+  reponseMinistere?: string;
+  dateSignalement: string;
 }
 

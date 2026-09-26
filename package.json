@@ -2,7 +2,7 @@
   "name": "beninvie",
   "version": "1.0.0",
   "private": true,
-  "description": "Gbɛ (BENINVIE) — Plateforme Nationale de Santé Numérique du Bénin",
+  "description": "BENINVIE — Plateforme Nationale de Santé Numérique du Bénin",
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",

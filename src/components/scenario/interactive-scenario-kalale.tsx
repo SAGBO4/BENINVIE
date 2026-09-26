@@ -46,7 +46,7 @@ const STEPS: ScenarioStep[] = [
   {
     num: 2,
     titre: "Rappel Automatisé Vocal & SMS en Bariba",
-    acteur: "Serveur Vocal National Gbɛ",
+    acteur: "Serveur Vocal National BENINVIE",
     lieu: "Réseau GSM Kalalé (2G)",
     actionDesc: "Déclenchement d'un message vocal et SMS en langue Bariba : 'Fofo Bio ! CPN3 waasi gari Kalalé CSC suba.'",
     resultatAttendu: "SMS acheminé sur téléphone basique sans connexion internet. Horodatage tracé.",
@@ -123,7 +123,7 @@ export function InteractiveScenarioKalale(): ReactNode {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             destinataire: "+229 01 97 00 12 34",
-            message: "Gbɛ Santé : Fofo Bio ! CPN3 waasi gari Kalalé CSC suba. Munissez-vous de votre carte QR.",
+            message: "BENINVIE Santé : Fofo Bio ! CPN3 waasi gari Kalalé CSC suba. Munissez-vous de votre carte QR.",
             type: "RAPPEL_CPN",
           }),
         });

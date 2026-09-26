@@ -28,6 +28,7 @@ import {
   Menu,
   X,
   Clock,
+  PhoneCall,
 } from "lucide-react";
 
 type NavDropdownItem = {
@@ -46,7 +47,7 @@ type NavGroup = {
 
 const URGENCES_GROUP: NavGroup = {
   id: "urgences",
-  label: "Consoles & HEMORA",
+  label: "CONSOLES & HEMORA",
   items: [
     {
       label: "Scénario Démo Kalalé",
@@ -81,7 +82,7 @@ const URGENCES_GROUP: NavGroup = {
 
 const CITOYENS_GROUP: NavGroup = {
   id: "citoyens",
-  label: "Services Citoyens",
+  label: "SERVICES CITOYENS",
   items: [
     {
       label: "Carnet de Santé Numérique",
@@ -151,62 +152,74 @@ export function Nav(): ReactNode {
   const dashboardUrl = user ? ROLE_DASHBOARDS[user.role] : "/login";
 
   return (
-    <nav
-      aria-label="Navigation Principale"
-      className="fixed left-0 right-0 top-4 z-50 px-3 sm:px-6 flex justify-center pointer-events-none"
-    >
+    <header className="sticky top-0 z-50 w-full bg-[#0a3764] text-white shadow-md">
+      {/* Barre Principale de Navigation (Style ANIP Officiel) */}
       <div
         ref={navRef}
-        className="flex items-center justify-between gap-3 w-full max-w-7xl pointer-events-auto"
+        className="mx-auto flex h-18 sm:h-20 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8"
       >
-        {/* Marque Officielle Gauche */}
+        {/* Marque Officielle Institutionnelle avec Armoiries de la République du Bénin */}
         <Link
           href="/"
-          className="flex items-center gap-2.5 rounded-full bg-background/90 px-4 py-2 border border-foreground/10 shadow-lg backdrop-blur-md transition hover:border-emerald-500/30 shrink-0"
+          className="flex items-center gap-3 shrink-0 group focus:outline-hidden"
+          title="BENINVIE — Accueil Plateforme Nationale"
         >
-          <div className="relative flex h-3 w-3 items-center justify-center">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-          </div>
-          <div className="flex flex-col">
-            <div className="flex items-center gap-1.5">
-              <span className="font-bold text-sm tracking-tight text-foreground">Gbɛ</span>
-              <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.2 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/armoiries-benin.png"
+            alt="Armoiries de la République du Bénin"
+            className="h-11 sm:h-13 w-auto object-contain shrink-0 drop-shadow-sm"
+          />
+          <div className="flex flex-col justify-center">
+            <div className="flex items-center gap-2">
+              <span className="text-xl sm:text-2xl font-black tracking-wider text-white leading-none">
                 BENINVIE
               </span>
+              <span className="hidden md:inline-block h-3.5 w-px bg-white/30 mx-1" />
+              <span className="hidden md:inline-block text-[10px] xl:text-[11px] font-bold text-white/90 uppercase tracking-wider">
+                Santé Numérique
+              </span>
             </div>
-            <span className="text-[10px] text-foreground/50 hidden md:inline">Système National Sanitaire</span>
+            {/* Ligne Tricolore Nationale Verte-Jaune-Rouge */}
+            <div className="my-1 flex h-[2.5px] w-full rounded-full overflow-hidden shadow-xs">
+              <div className="w-1/3 bg-[#008751]" />
+              <div className="w-1/3 bg-[#ffbe00]" />
+              <div className="w-1/3 bg-[#eb0000]" />
+            </div>
+            <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider text-white/80">
+              RÉPUBLIQUE DU BÉNIN • MINISTÈRE DE LA SANTÉ
+            </span>
           </div>
         </Link>
 
-        {/* Menu Navigation Central Desktop avec Dropdown Selects */}
-        <div className="hidden lg:flex items-center gap-1 rounded-full bg-background/90 p-1.5 shadow-lg border border-foreground/10 backdrop-blur-md">
+        {/* Menu Navigation Desktop Central */}
+        <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
           {/* Lien Accueil */}
           <Link
             href="/"
-            className={`px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors ${
+            className={`px-3 py-2 text-xs font-bold uppercase tracking-wider transition-colors rounded-md ${
               pathname === "/"
-                ? "bg-foreground/10 text-foreground font-semibold"
-                : "text-foreground/70 hover:text-foreground"
+                ? "bg-white/15 text-white"
+                : "text-white/90 hover:text-white hover:bg-white/10"
             }`}
           >
             Accueil
           </Link>
 
-          {/* Select 1 : Consoles d'Urgence & HEMORA */}
+          {/* Dropdown 1 : Consoles d'Urgence & HEMORA */}
           <div className="relative">
             <button
               onClick={() => toggleDropdown("urgences")}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-2 text-xs font-bold uppercase tracking-wider transition-colors rounded-md cursor-pointer ${
                 activeDropdown === "urgences" || pathname.startsWith("/projects")
-                  ? "bg-foreground/10 text-foreground font-semibold"
-                  : "text-foreground/70 hover:text-foreground"
+                  ? "bg-white/15 text-white"
+                  : "text-white/90 hover:text-white hover:bg-white/10"
               }`}
             >
               <span>{URGENCES_GROUP.label}</span>
               <ChevronDown
                 className={`h-3.5 w-3.5 transition-transform duration-200 ${
-                  activeDropdown === "urgences" ? "rotate-180 text-emerald-500" : "text-foreground/50"
+                  activeDropdown === "urgences" ? "rotate-180 text-amber-300" : "text-white/70"
                 }`}
               />
             </button>
@@ -214,15 +227,15 @@ export function Nav(): ReactNode {
             <AnimatePresence>
               {activeDropdown === "urgences" && (
                 <motion.div
-                  initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                  initial={{ opacity: 0, y: 8, scale: 0.96 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                  exit={{ opacity: 0, y: 8, scale: 0.96 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute left-0 mt-3 w-80 rounded-3xl border border-foreground/10 bg-background/95 p-3 shadow-2xl backdrop-blur-2xl z-50"
+                  className="absolute left-0 mt-2 w-88 rounded-2xl border border-slate-200 bg-white p-3 shadow-2xl z-50 text-slate-900"
                 >
-                  <div className="px-3 py-1.5 border-b border-foreground/10 mb-2">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-foreground/50">
-                      Consoles d&apos;Urgence & Transfusion
+                  <div className="px-3 py-2 border-b border-slate-100 mb-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                      Consoles d&apos;Urgence & Transfusion Sanguine
                     </span>
                   </div>
 
@@ -234,23 +247,23 @@ export function Nav(): ReactNode {
                           key={item.href}
                           href={item.href}
                           onClick={() => setActiveDropdown(null)}
-                          className="flex items-start gap-3 p-2.5 rounded-2xl hover:bg-foreground/5 transition-colors group"
+                          className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors group"
                         >
-                          <div className="h-8 w-8 rounded-xl bg-foreground/5 flex items-center justify-center text-foreground group-hover:bg-red-500 group-hover:text-white transition-colors shrink-0 mt-0.5">
+                          <div className="h-9 w-9 rounded-xl bg-[#eaf2f9] flex items-center justify-center text-[#0a3764] group-hover:bg-[#0a3764] group-hover:text-white transition-colors shrink-0 mt-0.5">
                             <Icon className="h-4 w-4" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between gap-1">
-                              <span className="text-xs font-bold text-foreground truncate group-hover:text-red-500 transition-colors">
+                              <span className="text-xs font-bold text-slate-900 truncate group-hover:text-[#0a3764] transition-colors">
                                 {item.label}
                               </span>
                               {item.badge && (
-                                <span className="text-[9px] font-semibold px-1.5 py-0.2 rounded bg-red-500/10 text-red-500 shrink-0">
+                                <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-red-50 text-red-700 shrink-0">
                                   {item.badge}
                                 </span>
                               )}
                             </div>
-                            <p className="text-[10px] text-foreground/60 line-clamp-1 mt-0.5">
+                            <p className="text-[11px] text-slate-500 line-clamp-1 mt-0.5">
                               {item.desc}
                             </p>
                           </div>
@@ -263,20 +276,20 @@ export function Nav(): ReactNode {
             </AnimatePresence>
           </div>
 
-          {/* Select 2 : Services Citoyens */}
+          {/* Dropdown 2 : Services Citoyens */}
           <div className="relative">
             <button
               onClick={() => toggleDropdown("citoyens")}
-              className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-2 text-xs font-bold uppercase tracking-wider transition-colors rounded-md cursor-pointer ${
                 activeDropdown === "citoyens"
-                  ? "bg-foreground/10 text-foreground font-semibold"
-                  : "text-foreground/70 hover:text-foreground"
+                  ? "bg-white/15 text-white"
+                  : "text-white/90 hover:text-white hover:bg-white/10"
               }`}
             >
               <span>{CITOYENS_GROUP.label}</span>
               <ChevronDown
                 className={`h-3.5 w-3.5 transition-transform duration-200 ${
-                  activeDropdown === "citoyens" ? "rotate-180 text-emerald-500" : "text-foreground/50"
+                  activeDropdown === "citoyens" ? "rotate-180 text-amber-300" : "text-white/70"
                 }`}
               />
             </button>
@@ -284,14 +297,14 @@ export function Nav(): ReactNode {
             <AnimatePresence>
               {activeDropdown === "citoyens" && (
                 <motion.div
-                  initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                  initial={{ opacity: 0, y: 8, scale: 0.96 }}
                   animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                  exit={{ opacity: 0, y: 8, scale: 0.96 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute left-0 mt-3 w-80 rounded-3xl border border-foreground/10 bg-background/95 p-3 shadow-2xl backdrop-blur-2xl z-50"
+                  className="absolute left-0 mt-2 w-88 rounded-2xl border border-slate-200 bg-white p-3 shadow-2xl z-50 text-slate-900"
                 >
-                  <div className="px-3 py-1.5 border-b border-foreground/10 mb-2">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-foreground/50">
+                  <div className="px-3 py-2 border-b border-slate-100 mb-2">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
                       Droits & Prestations Citoyennes
                     </span>
                   </div>
@@ -304,23 +317,23 @@ export function Nav(): ReactNode {
                           key={item.href}
                           href={item.href}
                           onClick={() => setActiveDropdown(null)}
-                          className="flex items-start gap-3 p-2.5 rounded-2xl hover:bg-foreground/5 transition-colors group"
+                          className="flex items-start gap-3 p-2.5 rounded-xl hover:bg-slate-50 transition-colors group"
                         >
-                          <div className="h-8 w-8 rounded-xl bg-foreground/5 flex items-center justify-center text-foreground group-hover:bg-pink-500 group-hover:text-white transition-colors shrink-0 mt-0.5">
+                          <div className="h-9 w-9 rounded-xl bg-[#eaf2f9] flex items-center justify-center text-[#0a3764] group-hover:bg-[#0a3764] group-hover:text-white transition-colors shrink-0 mt-0.5">
                             <Icon className="h-4 w-4" />
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between gap-1">
-                              <span className="text-xs font-bold text-foreground truncate group-hover:text-pink-500 transition-colors">
+                              <span className="text-xs font-bold text-slate-900 truncate group-hover:text-[#0a3764] transition-colors">
                                 {item.label}
                               </span>
                               {item.badge && (
-                                <span className="text-[9px] font-semibold px-1.5 py-0.2 rounded bg-pink-500/10 text-pink-500 shrink-0">
+                                <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 shrink-0">
                                   {item.badge}
                                 </span>
                               )}
                             </div>
-                            <p className="text-[10px] text-foreground/60 line-clamp-1 mt-0.5">
+                            <p className="text-[11px] text-slate-500 line-clamp-1 mt-0.5">
                               {item.desc}
                             </p>
                           </div>
@@ -333,86 +346,85 @@ export function Nav(): ReactNode {
             </AnimatePresence>
           </div>
 
-          <div className="h-4 w-px bg-foreground/10 mx-1" />
-
           {/* Numéro Vert Urgence 136 */}
           <a
             href="tel:136"
-            className="inline-flex items-center gap-1.5 rounded-full bg-red-500/10 px-3 py-1 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-500/20 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-full bg-red-600 hover:bg-red-500 px-3.5 py-1.5 text-xs font-bold text-white transition-colors shadow-xs ml-2"
             title="Ligne Verte Sanitaire & Urgences 24/7"
           >
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
             </span>
-            <span>136 Urgence</span>
+            <PhoneCall className="h-3 w-3" />
+            <span>136 URGENCE</span>
           </a>
-        </div>
+        </nav>
 
-        {/* Espace Droite : Se connecter ou Profil Acteur & Menu Mobile */}
-        <div className="flex items-center gap-2">
+        {/* Espace Droite : Bouton Style ANIP "ACCÉDER À MON ESPACE" ou Profil Connecté */}
+        <div className="flex items-center gap-2.5">
           {user ? (
             <div className="relative">
               <button
                 onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                className="flex items-center gap-2 rounded-full bg-background/90 px-3.5 py-1.5 text-xs font-medium border border-emerald-500/30 shadow-lg backdrop-blur-md hover:border-emerald-500 transition-colors cursor-pointer"
+                className="flex items-center gap-2.5 rounded-lg bg-[#3f6184] hover:bg-[#4a729c] px-3.5 py-2 text-xs font-medium border border-white/20 shadow-sm transition-colors cursor-pointer"
               >
-                <div className="h-6 w-6 rounded-full bg-emerald-500/20 text-emerald-500 flex items-center justify-center font-bold text-[11px]">
+                <div className="h-6 w-6 rounded-full bg-white text-[#0a3764] flex items-center justify-center font-bold text-[11px]">
                   {user.prenom[0]}
                 </div>
                 <div className="flex flex-col text-left">
-                  <span className="font-semibold text-foreground leading-tight text-[11px] truncate max-w-[120px]">
+                  <span className="font-semibold text-white leading-tight text-[11px] truncate max-w-[120px]">
                     {user.prenom} {user.nom}
                   </span>
-                  <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-medium uppercase tracking-wider">
+                  <span className="text-[9px] text-amber-300 font-bold uppercase tracking-wider">
                     {user.role}
                   </span>
                 </div>
-                <ChevronDown className="h-3.5 w-3.5 text-foreground/50 ml-0.5" />
+                <ChevronDown className="h-3.5 w-3.5 text-white/70 ml-0.5" />
               </button>
 
               <AnimatePresence>
                 {userDropdownOpen && (
                   <motion.div
-                    initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                    initial={{ opacity: 0, y: 8, scale: 0.96 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                    exit={{ opacity: 0, y: 8, scale: 0.96 }}
                     transition={{ duration: 0.15 }}
-                    className="absolute right-0 mt-2 w-64 rounded-2xl border border-foreground/10 bg-background/95 p-2 shadow-2xl backdrop-blur-xl z-50"
+                    className="absolute right-0 mt-2 w-68 rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl z-50 text-slate-900"
                   >
-                    <div className="px-3 py-2 border-b border-foreground/10">
-                      <p className="text-xs font-semibold text-foreground">{user.prenom} {user.nom}</p>
-                      <p className="text-[10px] text-foreground/60">{user.titre}</p>
-                      <p className="text-[10px] text-emerald-500 mt-0.5 font-medium">{user.etablissementNom}</p>
+                    <div className="px-3 py-2.5 border-b border-slate-100">
+                      <p className="text-xs font-bold text-slate-900">{user.prenom} {user.nom}</p>
+                      <p className="text-[10px] text-slate-500">{user.titre}</p>
+                      <p className="text-[10px] text-[#0a3764] mt-0.5 font-semibold">{user.etablissementNom}</p>
                     </div>
 
                     <div className="py-1">
                       <Link
                         href={dashboardUrl}
                         onClick={() => setUserDropdownOpen(false)}
-                        className="flex items-center gap-2.5 w-full rounded-xl px-3 py-2 text-xs text-foreground/80 hover:bg-foreground/5 hover:text-foreground transition-colors font-medium"
+                        className="flex items-center gap-2.5 w-full rounded-xl px-3 py-2 text-xs text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors font-semibold"
                       >
-                        <LayoutDashboard className="h-4 w-4 text-emerald-500" />
+                        <LayoutDashboard className="h-4 w-4 text-[#0a3764]" />
                         <span>Mon Tableau de bord</span>
                       </Link>
 
                       <Link
                         href="/login"
                         onClick={() => setUserDropdownOpen(false)}
-                        className="flex items-center gap-2.5 w-full rounded-xl px-3 py-2 text-xs text-foreground/80 hover:bg-foreground/5 hover:text-foreground transition-colors"
+                        className="flex items-center gap-2.5 w-full rounded-xl px-3 py-2 text-xs text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors"
                       >
-                        <User className="h-4 w-4 text-sky-500" />
-                        <span>Changer de compte</span>
+                        <User className="h-4 w-4 text-sky-600" />
+                        <span>Changer d&apos;acteur</span>
                       </Link>
                     </div>
 
-                    <div className="pt-1 border-t border-foreground/10">
+                    <div className="pt-1 border-t border-slate-100">
                       <button
                         onClick={() => {
                           setUserDropdownOpen(false);
                           logout();
                         }}
-                        className="flex items-center gap-2.5 w-full rounded-xl px-3 py-2 text-xs text-red-500 hover:bg-red-500/10 transition-colors font-medium text-left cursor-pointer"
+                        className="flex items-center gap-2.5 w-full rounded-xl px-3 py-2 text-xs text-red-600 hover:bg-red-50 transition-colors font-semibold text-left cursor-pointer"
                       >
                         <LogOut className="h-4 w-4" />
                         <span>Déconnexion</span>
@@ -425,22 +437,29 @@ export function Nav(): ReactNode {
           ) : (
             <Link
               href="/login"
-              className="inline-flex items-center gap-2 rounded-full bg-emerald-600 hover:bg-emerald-500 px-4 py-2 text-xs font-semibold text-white shadow-lg shadow-emerald-600/25 transition-all duration-200 active:scale-95"
+              className="inline-flex items-center gap-2 rounded-lg bg-[#3f6184] hover:bg-[#4a729c] px-4 sm:px-5 py-2 sm:py-2.5 text-xs font-bold uppercase tracking-wider text-white border border-white/20 shadow-sm transition-all duration-200 active:scale-95 shrink-0"
             >
-              <Shield className="h-3.5 w-3.5" />
-              <span>Se connecter</span>
+              <LogIn className="h-3.5 w-3.5" />
+              <span>ACCÉDER À MON ESPACE</span>
             </Link>
           )}
 
-          {/* Bouton Mobile Toggle */}
+          {/* Bouton Menu Mobile */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-full bg-background/90 border border-foreground/10 text-foreground/70 hover:text-foreground shadow-md backdrop-blur-md cursor-pointer"
+            className="lg:hidden p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
             aria-label="Menu Mobile"
           >
-            {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
+      </div>
+
+      {/* Ligne Tricolore Officielle du Bénin sur Toute la Largeur */}
+      <div className="flex h-1 w-full shadow-xs">
+        <div className="w-1/3 bg-[#008751]" />
+        <div className="w-1/3 bg-[#ffbe00]" />
+        <div className="w-1/3 bg-[#eb0000]" />
       </div>
 
       {/* Menu Mobile Déroulant */}
@@ -451,10 +470,10 @@ export function Nav(): ReactNode {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.2 }}
-            className="lg:hidden fixed inset-x-4 top-20 max-h-[85vh] overflow-y-auto rounded-3xl border border-foreground/10 bg-background/98 p-5 shadow-2xl backdrop-blur-2xl pointer-events-auto z-50 flex flex-col gap-5"
+            className="lg:hidden fixed inset-x-3 top-22 max-h-[85vh] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl z-50 flex flex-col gap-4 text-slate-900"
           >
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-foreground/45 block mb-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-2">
                 Consoles d&apos;Urgence & HEMORA
               </span>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -465,10 +484,10 @@ export function Nav(): ReactNode {
                       key={item.href}
                       href={item.href}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-2.5 p-2 rounded-xl border border-foreground/5 hover:bg-foreground/5"
+                      className="flex items-center gap-2.5 p-2 rounded-xl border border-slate-100 hover:bg-slate-50"
                     >
-                      <Icon className="h-4 w-4 text-red-500 shrink-0" />
-                      <span className="text-xs font-semibold text-foreground truncate">{item.label}</span>
+                      <Icon className="h-4 w-4 text-[#0a3764] shrink-0" />
+                      <span className="text-xs font-bold text-slate-900 truncate">{item.label}</span>
                     </Link>
                   );
                 })}
@@ -476,7 +495,7 @@ export function Nav(): ReactNode {
             </div>
 
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-foreground/45 block mb-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-2">
                 Services Citoyens
               </span>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -487,35 +506,35 @@ export function Nav(): ReactNode {
                       key={item.href}
                       href={item.href}
                       onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-2.5 p-2 rounded-xl border border-foreground/5 hover:bg-foreground/5"
+                      className="flex items-center gap-2.5 p-2 rounded-xl border border-slate-100 hover:bg-slate-50"
                     >
-                      <Icon className="h-4 w-4 text-pink-500 shrink-0" />
-                      <span className="text-xs font-semibold text-foreground truncate">{item.label}</span>
+                      <Icon className="h-4 w-4 text-emerald-600 shrink-0" />
+                      <span className="text-xs font-bold text-slate-900 truncate">{item.label}</span>
                     </Link>
                   );
                 })}
               </div>
             </div>
 
-            <div className="pt-2 border-t border-foreground/10 flex items-center justify-between">
+            <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
               <a
                 href="tel:136"
-                className="inline-flex items-center gap-2 text-xs font-bold text-red-500"
+                className="inline-flex items-center gap-2 text-xs font-bold text-red-600"
               >
-                <span className="h-2 w-2 rounded-full bg-red-500 animate-pulse" />
-                <span>136 Ligne Verte Urgence 24/7</span>
+                <span className="h-2 w-2 rounded-full bg-red-600 animate-pulse" />
+                <span>136 Ligne Verte Urgence 24/7 (Appel Gratuit)</span>
               </a>
               <Link
                 href="/login"
                 onClick={() => setMobileMenuOpen(false)}
-                className="text-xs font-bold text-emerald-500"
+                className="text-xs font-bold text-[#0a3764] hover:underline"
               >
-                Se connecter / Choisir mon profil →
+                Se connecter à mon espace →
               </Link>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </header>
   );
 }

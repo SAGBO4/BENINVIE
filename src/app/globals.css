@@ -3,32 +3,46 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #0a0a0a;
-  --foreground: #fafafa;
-  --muted: #171717;
-  --muted-foreground: #a3a3a3;
-  --border: #262626;
-  --ring: #e8112d;
-  --frame: #0a0a0a;
+  --background: #f6f8fb;
+  --foreground: #0f172a;
+  --muted: #edf2f7;
+  --muted-foreground: #475569;
+  --border: #e2e8f0;
+  --ring: #0a3764;
+  --frame: #0a3764;
+  --header-bg: #0a3764;
+  --header-fg: #ffffff;
+  --benin-navy: #0a3764;
+  --benin-navy-dark: #072545;
+  --benin-navy-light: #164e87;
+  --benin-navy-btn: #3f6184;
   --benin-green: #008751;
-  --benin-yellow: #fcd116;
-  --benin-red: #e8112d;
+  --benin-yellow: #ffbe00;
+  --benin-red: #eb0000;
+  --benin-gold: #f0a945;
   --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #fafafa;
-  --muted: #171717;
-  --muted-foreground: #a3a3a3;
-  --border: #262626;
-  --ring: #e8112d;
-  --frame: #0a0a0a;
+  --background: #f6f8fb;
+  --foreground: #0f172a;
+  --muted: #edf2f7;
+  --muted-foreground: #475569;
+  --border: #e2e8f0;
+  --ring: #0a3764;
+  --frame: #0a3764;
+  --header-bg: #0a3764;
+  --header-fg: #ffffff;
+  --benin-navy: #0a3764;
+  --benin-navy-dark: #072545;
+  --benin-navy-light: #164e87;
+  --benin-navy-btn: #3f6184;
   --benin-green: #008751;
-  --benin-yellow: #fcd116;
-  --benin-red: #e8112d;
+  --benin-yellow: #ffbe00;
+  --benin-red: #eb0000;
+  --benin-gold: #f0a945;
 }
 
 @theme inline {
@@ -38,20 +52,27 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
   --color-ring: var(--ring);
+  --color-header-bg: var(--header-bg);
+  --color-header-fg: var(--header-fg);
+  --color-benin-navy: var(--benin-navy);
+  --color-benin-navy-dark: var(--benin-navy-dark);
+  --color-benin-navy-light: var(--benin-navy-light);
+  --color-benin-navy-btn: var(--benin-navy-btn);
   --color-benin-green: var(--benin-green);
   --color-benin-yellow: var(--benin-yellow);
   --color-benin-red: var(--benin-red);
+  --color-benin-gold: var(--benin-gold);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
 }
 
 html {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 html.dark {
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 @media (prefers-reduced-motion: reduce) {

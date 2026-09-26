@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     // 2. Notification SMS en langue locale (Bariba pour Kalalé)
     const sms = sendSimulatedSms({
       telephone: patient.telephone,
-      message: `Gbɛ / GBESSOKE : Fofo ! A gbé 5.000 FCFA kɛ́ Mobile Money nɔ ${patient.prenom} nɔ CPN3 pɛ́lɛ. (Transfert de 5.000 FCFA reçu avec succès suite à la consultation CPN3).`,
+      message: `BENINVIE / GBESSOKE : Fofo ! A gbé 5.000 FCFA kɛ́ Mobile Money nɔ ${patient.prenom} nɔ CPN3 pɛ́lɛ. (Transfert de 5.000 FCFA reçu avec succès suite à la consultation CPN3).`,
       langue: "bariba",
       expediteur: "GBESSOKE-BJ",
     });

@@ -4,7 +4,7 @@ import * as schema from "./schema";
 
 const connectionString =
   process.env.DATABASE_URL ||
-  "postgresql://neondb_owner:npg_aGL57xDEhevI@ep-autumn-cake-za78paqv-pooler.c-2.eu-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
+  "postgresql://postgres:postgres@localhost:5432/beninvie";
 
 // Pool singleton to avoid connection exhaustion in serverless / dev
 const globalForDb = globalThis as unknown as {

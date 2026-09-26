@@ -1,0 +1,300 @@
+{
+  "profile": {
+    "name": "BMM • HEMORA",
+    "role": "Régulation Transfusionnelle & Urgences Bénin",
+    "greeting": "Système National de Régulation Transfusionnelle",
+    "heroIntro": "🇧🇯 République du Bénin — Ministère de la Santé & CNTS",
+    "heroTitle1": "Régulation & Matching",
+    "heroTitle2": "Transfusionnel National",
+    "heroDescription": "Plateforme souveraine de géolocalisation des stocks de sang, matching d'urgence Haversine (< 45 km), prise en charge Bris de Glace à zéro refus et engagement civique dans les 77 communes du Bénin.",
+    "aboutTagline": "Interconnexion temps réel entre le Centre National de Transfusion Sanguine (CNTS), les 77 communes, les banques de sang hospitalières et le réseau national des donneurs bénévoles géolocalisés.",
+    "aboutParagraphs": [
+      "BMM (Blood Management & Matching / HEMORA) est l'infrastructure numérique d'urgence vitale déployée par le Ministère de la Santé de la République du Bénin pour éradiquer les décès évitables liés à la pénurie ou au retard d'acheminement de produits sanguins labiles.",
+      "Grâce au moteur de matching géodésique Haversine, les hôpitaux en détresse identifient en quelques secondes les poches compatibles (CGR, PFC, Plaquettes) et les donneurs volontaires disponibles dans un rayon de 45 kilomètres, avec un suivi d'acheminement prioritaire par mototaxis conventionnées (Zémidjans express).",
+      "La plateforme intègre le protocole d'urgence 'Bris de Glace' : tout patient en détresse vitale reçoit immédiatement la transfusion sans avance de frais ni blocage administratif, sous la garantie financière directe de l'État béninois."
+    ],
+    "mission": "Garantir qu'aucun citoyen béninois ne perde la vie par manque de sang ou par défaut de paiement immédiat, en assurant une disponibilité équitable et transparente dans les 77 communes.",
+    "stats": [
+      {
+        "label": "Communes Couvertes",
+        "value": "77/77"
+      },
+      {
+        "label": "Donneurs Géolocalisés",
+        "value": "4 820+"
+      },
+      {
+        "label": "Rayon Matching",
+        "value": "< 45 km"
+      },
+      {
+        "label": "Refus d'Urgence",
+        "value": "0 Garanti"
+      }
+    ],
+    "email": "contact@cnts.sante.gouv.bj",
+    "telegram": "https://sante.gouv.bj",
+    "telegramHandle": "CNTS Bénin",
+    "twitter": "https://twitter.com/sante_benin",
+    "twitterHandle": "@sante_benin",
+    "availability": "Service National d'Urgence 24h/24 & 7j/7 (Appel Vert 136)",
+    "cvUrl": "#"
+  },
+  "projects": [
+    {
+      "id": "bris-de-glace",
+      "link": "/projects",
+      "meta": "Protocole d'État • Zéro Refus d'Urgence • Décret Sanitaire",
+      "image": "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=1000&auto=format&fit=crop",
+      "order": 1,
+      "title": "Dispositif Bris de Glace & Prise en Charge Différée",
+      "category": "Urgences Vitales",
+      "imageAlt": "Dispositif Bris de Glace Bénin",
+      "description": "Protocole souverain de prise en charge immédiate sans caution financière. Les hôpitaux administrent le sang vital instantanément, avec apurement garanti par l'État."
+    },
+    {
+      "id": "matching-haversine",
+      "link": "/projects",
+      "meta": "Calcul Géodésique WGS84 • Dispatch < 15 min • Alertes SMS",
+      "image": "https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?q=80&w=1000&auto=format&fit=crop",
+      "order": 2,
+      "title": "Moteur de Dispatch & Matching Haversine 0-45 km",
+      "category": "Algorithme Géodésique",
+      "imageAlt": "Matching Haversine d'urgence",
+      "description": "Algorithme haute performance calculant en temps réel la distance exacte entre le lit d'urgence, les dépôts CNTS et les donneurs compatibles les plus proches."
+    },
+    {
+      "id": "stocks-monitor",
+      "link": "/projects",
+      "meta": "Télémétrie 77 Communes • Alertes Tensions • Chaîne du Froid IoT",
+      "image": "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?q=80&w=1000&auto=format&fit=crop",
+      "order": 3,
+      "title": "Superviseur National des Stocks de Sang (77 Communes)",
+      "category": "Télémétrie CNTS",
+      "imageAlt": "Supervision des stocks de sang",
+      "description": "Cartographie temps réel des réserves CGR (A+, O-, B+, AB-) à Cotonou, Porto-Novo, Parakou et dans chaque Hôpital de Zone du territoire national."
+    },
+    {
+      "id": "carte-donneur",
+      "link": "/projects",
+      "meta": "Conforme APDP • Défraiement 2 000 FCFA MoMo • Horodatage OTS",
+      "image": "https://images.unsplash.com/photo-1615461066841-6116e61058f4?q=80&w=1000&auto=format&fit=crop",
+      "order": 4,
+      "title": "Passeport Donneur Numérique & Défraiement MoMo 2 000 F",
+      "category": "Incentive Civique",
+      "imageAlt": "Passeport Donneur Numérique",
+      "description": "Badge sécurisé avec hash SHA-256 salé, suivi des 60 jours d'éligibilité médicale et versement instantané du forfait transport via MTN et Moov Money."
+    },
+    {
+      "id": "passerelle-gsm",
+      "link": "/projects",
+      "meta": "GSM 2G • USSD Rapide *136# • Serveur Vocal Multilingue",
+      "image": "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1000&auto=format&fit=crop",
+      "order": 5,
+      "title": "Passerelle Rurale GSM (SMS, USSD & Serveur Vocal IVR)",
+      "category": "Inclusion Territoriale",
+      "imageAlt": "Passerelle GSM Rurale",
+      "description": "Accès universel pour les zones à faible connectivité : déclaration d'urgence par commande USSD et consignes vocales automatisées en langues locales (Fon, Bariba, Yoruba)."
+    },
+    {
+      "id": "audit-blockchain",
+      "link": "/projects",
+      "meta": "Audit Immuable • Hachage SHA-256 • OpenTimestamps",
+      "image": "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1000&auto=format&fit=crop",
+      "order": 6,
+      "title": "Registre d'Audit Cryptographique & Traçabilité Transfusionnelle",
+      "category": "Gouvernance & Sécurité",
+      "imageAlt": "Traçabilité et chaîne transfusionnelle",
+      "description": "Scellage cryptographique de chaque délivrance, contrôle d'intégrité de la chaîne du froid (2-6°C) et preuves publiques incontestables ancrées sur OpenTimestamps."
+    }
+  ],
+  "experiences": [
+    {
+      "id": "phase-4",
+      "role": "Déploiement Intégral 77 Communes & Mobile Money",
+      "brand": "#008751",
+      "order": 1,
+      "period": "2025 – 2026",
+      "company": "Ministère de la Santé & CNTS Bénin",
+      "description": "Généralisation nationale du réseau HEMORA à l'ensemble des 77 communes, interfaçage des passerelles MTN & Moov Money pour le défraiement automatique de 2 000 FCFA et horodatage OTS."
+    },
+    {
+      "id": "phase-3",
+      "role": "Promulgation du Décret Bris de Glace (Zéro Refus)",
+      "brand": "#FCD116",
+      "order": 2,
+      "period": "2024 – 2025",
+      "company": "Gouvernement de la République du Bénin",
+      "description": "Mise en vigueur du mécanisme souverain interdisant tout refus d'urgence transfusionnelle pour motif financier, avec fonds d'apurement garanti par le Trésor Public."
+    },
+    {
+      "id": "phase-2",
+      "role": "Extension Régionale Nord-Bénin & Borgou-Alibori",
+      "brand": "#E8112D",
+      "order": 3,
+      "period": "2023 – 2024",
+      "company": "CNTS & Centres Hospitaliers Départementaux",
+      "description": "Raccordement du CHUD Borgou-Alibori, des hôpitaux de zone de Nikki, Kandi et Natitingou, et expérimentation du dispatch urgent par mototaxis Zémidjans conventionnées."
+    },
+    {
+      "id": "phase-1",
+      "role": "Lancement du Pilote Métropolitain Littoral & Ouémé",
+      "brand": "#1B59F8",
+      "order": 4,
+      "period": "2022 – 2023",
+      "company": "CNTS Cotonou & CNHU-HKM",
+      "description": "Conception de l'algorithme géodésique Haversine, bancs d'essai au CNHU Hubert K. Maga et interconnexion des banques de sang de Cotonou et Porto-Novo."
+    }
+  ],
+  "education": [
+    {
+      "id": "cnts-norm",
+      "school: ": "Centre National de Transfusion Sanguine",
+      "school": "Centre National de Transfusion Sanguine",
+      "degree": "Norme ISO 15189 & Sécurité Transfusionnelle",
+      "period": "Accrédité 2024",
+      "tag": "ISO",
+      "brand": "#008751",
+      "order": 1
+    },
+    {
+      "id": "apdp-cert",
+      "school": "Autorité de Protection des Données Personnelles (APDP)",
+      "degree": "Conformité Données de Santé & Hachage Salé SHA-256",
+      "period": "Homologué 2025",
+      "tag": "APDP",
+      "brand": "#FCD116",
+      "order": 2
+    },
+    {
+      "id": "who-guidelines",
+      "school": "Organisation Mondiale de la Santé (OMS)",
+      "degree": "Directives Régionales d'Accès aux Produits Sanguins Labiles",
+      "period": "Conforme",
+      "tag": "OMS",
+      "brand": "#1B59F8",
+      "order": 3
+    },
+    {
+      "id": "decret-sante",
+      "school": "Journal Officiel de la République du Bénin",
+      "degree": "Décret d'Urgence Vitale & Prise en Charge Sanitaire",
+      "period": "Légal",
+      "tag": "LOI",
+      "brand": "#E8112D",
+      "order": 4
+    }
+  ],
+  "skills": [
+    "Matching Géodésique Haversine (< 45 km)",
+    "Protocole Bris de Glace (0 Refus Garanti)",
+    "Supervision des Stocks 77 Communes",
+    "Chaîne du Froid Transfusionnelle (2-6°C)",
+    "Alertes Tensions & Ruptures CGR",
+    "Passerelle GSM / USSD / Serveur Vocal IVR",
+    "Conformité APDP Données Médicales",
+    "Passeport Donneur Numérique & QR Sécurisé",
+    "Défraiement Forfaitaire MoMo 2 000 FCFA",
+    "Scellage Cryptographique SHA-256",
+    "Horodatage Décentralisé OpenTimestamps",
+    "Routage d'Urgence Mototaxis Zémidjans"
+  ],
+  "stack": [
+    {
+      "id": "1",
+      "label": "Next.js 16 (App Router)",
+      "slug": "nextjs",
+      "bg": "#000000",
+      "fg": "#ffffff",
+      "order": 1
+    },
+    {
+      "id": "2",
+      "label": "TypeScript",
+      "slug": "typescript",
+      "bg": "#3178C6",
+      "fg": "#ffffff",
+      "order": 2
+    },
+    {
+      "id": "3",
+      "label": "Haversine WGS84",
+      "slug": "haversine",
+      "bg": "#008751",
+      "fg": "#ffffff",
+      "order": 3
+    },
+    {
+      "id": "4",
+      "label": "OpenTimestamps",
+      "slug": "opentimestamps",
+      "bg": "#F7931A",
+      "fg": "#ffffff",
+      "order": 4
+    },
+    {
+      "id": "5",
+      "label": "MTN & Moov MoMo API",
+      "slug": "momo",
+      "bg": "#FFCC00",
+      "fg": "#000000",
+      "order": 5
+    },
+    {
+      "id": "6",
+      "label": "Passerelle GSM 2G / USSD",
+      "slug": "gsm",
+      "bg": "#229ED9",
+      "fg": "#ffffff",
+      "order": 6
+    },
+    {
+      "id": "7",
+      "label": "Supabase & PostgreSQL",
+      "slug": "supabase",
+      "bg": "#3ECF8E",
+      "fg": "#000000",
+      "order": 7
+    },
+    {
+      "id": "8",
+      "label": "Tailwind CSS v4",
+      "slug": "tailwind",
+      "bg": "#06B6D4",
+      "fg": "#ffffff",
+      "order": 8
+    },
+    {
+      "id": "9",
+      "label": "WebGL Flow Shader (OGL)",
+      "slug": "webgl",
+      "bg": "#990000",
+      "fg": "#ffffff",
+      "order": 9
+    },
+    {
+      "id": "10",
+      "label": "PWA & Offline First",
+      "slug": "pwa",
+      "bg": "#5A0FC8",
+      "fg": "#ffffff",
+      "order": 10
+    },
+    {
+      "id": "11",
+      "label": "Lenis Smooth Scroll",
+      "slug": "lenis",
+      "bg": "#111111",
+      "fg": "#ffffff",
+      "order": 11
+    },
+    {
+      "id": "12",
+      "label": "Cryptographie Salée APDP",
+      "slug": "crypto",
+      "bg": "#10B981",
+      "fg": "#ffffff",
+      "order": 12
+    }
+  ]
+}

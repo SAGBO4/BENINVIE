@@ -49,7 +49,7 @@ export function SmoothScroll({
       if (!element) return;
 
       e.preventDefault();
-      lenis.scrollTo(element as HTMLElement, { offset: -90 });
+      lenis.scrollTo(element as HTMLElement, { offset: -100 });
     }
 
     document.addEventListener("click", handleAnchorClick);

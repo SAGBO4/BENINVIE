@@ -1,97 +1,110 @@
-// Service Worker PWA Souverain - Gbɛ (BENINVIE) 2026
-// Conforme au mode Hors-Ligne pour les 16 000 Agents de Santé Communautaire (ASC)
+const CACHE_NAME = 'guy-portfolio-cache-v1';
 
-const CACHE_NAME = "gbe-sante-v1.0.0";
-const OFFLINE_URLS = [
-  "/",
-  "/manifest.json",
-  "/apple-touch-icon.png",
-  "/icons/icon-192x192.png",
-  "/icons/icon-512x512.png",
-  "/icons/icon-maskable.png"
+const STATIC_PRECACHE = [
+  '/',
+  '/about',
+  '/projects',
+  '/icon.svg',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/apple-touch-icon.png'
 ];
 
-// Installation : Mise en cache du shell applicatif
-self.addEventListener("install", (event) => {
+self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(OFFLINE_URLS);
-    })
+      return cache.addAll(STATIC_PRECACHE).catch((err) => {
+        console.warn('Precache partial failure:', err);
+      });
+    }).then(() => self.skipWaiting())
   );
-  self.skipWaiting();
 });
 
-// Activation : Nettoyage des anciens caches
-self.addEventListener("activate", (event) => {
+self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
       return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
+        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
       );
-    })
+    }).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Stratégie réseau d'abord avec bascule sur le cache pour les requêtes hors-ligne
-self.addEventListener("fetch", (event) => {
-  // Ignorer les requêtes non GET ou externes non HTTP
-  if (event.request.method !== "GET" || !event.request.url.startsWith(self.location.origin)) {
+self.addEventListener('fetch', (event) => {
+  const { request } = event;
+  const url = new URL(request.url);
+
+  // Skip non-GET requests, API calls, and Admin panel
+  if (
+    request.method !== 'GET' ||
+    url.pathname.startsWith('/api/') ||
+    url.pathname.startsWith('/HUBGUY') ||
+    url.protocol.startsWith('chrome-extension')
+  ) {
     return;
   }
 
-  // Ne pas intercepter les routes d'API dynamiques pour garder la fraîcheur des données
-  if (event.request.url.includes("/api/")) {
+  // Navigation requests: Network-First with cache fallback
+  if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(event.request).catch(() => {
-        return new Response(
-          JSON.stringify({
-            success: false,
-            offline: true,
-            message: "Vous êtes actuellement hors-ligne. Les données seront synchronisées dès rétablissement du réseau."
-          }),
-          {
-            headers: { "Content-Type": "application/json" }
+      fetch(request)
+        .then((response) => {
+          if (response.status === 200) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
           }
-        );
+          return response;
+        })
+        .catch(async () => {
+          const cached = await caches.match(request);
+          if (cached) return cached;
+          const fallbackHome = await caches.match('/');
+          if (fallbackHome) return fallbackHome;
+          return new Response('Hors ligne - Guy Tibro Portfolio', {
+            headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+          });
+        })
+    );
+    return;
+  }
+
+  // Static assets (Next.js bundles, images, icons, fonts): Stale-While-Revalidate
+  if (
+    url.pathname.startsWith('/_next/static/') ||
+    url.pathname.startsWith('/icons/') ||
+    url.pathname.startsWith('/uploads/') ||
+    url.pathname.endsWith('.png') ||
+    url.pathname.endsWith('.svg') ||
+    url.pathname.endsWith('.woff2')
+  ) {
+    event.respondWith(
+      caches.match(request).then((cached) => {
+        const fetchPromise = fetch(request)
+          .then((networkResponse) => {
+            if (networkResponse && networkResponse.status === 200) {
+              const copy = networkResponse.clone();
+              caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+            }
+            return networkResponse;
+          })
+          .catch(() => cached);
+
+        return cached || fetchPromise;
       })
     );
     return;
   }
 
-  // Pour les pages et assets : Network first, fallback cache
+  // Default: Network with Cache fallback
   event.respondWith(
-    fetch(event.request)
+    fetch(request)
       .then((response) => {
-        if (response && response.status === 200 && response.type === "basic") {
-          const responseToCache = response.clone();
-          caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, responseToCache);
-          });
+        if (response.status === 200) {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
         }
         return response;
       })
-      .catch(async () => {
-        const cachedResponse = await caches.match(event.request);
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-        // Fallback racine si navigation
-        if (event.request.mode === "navigate") {
-          return caches.match("/");
-        }
-        return new Response("Mode hors-ligne actif (Gbɛ Bénin)", { status: 503 });
-      })
+      .catch(() => caches.match(request))
   );
-});
-
-// Synchronisation en arrière-plan pour les fiches communautaires
-self.addEventListener("sync", (event) => {
-  if (event.tag === "sync-asc-visites") {
-    console.log("[PWA Gbɛ] Synchronisation automatique des fiches de soins ASC...");
-  }
 });

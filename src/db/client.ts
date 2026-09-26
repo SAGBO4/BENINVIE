@@ -10,6 +10,7 @@ import {
   UrgenceTransfusion,
   CourseZemidjan,
   AuditLog,
+  SignalementCitoyen,
 } from "@/lib/types";
 import {
   PATIENTS_REF,
@@ -36,6 +37,7 @@ class BeninVieDataStore {
   public stocksSang: Map<string, StockSang> = new Map();
   public urgencesTransfusion: Map<string, UrgenceTransfusion> = new Map();
   public coursesZemidjans: Map<string, CourseZemidjan> = new Map();
+  public signalements: Map<string, SignalementCitoyen> = new Map();
   public auditLogs: AuditLog[] = [];
   public smsLogs: SimulatedSmsResult[] = [];
   public paymentLogs: SimulatedPaymentResult[] = [];
@@ -85,6 +87,27 @@ class BeninVieDataStore {
       pochesRequises: 2,
       statut: "OUVERTE",
       dateDeclaration: new Date().toISOString(),
+    });
+
+    // Signalement citoyen initial pour démonstration de l'inspection ministérielle
+    this.signalements.set("PLN-2026-MIN-001", {
+      id: "sig-001",
+      codeDossier: "PLN-2026-MIN-001",
+      typeInfraction: "EXIGENCE_CAUTION_ILLEGALE",
+      typeInfractionLabel: "Exigence de caution financière préalable en urgence vitale",
+      etablissementNom: "Hôpital de Zone de Nikki",
+      commune: "Nikki",
+      departement: "Borgou",
+      dateFaits: "2026-03-24",
+      description: "Un agent d'accueil a tenté de réclamer une avance de 25 000 FCFA avant l'installation d'un patient en détresse respiratoire aiguë. Prise en charge débloquée immédiatement après rappel de la règle Zéro Refus d'État.",
+      anonyme: false,
+      declarantNpi: "NPI-BEN-1998-0412-8871",
+      declarantNom: "Bio GOUDA",
+      declarantTelephone: "+229 97 45 12 33",
+      gravite: "CRITIQUE",
+      statut: "INSPECTEUR_DEPECHE",
+      reponseMinistere: "Inspection Générale de la Santé saisie. Rappel à l'ordre formel notifié à la direction de l'établissement avec instruction de sanctions conservatoires.",
+      dateSignalement: "2026-03-24T14:30:00.000Z",
     });
 
     this.initialized = true;

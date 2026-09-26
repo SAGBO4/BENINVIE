@@ -211,15 +211,15 @@ export function InteractiveScenarioKalale(): ReactNode {
             setCurrentStepIndex(0);
             setStepLogs({});
           }}
-          className="focus-ring inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-foreground/10 bg-foreground/3 px-3.5 py-2 text-xs font-semibold text-foreground/80 hover:bg-foreground/8 transition-colors self-start sm:self-auto"
+          className="focus-ring inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-foreground/10 bg-foreground/3 px-4 py-2 text-xs font-semibold text-foreground/80 hover:bg-foreground/8 transition-colors self-start sm:self-auto"
         >
           <RotateCcw className="h-3.5 w-3.5" />
           <span>Réinitialiser le parcours</span>
         </button>
       </div>
 
-      {/* Stepper Tabs Bar */}
-      <div className="mt-6 flex overflow-x-auto pb-2 scrollbar-none gap-2">
+      {/* Stepper Tabs Bar avec défilement tactile fluide */}
+      <div className="mt-6 flex overflow-x-auto no-scrollbar pb-2 gap-2 -mx-1 px-1">
         {STEPS.map((step, idx) => {
           const isCurrent = idx === currentStepIndex;
           const isDone = !!stepLogs[step.num];
@@ -227,7 +227,7 @@ export function InteractiveScenarioKalale(): ReactNode {
             <button
               key={step.num}
               onClick={() => setCurrentStepIndex(idx)}
-              className={`flex shrink-0 items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold transition-all ${
+              className={`flex min-h-[44px] shrink-0 items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold transition-all cursor-pointer ${
                 isCurrent
                   ? "bg-foreground text-background shadow-xs ring-2 ring-foreground/20"
                   : isDone
@@ -236,7 +236,7 @@ export function InteractiveScenarioKalale(): ReactNode {
               }`}
             >
               <span
-                className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] font-black ${
+                className={`flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-black shrink-0 ${
                   isCurrent
                     ? "bg-background text-foreground"
                     : isDone
@@ -244,7 +244,7 @@ export function InteractiveScenarioKalale(): ReactNode {
                     : "bg-foreground/10 text-foreground/60"
                 }`}
               >
-                {isDone ? <Check className="h-3 w-3" /> : step.num}
+                {isDone ? <Check className="h-3.5 w-3.5" /> : step.num}
               </span>
               <span className="whitespace-nowrap">{step.titre.slice(0, 22)}...</span>
             </button>
@@ -255,7 +255,7 @@ export function InteractiveScenarioKalale(): ReactNode {
       {/* Step Detail Card */}
       <div className="mt-6 grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
         {/* Left Information */}
-        <div className="md:col-span-7 flex flex-col justify-between rounded-2xl border border-foreground/10 bg-background/60 p-6 shadow-xs">
+        <div className="md:col-span-7 flex flex-col justify-between rounded-2xl border border-foreground/10 bg-background/60 p-4 sm:p-6 shadow-xs">
           <div>
             <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-foreground/50">
               <span>Étape {activeStep.num} sur 7</span>
@@ -263,20 +263,20 @@ export function InteractiveScenarioKalale(): ReactNode {
               <span className="text-emerald-600 dark:text-emerald-400 font-semibold">{activeStep.acteur}</span>
             </div>
 
-            <h4 className="mt-2 text-xl font-bold tracking-tight text-foreground font-serif">
+            <h4 className="mt-2 text-lg sm:text-xl font-bold tracking-tight text-foreground font-serif">
               {activeStep.titre}
             </h4>
 
-            <div className="mt-3 flex items-center gap-3 text-xs text-foreground/70">
+            <div className="mt-3 flex flex-wrap items-center gap-2 sm:gap-3 text-xs text-foreground/70">
               <span className="flex items-center gap-1">
                 <MapPin className="h-3.5 w-3.5 text-red-500" />
                 {activeStep.lieu}
               </span>
               <span>•</span>
-              <span className="font-mono text-foreground/50">API: {activeStep.apiRoute}</span>
+              <span className="font-mono text-foreground/50 break-all">API: {activeStep.apiRoute}</span>
             </div>
 
-            <p className="mt-4 text-sm leading-relaxed text-foreground/80">
+            <p className="mt-4 text-xs sm:text-sm leading-relaxed text-foreground/80">
               {activeStep.actionDesc}
             </p>
 
@@ -286,20 +286,20 @@ export function InteractiveScenarioKalale(): ReactNode {
             </div>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-foreground/8 flex items-center justify-between">
+          <div className="mt-6 pt-4 border-t border-foreground/8 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
             <button
               onClick={handleExecuteCurrentStep}
               disabled={executing}
-              className="focus-ring inline-flex cursor-pointer items-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white shadow-md shadow-red-600/20 transition-all hover:bg-red-700 disabled:opacity-50"
+              className="focus-ring inline-flex min-h-[44px] cursor-pointer items-center justify-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 text-xs sm:text-sm font-semibold text-white shadow-md shadow-red-600/20 transition-all hover:bg-red-700 disabled:opacity-50 text-center"
             >
-              <Play className={`h-4 w-4 ${executing ? "animate-spin" : ""}`} />
+              <Play className={`h-4 w-4 shrink-0 ${executing ? "animate-spin" : ""}`} />
               <span>{executing ? "Exécution en cours..." : `Valider l'Étape ${activeStep.num}`}</span>
             </button>
 
             {currentStepIndex < STEPS.length - 1 && (
               <button
                 onClick={() => setCurrentStepIndex((i) => i + 1)}
-                className="text-xs font-medium text-foreground/70 hover:text-foreground transition-colors"
+                className="min-h-[44px] inline-flex items-center justify-center text-xs font-medium text-foreground/70 hover:text-foreground transition-colors cursor-pointer text-center"
               >
                 Étape suivante →
               </button>

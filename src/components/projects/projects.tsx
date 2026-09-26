@@ -315,13 +315,13 @@ export function Projects({
       {/* Live Interactive Consoles with Clinical-Grade Tab Switcher */}
       <div className="mx-auto w-full max-w-7xl px-6 sm:px-10 lg:px-12 mt-12 sm:mt-16">
         {/* Module Switcher Header */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 p-5 sm:p-6 rounded-2xl border border-slate-200/90 bg-white shadow-xs mb-8 sm:mb-10">
-          <div className="flex items-center gap-3.5">
-            <div className="h-11 w-11 rounded-xl bg-[#0a3764]/10 text-[#0a3764] flex items-center justify-center shrink-0">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-4 sm:p-6 rounded-2xl border border-slate-200/90 bg-white shadow-xs mb-8 sm:mb-10">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 sm:h-11 sm:w-11 rounded-xl bg-[#0a3764]/10 text-[#0a3764] flex items-center justify-center shrink-0">
               <SlidersHorizontal className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-slate-900">
+              <h3 className="text-sm sm:text-base font-bold text-slate-900">
                 Sélecteur de Console Clinique & Opérationnelle
               </h3>
               <p className="text-xs text-slate-600 mt-0.5">
@@ -330,11 +330,11 @@ export function Projects({
             </div>
           </div>
 
-          {/* Quick Pill Buttons (Desktop) + Select (Mobile) */}
-          <div className="flex flex-wrap items-center gap-2">
+          {/* Quick Pill Buttons avec défilement horizontal fluide no-scrollbar */}
+          <div className="w-full lg:w-auto flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 pt-1 -mx-1 px-1">
             <button
               onClick={() => setActiveModule("all")}
-              className={`rounded-lg px-3.5 py-2 text-xs font-bold transition-all cursor-pointer ${
+              className={`min-h-[44px] shrink-0 rounded-xl px-4 py-2 text-xs font-bold transition-all cursor-pointer ${
                 activeModule === "all"
                   ? "bg-[#0a3764] text-white shadow-xs"
                   : "bg-slate-100 text-slate-700 hover:bg-slate-200"
@@ -344,17 +344,17 @@ export function Projects({
             </button>
             <button
               onClick={() => setActiveModule("scenario")}
-              className={`rounded-lg px-3.5 py-2 text-xs font-bold transition-all cursor-pointer ${
+              className={`min-h-[44px] shrink-0 rounded-xl px-4 py-2 text-xs font-bold transition-all cursor-pointer ${
                 activeModule === "scenario"
                   ? "bg-amber-600 text-white shadow-xs"
                   : "bg-slate-100 text-slate-700 hover:bg-slate-200"
               }`}
             >
-              1. Scénario Kalalé (7 étapes)
+              1. Scénario Bio Kalalé
             </button>
             <button
               onClick={() => setActiveModule("matching")}
-              className={`rounded-lg px-3.5 py-2 text-xs font-bold transition-all cursor-pointer ${
+              className={`min-h-[44px] shrink-0 rounded-xl px-4 py-2 text-xs font-bold transition-all cursor-pointer ${
                 activeModule === "matching"
                   ? "bg-red-600 text-white shadow-xs"
                   : "bg-slate-100 text-slate-700 hover:bg-slate-200"
@@ -364,7 +364,7 @@ export function Projects({
             </button>
             <button
               onClick={() => setActiveModule("stocks")}
-              className={`rounded-lg px-3.5 py-2 text-xs font-bold transition-all cursor-pointer ${
+              className={`min-h-[44px] shrink-0 rounded-xl px-4 py-2 text-xs font-bold transition-all cursor-pointer ${
                 activeModule === "stocks"
                   ? "bg-emerald-700 text-white shadow-xs"
                   : "bg-slate-100 text-slate-700 hover:bg-slate-200"
@@ -374,13 +374,13 @@ export function Projects({
             </button>
             <button
               onClick={() => setActiveModule("passport")}
-              className={`rounded-lg px-3.5 py-2 text-xs font-bold transition-all cursor-pointer ${
+              className={`min-h-[44px] shrink-0 rounded-xl px-4 py-2 text-xs font-bold transition-all cursor-pointer ${
                 activeModule === "passport"
                   ? "bg-indigo-600 text-white shadow-xs"
                   : "bg-slate-100 text-slate-700 hover:bg-slate-200"
               }`}
             >
-              4. Passeport Donneur MoMo
+              4. Passeport Donneur NFC
             </button>
           </div>
         </div>

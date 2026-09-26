@@ -194,7 +194,7 @@ export function NfcCardConsole({
         <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={() => setSoundEnabled(!soundEnabled)}
-            className="p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-600 transition-colors"
+            className="min-h-[44px] min-w-[44px] flex items-center justify-center p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-600 transition-colors cursor-pointer"
             title={soundEnabled ? "Couper le bip sonore" : "Activer le bip sonore"}
           >
             {soundEnabled ? <Volume2 className="h-4 w-4 text-[#008751]" /> : <VolumeX className="h-4 w-4 text-slate-400" />}
@@ -202,7 +202,7 @@ export function NfcCardConsole({
 
           <button
             onClick={() => setIsFlipped(!isFlipped)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-colors"
+            className="min-h-[44px] inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition-colors cursor-pointer"
           >
             <RotateCw className="h-3.5 w-3.5" />
             <span>{isFlipped ? "Voir Recto" : "Voir Verso"}</span>
@@ -333,12 +333,12 @@ export function NfcCardConsole({
           </div>
 
           {/* Raccourci de clic pour interaction */}
-          <div className="mt-4 flex items-center gap-3">
+          <div className="mt-4 flex items-center justify-center sm:justify-start w-full">
             <button
               onClick={handleTapCard}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0a3764] hover:bg-[#072544] text-white text-xs font-bold shadow-md transition-all active:scale-95"
+              className="w-full sm:w-auto min-h-[44px] inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#0a3764] hover:bg-[#072544] text-white text-xs font-bold shadow-md transition-all active:scale-95 cursor-pointer text-center"
             >
-              <Zap className="h-4 w-4 text-amber-400" />
+              <Zap className="h-4 w-4 text-amber-400 shrink-0" />
               <span>Simuler le passage sans contact sur la borne</span>
             </button>
           </div>
@@ -421,10 +421,10 @@ export function NfcCardConsole({
                 </div>
 
                 {/* Actions réservées aux structures sanitaires (CNTS / Officines) */}
-                <div className="pt-2 border-t border-slate-800 flex flex-wrap gap-2">
+                <div className="pt-2 border-t border-slate-800 flex flex-col sm:flex-row gap-2">
                   <button
                     onClick={handleWriteNewDonation}
-                    className="flex-1 py-2 px-3 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shadow-md"
+                    className="min-h-[44px] flex-1 py-2 px-3 rounded-lg bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shadow-md cursor-pointer"
                   >
                     <Heart className="h-3.5 w-3.5" />
                     <span>Inscrire Nouveau Don (450 mL)</span>
@@ -432,7 +432,7 @@ export function NfcCardConsole({
 
                   <a
                     href={`/verify?token=NFC-${card.npi}-${card.uid}`}
-                    className="py-2 px-3 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold transition-colors flex items-center gap-1.5"
+                    className="min-h-[44px] py-2 px-3 rounded-lg bg-slate-700 hover:bg-slate-600 text-white text-xs font-bold transition-colors flex items-center justify-center gap-1.5"
                   >
                     <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
                     <span>Contrôle APDP</span>
@@ -444,14 +444,14 @@ export function NfcCardConsole({
 
           {/* Support matériel réel Web NFC */}
           {webNfcSupported && (
-            <div className="p-3 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-xs flex items-center justify-between">
+            <div className="p-3 rounded-xl bg-blue-50 border border-blue-200 text-blue-900 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <Smartphone className="h-4 w-4 text-blue-700" />
+                <Smartphone className="h-4 w-4 text-blue-700 shrink-0" />
                 <span>Antenne Web NFC native détectée sur cet appareil.</span>
               </div>
               <button
                 onClick={handleStartRealWebNfc}
-                className="px-3 py-1 bg-blue-700 text-white rounded-lg font-bold text-[11px] hover:bg-blue-800 transition-colors"
+                className="min-h-[44px] px-3 py-1.5 bg-blue-700 text-white rounded-lg font-bold text-[11px] hover:bg-blue-800 transition-colors cursor-pointer flex items-center justify-center shrink-0"
               >
                 Activer capteur
               </button>

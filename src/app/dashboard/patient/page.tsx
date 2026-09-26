@@ -206,7 +206,7 @@ export default function PatientDashboardPage(): ReactNode {
   return (
     <main className="min-h-screen pt-28 pb-20 px-4 sm:px-8 max-w-7xl mx-auto flex flex-col gap-8">
       {/* 1. CARTE D'IDENTITÉ PATIENT & EN-TÊTE FHIR */}
-      <FadeIn className="p-6 sm:p-8 rounded-4xl border border-emerald-500/20 bg-gradient-to-br from-emerald-950/40 via-background to-background backdrop-blur-md shadow-xl flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+      <FadeIn className="p-4 sm:p-6 lg:p-8 rounded-3xl sm:rounded-4xl border border-emerald-500/20 bg-gradient-to-br from-emerald-950/40 via-background to-background backdrop-blur-md shadow-xl flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
           <div className="relative">
             <div className="h-20 w-20 rounded-3xl bg-gradient-to-tr from-emerald-600 to-teal-500 flex items-center justify-center text-white font-bold text-2xl shadow-lg shadow-emerald-600/30">
@@ -687,7 +687,7 @@ export default function PatientDashboardPage(): ReactNode {
           {/* 1. CARTE NUMÉRIQUE OFFICIELLE CNTS & ÉLIGIBILITÉ */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* CARTE BIOMÉTRIQUE DIGITALE HEMORA */}
-            <div className="lg:col-span-7 relative overflow-hidden rounded-4xl border border-rose-500/30 bg-gradient-to-br from-rose-950/40 via-background to-background backdrop-blur-md shadow-2xl p-6 sm:p-8 flex flex-col justify-between gap-6">
+            <div className="lg:col-span-7 relative overflow-hidden rounded-3xl sm:rounded-4xl border border-rose-500/30 bg-gradient-to-br from-rose-950/40 via-background to-background backdrop-blur-md shadow-2xl p-4 sm:p-6 lg:p-8 flex flex-col justify-between gap-6">
               {/* Lueur d'ambiance */}
               <div className="absolute -right-16 -top-16 h-48 w-48 rounded-full bg-rose-600/20 blur-3xl pointer-events-none" />
 
@@ -751,10 +751,10 @@ export default function PatientDashboardPage(): ReactNode {
                       </h4>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3 pt-1">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                       <div>
                         <span className="text-[10px] text-foreground/50 block">NPI Biométrique</span>
-                        <span className="font-mono text-xs font-bold text-rose-400">
+                        <span className="font-mono text-xs font-bold text-rose-400 break-all">
                           {user?.npi || "NPI-CIT-1995-1029"}
                         </span>
                       </div>
@@ -762,12 +762,12 @@ export default function PatientDashboardPage(): ReactNode {
                         <span className="text-[10px] text-foreground/50 block">Commune d&apos;attache</span>
                         <span className="font-semibold text-foreground flex items-center gap-1">
                           <MapPin className="h-3 w-3 text-rose-400 shrink-0" />
-                          <span>{user?.commune || "Nikki"} ({user?.departement || "Borgou"})</span>
+                          <span className="truncate">{user?.commune || "Nikki"} ({user?.departement || "Borgou"})</span>
                         </span>
                       </div>
                       <div>
                         <span className="text-[10px] text-foreground/50 block">N° Carte HEMORA</span>
-                        <span className="font-mono text-[11px] font-semibold text-foreground/80">
+                        <span className="font-mono text-[11px] font-semibold text-foreground/80 break-all">
                           HEMORA-BJ-2026-O-8871
                         </span>
                       </div>
@@ -792,11 +792,11 @@ export default function PatientDashboardPage(): ReactNode {
               </div>
 
               {/* Barre d'actions rapides sur la carte */}
-              <div className="pt-4 border-t border-rose-500/20 flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
+              <div className="pt-4 border-t border-rose-500/20 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                   <button
                     onClick={() => setShowHemoraCardModal(true)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 text-xs font-bold transition-all cursor-pointer"
+                    className="min-h-[44px] inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 text-xs font-bold transition-all cursor-pointer"
                   >
                     <QrCode className="h-3.5 w-3.5" />
                     <span>Agrandir la Carte & QR</span>
@@ -808,7 +808,7 @@ export default function PatientDashboardPage(): ReactNode {
                       setCopiedCardNumber(true);
                       setTimeout(() => setCopiedCardNumber(false), 2500);
                     }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-foreground/5 hover:bg-foreground/10 text-foreground/80 border border-foreground/10 text-xs font-semibold transition-all cursor-pointer"
+                    className="min-h-[44px] inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-foreground/5 hover:bg-foreground/10 text-foreground/80 border border-foreground/10 text-xs font-semibold transition-all cursor-pointer"
                   >
                     {copiedCardNumber ? (
                       <>
@@ -826,7 +826,7 @@ export default function PatientDashboardPage(): ReactNode {
 
                 <button
                   onClick={() => alert("Génération du certificat PDF sécurisé du CNTS signée avec scellé ANIP.")}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-foreground/10 hover:bg-foreground/15 text-foreground text-xs font-bold transition-all cursor-pointer"
+                  className="min-h-[44px] inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-foreground/10 hover:bg-foreground/15 text-foreground text-xs font-bold transition-all cursor-pointer"
                 >
                   <Download className="h-3.5 w-3.5" />
                   <span>Attestation PDF Officielle</span>
@@ -1387,14 +1387,14 @@ export default function PatientDashboardPage(): ReactNode {
       {/* Modal QR Code Ordonnance */}
       {showQrModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-3 sm:p-4"
           onClick={() => setShowQrModal(null)}
         >
           <div
-            className="w-full max-w-sm rounded-3xl border border-foreground/10 bg-background p-6 shadow-2xl flex flex-col items-center gap-4 text-center"
+            className="w-full max-w-[95vw] sm:max-w-sm max-h-[90vh] overflow-y-auto rounded-3xl border border-foreground/10 bg-background p-5 sm:p-6 shadow-2xl flex flex-col items-center gap-4 text-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="h-12 w-12 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center">
+            <div className="h-12 w-12 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0">
               <QrCode className="h-7 w-7" />
             </div>
 
@@ -1404,13 +1404,14 @@ export default function PatientDashboardPage(): ReactNode {
               <p className="font-mono text-xs text-emerald-500 font-bold mt-1">#{showQrModal}</p>
             </div>
 
-            <div className="p-4 rounded-2xl bg-white border border-foreground/15 shadow-inner flex flex-col items-center">
+            <div className="p-4 rounded-2xl bg-white border border-foreground/15 shadow-inner flex flex-col items-center max-w-full">
               <QRCodeSVG
                 value={`https://beninvie.bj/verify?token=ORD-${showQrModal || "2026-001"}-SCELLÉ`}
-                size={176}
+                size={168}
                 level="M"
+                className="max-w-full h-auto"
               />
-              <div className="mt-2 text-[10px] font-mono text-zinc-800 font-bold">
+              <div className="mt-2 text-[10px] font-mono text-zinc-800 font-bold break-all">
                 BENINVIE-{showQrModal} • SCELLÉ ANIP
               </div>
             </div>
@@ -1423,14 +1424,14 @@ export default function PatientDashboardPage(): ReactNode {
               href={`/verify?token=ORD-${showQrModal || "2026-001"}-SCELLÉ`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs font-bold text-[#0a3764] hover:underline"
+              className="min-h-[44px] inline-flex items-center justify-center text-xs font-bold text-[#0a3764] dark:text-emerald-400 hover:underline"
             >
               Tester le guichet de vérification pharmacie ↗
             </a>
 
             <button
               onClick={() => setShowQrModal(null)}
-              className="w-full py-2.5 rounded-xl bg-foreground/10 hover:bg-foreground/15 text-xs font-bold text-foreground transition-colors cursor-pointer"
+              className="min-h-[44px] w-full py-2.5 rounded-xl bg-foreground/10 hover:bg-foreground/15 text-xs font-bold text-foreground transition-colors cursor-pointer flex items-center justify-center"
             >
               Fermer
             </button>
@@ -1441,11 +1442,11 @@ export default function PatientDashboardPage(): ReactNode {
       {/* Modal 2 : Zoom Haute Définition Passeport Donneur HEMORA */}
       {showHemoraCardModal && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-3 sm:p-4"
           onClick={() => setShowHemoraCardModal(false)}
         >
           <div
-            className="w-full max-w-lg rounded-4xl border border-rose-500/40 bg-background p-6 sm:p-8 shadow-2xl flex flex-col gap-5 text-center relative overflow-hidden"
+            className="w-full max-w-[95vw] sm:max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl sm:rounded-4xl border border-rose-500/40 bg-background p-4 sm:p-8 shadow-2xl flex flex-col gap-5 text-center relative"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between border-b border-foreground/10 pb-3">
@@ -1470,17 +1471,18 @@ export default function PatientDashboardPage(): ReactNode {
               <h3 className="text-lg font-bold text-foreground">
                 {user?.prenom || "Sabi"} {user?.nom || "KORA"}
               </h3>
-              <p className="text-xs font-mono text-rose-400">{user?.npi || "NPI-CIT-1995-1029"}</p>
+              <p className="text-xs font-mono text-rose-400 break-all">{user?.npi || "NPI-CIT-1995-1029"}</p>
             </div>
 
             {/* Grand QR Code scannable */}
-            <div className="p-4 rounded-3xl bg-white border-2 border-rose-500/30 shadow-inner flex flex-col items-center justify-center mx-auto">
+            <div className="p-4 rounded-3xl bg-white border-2 border-rose-500/30 shadow-inner flex flex-col items-center justify-center mx-auto max-w-full">
               <QRCodeSVG
                 value={`https://beninvie.bj/verify?token=DONNEUR-${user?.npi || "NPI-CIT-1995-1029"}-HEMORA`}
-                size={220}
+                size={180}
                 level="M"
+                className="max-w-full h-auto"
               />
-              <div className="mt-2 text-[10px] font-mono text-zinc-800 font-bold">
+              <div className="mt-2 text-[10px] font-mono text-zinc-800 font-bold break-all">
                 HEMORA-BJ-2026-O-8871 • SCELLÉ ANIP
               </div>
             </div>
@@ -1489,12 +1491,12 @@ export default function PatientDashboardPage(): ReactNode {
               href={`/verify?token=DONNEUR-${user?.npi || "NPI-CIT-1995-1029"}-HEMORA`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs font-bold text-rose-600 hover:underline"
+              className="min-h-[44px] inline-flex items-center justify-center text-xs font-bold text-rose-600 hover:underline"
             >
               Tester le guichet de contrôle transfusionnel CNTS ↗
             </a>
 
-            <div className="grid grid-cols-2 gap-3 text-xs text-left">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-left">
               <div className="p-3 rounded-2xl bg-foreground/5 border border-foreground/8">
                 <span className="text-[10px] text-foreground/50 block">Statut CNTS</span>
                 <span className="font-bold text-emerald-400">Actif & Homologué</span>
@@ -1507,7 +1509,7 @@ export default function PatientDashboardPage(): ReactNode {
 
             <button
               onClick={() => setShowHemoraCardModal(false)}
-              className="w-full py-3 rounded-2xl bg-foreground/10 hover:bg-foreground/15 text-xs font-bold text-foreground transition-colors cursor-pointer"
+              className="min-h-[44px] w-full py-3 rounded-2xl bg-foreground/10 hover:bg-foreground/15 text-xs font-bold text-foreground transition-colors cursor-pointer flex items-center justify-center"
             >
               Fermer la vue agrandie
             </button>
@@ -1518,11 +1520,11 @@ export default function PatientDashboardPage(): ReactNode {
       {/* Modal 3 : Examen de la Preuve Cryptographique OpenTimestamps */}
       {otsModalHash && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-3 sm:p-4"
           onClick={() => setOtsModalHash(null)}
         >
           <div
-            className="w-full max-w-lg rounded-4xl border border-rose-500/30 bg-background p-6 sm:p-8 shadow-2xl flex flex-col gap-4 text-left relative"
+            className="w-full max-w-[95vw] sm:max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl sm:rounded-4xl border border-rose-500/30 bg-background p-4 sm:p-8 shadow-2xl flex flex-col gap-4 text-left relative"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center gap-3 border-b border-foreground/10 pb-3">
@@ -1543,7 +1545,7 @@ export default function PatientDashboardPage(): ReactNode {
                 </span>
               </div>
 
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 <div className="p-3 rounded-2xl bg-foreground/5 border border-foreground/8">
                   <span className="text-[10px] text-foreground/50 block">Réseau Public</span>
                   <span className="font-bold text-foreground">Bitcoin Mainnet</span>
@@ -1551,7 +1553,7 @@ export default function PatientDashboardPage(): ReactNode {
                 <div className="p-3 rounded-2xl bg-foreground/5 border border-foreground/8">
                   <span className="text-[10px] text-foreground/50 block">Statut d&apos;Horodatage</span>
                   <span className="font-bold text-emerald-400 flex items-center gap-1">
-                    <CheckCircle className="h-3.5 w-3.5" />
+                    <CheckCircle className="h-3.5 w-3.5 shrink-0" />
                     <span>Confirmé Immuable</span>
                   </span>
                 </div>
@@ -1564,7 +1566,7 @@ export default function PatientDashboardPage(): ReactNode {
 
             <button
               onClick={() => setOtsModalHash(null)}
-              className="mt-2 w-full py-2.5 rounded-2xl bg-foreground/10 hover:bg-foreground/15 text-xs font-bold text-foreground transition-colors cursor-pointer"
+              className="min-h-[44px] mt-2 w-full py-2.5 rounded-2xl bg-foreground/10 hover:bg-foreground/15 text-xs font-bold text-foreground transition-colors cursor-pointer flex items-center justify-center"
             >
               Fermer
             </button>

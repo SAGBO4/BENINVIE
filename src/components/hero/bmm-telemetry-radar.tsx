@@ -58,7 +58,7 @@ export function BmmTelemetryRadar(): ReactNode {
   }, []);
 
   return (
-    <div className="relative flex h-full w-full flex-col justify-between overflow-hidden rounded-[1.6rem] bg-gradient-to-br from-[#0a3764] via-[#082a4d] to-[#041a30] p-6 text-white shadow-xl border border-white/10">
+    <div className="relative flex h-full w-full flex-col justify-between overflow-hidden rounded-[1.6rem] bg-gradient-to-br from-[#0a3764] via-[#082a4d] to-[#041a30] p-4 sm:p-5 md:p-6 text-white shadow-xl border border-white/10">
       {/* Sovereign Benin Tricolor Stripe */}
       <div className="absolute top-0 inset-x-0 h-1.5 flex">
         <div className="flex-1 bg-[#008751]" />
@@ -71,84 +71,84 @@ export function BmmTelemetryRadar(): ReactNode {
       <div className="pointer-events-none absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-emerald-600/15 blur-3xl" />
 
       {/* Top Header: System Status & Pulse */}
-      <div className="relative z-10 flex items-center justify-between border-b border-white/10 pb-4 pt-1">
-        <div className="flex items-center gap-2.5">
-          <span className="relative flex h-3 w-3">
+      <div className="relative z-10 flex items-center justify-between border-b border-white/10 pb-3 pt-1">
+        <div className="flex items-center gap-2">
+          <span className="relative flex h-2.5 w-2.5 sm:h-3 sm:w-3 shrink-0">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-            <span className="relative inline-flex h-3 w-3 rounded-full bg-emerald-500" />
+            <span className="relative inline-flex h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-emerald-500" />
           </span>
-          <div>
-            <div className="flex items-center gap-1.5 text-[11px] font-mono tracking-widest uppercase text-emerald-400">
-              <Radio className="h-3 w-3 animate-pulse" />
-              CNTS • RÉGULATION BÉNIN
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-mono tracking-wider sm:tracking-widest uppercase text-emerald-400">
+              <Radio className="h-3 w-3 animate-pulse shrink-0" />
+              <span>CNTS • RÉGULATION BÉNIN</span>
             </div>
-            <div className="text-xs text-zinc-400 font-medium">77 Communes & Banques de Sang Interconnectées</div>
+            <div className="text-[10px] sm:text-xs text-zinc-400 font-medium truncate">77 Communes Interconnectées</div>
           </div>
         </div>
 
         <button
           onClick={fetchLiveMetrics}
           disabled={loading}
-          className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-zinc-300 transition-colors hover:bg-white/10 hover:text-white"
+          className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-zinc-300 transition-colors hover:bg-white/10 hover:text-white shrink-0 ml-1"
           title="Actualiser les stocks du backend"
         >
-          <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
+          <RefreshCw className={`h-3 w-3 sm:h-3.5 sm:w-3.5 ${loading ? "animate-spin" : ""}`} />
         </button>
       </div>
 
       {/* Center Radar / Blood Group Matrix */}
-      <div className="relative z-10 my-auto py-6">
-        <div className="mb-4 flex items-center justify-between">
-          <span className="text-[11px] font-mono uppercase tracking-wider text-zinc-400">
+      <div className="relative z-10 my-auto py-3 sm:py-4 md:py-6">
+        <div className="mb-2 sm:mb-4 flex items-center justify-between">
+          <span className="text-[10px] sm:text-[11px] font-mono uppercase tracking-wider text-zinc-400">
             Réserves CGR Nationales
           </span>
-          <span className="inline-flex items-center gap-1 rounded-full bg-red-500/15 px-2.5 py-0.5 text-[11px] font-semibold text-red-400">
-            <HeartPulse className="h-3 w-3 text-red-400" />
-            {summary.totalPoches} Poches Actives
+          <span className="inline-flex items-center gap-1 rounded-full bg-red-500/15 px-2 sm:px-2.5 py-0.5 text-[10px] sm:text-[11px] font-semibold text-red-400">
+            <HeartPulse className="h-3 w-3 text-red-400 shrink-0" />
+            <span>{summary.totalPoches} Poches</span>
           </span>
         </div>
 
-        <div className="grid grid-cols-3 gap-2.5">
+        <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5">
           {Object.entries(summary.groupes).map(([grp, qty]) => {
             const isUniversal = grp === "O-";
             return (
               <div
                 key={grp}
-                className={`relative flex flex-col justify-between rounded-xl border p-3 transition-all ${
+                className={`relative flex flex-col justify-between rounded-xl border p-2 sm:p-3 transition-all ${
                   isUniversal
                     ? "border-red-500/50 bg-red-500/10 shadow-xs shadow-red-500/20"
                     : "border-white/10 bg-white/5 hover:border-white/20"
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-bold text-white">{grp}</span>
+                  <span className="text-xs sm:text-sm font-bold text-white">{grp}</span>
                   {isUniversal && (
-                    <span className="rounded bg-red-500 px-1 text-[9px] font-bold text-white uppercase">
+                    <span className="rounded bg-red-500 px-1 text-[8px] sm:text-[9px] font-bold text-white uppercase">
                       Univ.
                     </span>
                   )}
                 </div>
-                <div className="mt-2 text-xl font-extrabold tracking-tight text-zinc-100">
+                <div className="mt-1 sm:mt-2 text-base sm:text-xl font-extrabold tracking-tight text-zinc-100">
                   {qty}{" "}
-                  <span className="text-[10px] font-normal text-zinc-400">poches</span>
+                  <span className="text-[9px] sm:text-[10px] font-normal text-zinc-400">poches</span>
                 </div>
               </div>
             );
           })}
 
           {/* Quick Metric Widget */}
-          <div className="flex flex-col justify-between rounded-xl border border-white/10 bg-white/5 p-3">
-            <span className="text-[10px] font-mono text-zinc-400">Délai Dispatch</span>
-            <div className="text-xl font-extrabold text-emerald-400">&lt; 15 min</div>
+          <div className="flex flex-col justify-between rounded-xl border border-white/10 bg-white/5 p-2 sm:p-3">
+            <span className="text-[9px] sm:text-[10px] font-mono text-zinc-400">Délai Dispatch</span>
+            <div className="text-sm sm:text-xl font-extrabold text-emerald-400">&lt; 15 min</div>
           </div>
         </div>
       </div>
 
       {/* Bottom Emergency Banner: Bris de Glace Guarantee */}
-      <div className="relative z-10 rounded-xl border border-emerald-500/20 bg-emerald-950/40 p-3 backdrop-blur-md">
-        <div className="flex items-start gap-2.5">
-          <ShieldCheck className="h-5 w-5 shrink-0 text-emerald-400" />
-          <div className="text-[11px] leading-tight">
+      <div className="relative z-10 rounded-xl border border-emerald-500/20 bg-emerald-950/40 p-2.5 sm:p-3 backdrop-blur-md">
+        <div className="flex items-start gap-2">
+          <ShieldCheck className="h-4 w-4 sm:h-5 sm:w-5 shrink-0 text-emerald-400 mt-0.5" />
+          <div className="text-[10px] sm:text-[11px] leading-tight">
             <span className="font-semibold text-emerald-300">
               Dispositif Bris de Glace Actif
             </span>

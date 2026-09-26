@@ -261,79 +261,79 @@ export default function HomePage(): ReactNode {
   return (
     <main id="main-content" className="flex flex-1 flex-col overflow-hidden bg-[#f6f8fb] text-slate-900">
       {/* 1. HERO SECTION INSTITUTIONNELLE SPACIEUSE ET SOLENNELLE */}
-      <section className="relative w-full pt-12 pb-18 sm:pt-16 sm:pb-24 px-6 sm:px-10 lg:px-12 border-b border-slate-200/90 bg-white">
+      <section className="relative w-full pt-10 pb-16 sm:pt-16 sm:pb-24 px-4 sm:px-8 lg:px-12 border-b border-slate-200/90 bg-white">
         <div className="mx-auto w-full max-w-7xl">
-          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
+          <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-16">
             {/* Texte Gauche : Copywriter institutionnel humain, rigoureux et direct */}
-            <FadeIn className="flex flex-col gap-6 lg:col-span-7">
-              <div className="inline-flex items-center gap-2.5 self-start rounded-full border border-[#0a3764]/20 bg-[#0a3764]/5 px-4 py-1.5 text-xs font-bold text-[#0a3764] shadow-xs">
-                <span className="h-2 w-2 rounded-full bg-[#008751] animate-pulse" />
-                <span className="uppercase tracking-wider">République du Bénin • Système National d&apos;Information Sanitaire</span>
+            <FadeIn className="flex flex-col gap-5 sm:gap-6 lg:col-span-7">
+              <div className="inline-flex items-center gap-2 self-start rounded-full border border-[#0a3764]/20 bg-[#0a3764]/5 px-3.5 py-1.5 text-xs font-bold text-[#0a3764] shadow-xs max-w-full">
+                <span className="h-2 w-2 rounded-full bg-[#008751] animate-pulse shrink-0" />
+                <span className="uppercase tracking-wider truncate">République du Bénin • Système National d&apos;Information Sanitaire</span>
               </div>
 
-              <h1 className="text-3xl sm:text-5xl lg:text-5xl font-black leading-[1.12] tracking-tight text-slate-900">
+              <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-[1.14] sm:leading-[1.12] tracking-tight text-slate-900">
                 BENINVIE <br />
                 <span className="text-[#0a3764]">
                   Chaque seconde compte.
                 </span>{" "}
                 <br />
-                <span className="text-slate-800 text-2xl sm:text-4xl font-bold">
+                <span className="text-slate-800 text-xl sm:text-3xl md:text-4xl lg:text-5xl font-bold">
                   Zéro refus de soin pour motif financier.
                 </span>
               </h1>
 
-              <p className="max-w-[54ch] text-base sm:text-lg leading-relaxed text-slate-700">
+              <p className="max-w-[54ch] text-sm sm:text-base md:text-lg leading-relaxed text-slate-700">
                 Le portail régalien de santé numérique de la République du Bénin. Il unifie le déverrouillage d&apos;urgence vitale sans caution (<strong>Bris de Glace</strong>), le réseau transfusionnel <strong>HEMORA</strong> adossé au CNTS, le carnet de santé <strong>HL7 FHIR</strong> indexé sur le NPI ANIP et la régulation de la pharmacopée traditionnelle béninoise (<strong>MTA</strong>).
               </p>
 
               {/* Actions Métier Directes */}
-              <div className="flex flex-wrap items-center gap-3 pt-2">
+              <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 pt-2">
                 <Link
                   href="/login"
-                  className="inline-flex items-center justify-center gap-2.5 rounded-lg bg-[#0a3764] hover:bg-[#082a4d] px-6 py-3.5 text-sm font-bold text-white shadow-md shadow-[#0a3764]/20 transition-all active:scale-95"
+                  className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-[#0a3764] hover:bg-[#082a4d] px-5 sm:px-6 py-3 text-xs sm:text-sm font-bold text-white shadow-md shadow-[#0a3764]/20 transition-all active:scale-95 text-center"
                 >
-                  <Lock className="h-4 w-4" />
+                  <Lock className="h-4 w-4 shrink-0" />
                   <span>ESPACE PROFESSIONNEL & CITOYEN</span>
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-4 w-4 shrink-0" />
                 </Link>
 
                 <Link
                   href="/projects"
-                  className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 px-6 py-3.5 text-sm font-bold text-slate-800 shadow-xs transition-all hover:border-[#0a3764]/50"
+                  className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 px-5 sm:px-6 py-3 text-xs sm:text-sm font-bold text-slate-800 shadow-xs transition-all hover:border-[#0a3764]/50 text-center"
                 >
-                  <Droplet className="h-4 w-4 text-red-600" />
+                  <Droplet className="h-4 w-4 text-red-600 shrink-0" />
                   <span>Consoles HEMORA & Urgences</span>
                 </Link>
 
                 <Link
                   href="/projects?module=scenario"
-                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 px-5 py-3.5 text-xs font-bold text-amber-900 transition-colors"
+                  className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 px-4 sm:px-5 py-3 text-xs font-bold text-amber-900 transition-colors text-center"
                 >
-                  <Compass className="h-4 w-4 text-amber-700" />
+                  <Compass className="h-4 w-4 text-amber-700 shrink-0" />
                   <span>Scénario Bio à Kalalé</span>
                 </Link>
               </div>
 
               {/* Références Réglementaires Officielles */}
-              <div className="pt-4 border-t border-slate-200/90 flex flex-wrap items-center gap-6 text-xs text-slate-600">
+              <div className="pt-4 border-t border-slate-200/90 flex flex-wrap items-center gap-4 sm:gap-6 text-xs text-slate-600">
                 <span className="flex items-center gap-1.5 font-bold text-slate-800">
-                  <CheckCircle className="h-4 w-4 text-[#008751]" /> Loi n° 2017-20 APDP
+                  <CheckCircle className="h-4 w-4 text-[#008751] shrink-0" /> Loi n° 2017-20 APDP
                 </span>
                 <span className="flex items-center gap-1.5 font-bold text-slate-800">
-                  <CheckCircle className="h-4 w-4 text-[#ffbe00]" /> Régulation Sanitaire ARS
+                  <CheckCircle className="h-4 w-4 text-[#ffbe00] shrink-0" /> Régulation Sanitaire ARS
                 </span>
                 <span className="flex items-center gap-1.5 font-bold text-slate-800">
-                  <CheckCircle className="h-4 w-4 text-[#0a3764]" /> Référentiel NPI ANIP
+                  <CheckCircle className="h-4 w-4 text-[#0a3764] shrink-0" /> Référentiel NPI ANIP
                 </span>
                 <span className="flex items-center gap-1.5 font-bold text-slate-800">
-                  <CheckCircle className="h-4 w-4 text-[#eb0000]" /> Ligne d&apos;Urgence 136
+                  <CheckCircle className="h-4 w-4 text-[#eb0000] shrink-0" /> Ligne d&apos;Urgence 136
                 </span>
               </div>
             </FadeIn>
 
             {/* Console Télémétrique Droite */}
-            <ScaleUnblur className="lg:col-span-5 flex justify-center">
-              <div className="relative aspect-square w-full max-w-[440px] rounded-3xl border border-slate-200/90 bg-white p-3.5 shadow-xl">
+            <ScaleUnblur className="lg:col-span-5 flex justify-center w-full">
+              <div className="relative aspect-square w-full max-w-[320px] sm:max-w-[400px] lg:max-w-[440px] rounded-3xl border border-slate-200/90 bg-white p-2.5 sm:p-3.5 shadow-xl overflow-hidden">
                 <BmmTelemetryRadar />
               </div>
             </ScaleUnblur>
@@ -349,9 +349,9 @@ export default function HomePage(): ReactNode {
       </div>
 
       {/* 2. SECTION EXACTE INSPIRÉE DE L'ARCHITECTURE ANIP : "Nos services en ligne" */}
-      <section className="w-full py-16 sm:py-24 px-6 sm:px-10 lg:px-12 bg-[#f6f8fb]">
+      <section className="w-full py-12 sm:py-20 px-4 sm:px-8 lg:px-12 bg-[#f6f8fb]">
         <div className="max-w-7xl mx-auto">
-          <FadeIn className="text-center max-w-3xl mx-auto mb-12">
+          <FadeIn className="text-center max-w-3xl mx-auto mb-10 sm:mb-12">
             <div className="inline-flex items-center gap-2 rounded-full bg-[#0a3764]/10 px-4 py-1 text-xs font-bold text-[#0a3764] mb-3 border border-[#0a3764]/20">
               Guichet Unique de la Santé Publique
             </div>
@@ -363,22 +363,22 @@ export default function HomePage(): ReactNode {
             </p>
           </FadeIn>
 
-          {/* Grille de Cartes ANIP Élargie (3 Colonnes) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+          {/* Grille de Cartes ANIP Élargie (Fluid Mobile -> Tablette -> Desktop) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {SERVICES_EN_LIGNE.map((srv) => {
               const Icon = srv.icon;
               return (
                 <Link
                   key={srv.id}
                   href={srv.link}
-                  className="group flex flex-col justify-between p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-[#0a3764]/50 transition-all duration-200 hover:-translate-y-0.5"
+                  className="group flex flex-col justify-between p-5 sm:p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-[#0a3764]/50 transition-all duration-200 hover:-translate-y-0.5 overflow-hidden"
                 >
                   <div>
                     <div className="flex items-center justify-between gap-3 mb-4">
-                      <div className="h-12 w-12 rounded-xl bg-[#eaf2f9] text-[#0a3764] flex items-center justify-center shrink-0 group-hover:bg-[#0a3764] group-hover:text-white transition-colors duration-200 shadow-xs">
-                        <Icon className="h-6 w-6" />
+                      <div className="h-11 w-11 sm:h-12 sm:w-12 rounded-xl bg-[#eaf2f9] text-[#0a3764] flex items-center justify-center shrink-0 group-hover:bg-[#0a3764] group-hover:text-white transition-colors duration-200 shadow-xs">
+                        <Icon className="h-5 w-5 sm:h-6 sm:w-6" />
                       </div>
-                      <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200/80">
+                      <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200/80 truncate max-w-[180px]">
                         {srv.category}
                       </span>
                     </div>
@@ -391,7 +391,7 @@ export default function HomePage(): ReactNode {
                     </p>
                   </div>
 
-                  <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+                  <div className="mt-5 sm:mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
                     <div>
                       <span className="block font-bold text-slate-900 font-mono text-[11px]">
                         {srv.tarif}
@@ -412,15 +412,15 @@ export default function HomePage(): ReactNode {
           </div>
 
           {/* Bouton "Tout voir" (Style ANIP Ambré/Ocre Authentique) */}
-          <div className="mt-12 flex flex-col items-center justify-center gap-2">
+          <div className="mt-10 sm:mt-12 flex flex-col items-center justify-center gap-2 text-center">
             <Link
               href="/projects"
-              className="inline-flex items-center gap-2 rounded-lg bg-[#f0a945] hover:bg-[#e09833] px-9 py-3.5 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-[#f0a945]/20 transition-all duration-200 active:scale-95"
+              className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-[#f0a945] hover:bg-[#e09833] px-8 sm:px-9 py-3 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-[#f0a945]/20 transition-all duration-200 active:scale-95"
             >
               <span>Tout voir</span>
               <ChevronRight className="h-4 w-4" />
             </Link>
-            <span className="text-[11px] text-slate-500 font-medium">
+            <span className="text-[11px] text-slate-500 font-medium px-4">
               Consultez l&apos;ensemble des consoles d&apos;urgence, modules régionaux et passerelles GSM
             </span>
           </div>
@@ -428,12 +428,12 @@ export default function HomePage(): ReactNode {
       </section>
 
       {/* 3. BARRE D'INDICATEURS NATIONAUX EN DIRECT (Large, aérée et haute visibilité) */}
-      <section className="w-full border-y border-slate-200 bg-white py-12 px-6 sm:px-10 lg:px-12">
+      <section className="w-full border-y border-slate-200 bg-white py-10 sm:py-14 px-4 sm:px-8 lg:px-12">
         <div className="max-w-7xl mx-auto">
           {/* Header de la télémétrie */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-8 pb-4 border-b border-slate-100">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 mb-6 sm:mb-8 pb-4 border-b border-slate-100">
             <div className="flex items-center gap-2.5">
-              <span className="relative flex h-3 w-3">
+              <span className="relative flex h-3 w-3 shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-[#008751]"></span>
               </span>
@@ -441,15 +441,15 @@ export default function HomePage(): ReactNode {
                 Télémétrie Opérationnelle Nationale • Surveillance Sanitaire en Temps Réel
               </span>
             </div>
-            <span className="text-[11px] text-slate-500 font-mono">
+            <span className="text-[10px] sm:text-[11px] text-slate-500 font-mono">
               Source : CNTS • ANIP • Ministère de la Santé (Actualisé en continu)
             </span>
           </div>
 
-          {/* 4 Métriques Clés Spacieuses */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-            <div className="flex flex-col p-5 rounded-2xl bg-[#f6f8fb] border border-slate-200/90">
-              <span className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#0a3764] tracking-tight font-mono">
+          {/* 4 Métriques Clés Spacieuses (Fluide: 1 col mobile -> 2 tablette -> 4 desktop) */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+            <div className="flex flex-col p-4 sm:p-5 rounded-2xl bg-[#f6f8fb] border border-slate-200/90">
+              <span className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#0a3764] tracking-tight font-mono">
                 77
               </span>
               <span className="text-xs uppercase font-bold text-slate-900 mt-2">
@@ -460,8 +460,8 @@ export default function HomePage(): ReactNode {
               </span>
             </div>
 
-            <div className="flex flex-col p-5 rounded-2xl bg-[#f6f8fb] border border-slate-200/90">
-              <span className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#008751] tracking-tight font-mono">
+            <div className="flex flex-col p-4 sm:p-5 rounded-2xl bg-[#f6f8fb] border border-slate-200/90">
+              <span className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#008751] tracking-tight font-mono">
                 16 000
               </span>
               <span className="text-xs uppercase font-bold text-slate-900 mt-2">
@@ -472,8 +472,8 @@ export default function HomePage(): ReactNode {
               </span>
             </div>
 
-            <div className="flex flex-col p-5 rounded-2xl bg-[#f6f8fb] border border-slate-200/90">
-              <span className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#eb0000] tracking-tight font-mono">
+            <div className="flex flex-col p-4 sm:p-5 rounded-2xl bg-[#f6f8fb] border border-slate-200/90">
+              <span className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#eb0000] tracking-tight font-mono">
                 0 FCFA
               </span>
               <span className="text-xs uppercase font-bold text-slate-900 mt-2">
@@ -484,8 +484,8 @@ export default function HomePage(): ReactNode {
               </span>
             </div>
 
-            <div className="flex flex-col p-5 rounded-2xl bg-[#f6f8fb] border border-slate-200/90">
-              <span className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#f0a945] tracking-tight font-mono">
+            <div className="flex flex-col p-4 sm:p-5 rounded-2xl bg-[#f6f8fb] border border-slate-200/90">
+              <span className="text-2xl sm:text-4xl lg:text-5xl font-black text-[#f0a945] tracking-tight font-mono">
                 &lt; 45 km
               </span>
               <span className="text-xs uppercase font-bold text-slate-900 mt-2">
@@ -500,8 +500,8 @@ export default function HomePage(): ReactNode {
       </section>
 
       {/* 4. SECTION LES 5 PILIERS STRATÉGIQUES NATIONAUX (Wide & High Contrast) */}
-      <section id="piliers" className="w-full py-20 sm:py-24 px-6 sm:px-10 lg:px-12 max-w-7xl mx-auto">
-        <FadeIn className="text-center max-w-3xl mx-auto mb-14">
+      <section id="piliers" className="w-full py-14 sm:py-22 px-4 sm:px-8 lg:px-12 max-w-7xl mx-auto">
+        <FadeIn className="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
           <div className="inline-flex items-center gap-1.5 rounded-full bg-[#0a3764]/10 px-4 py-1.5 text-xs font-bold text-[#0a3764] mb-3 border border-[#0a3764]/20">
             Cadre de Souveraineté Sanitaire 2026-2030
           </div>
@@ -513,20 +513,21 @@ export default function HomePage(): ReactNode {
           </p>
         </FadeIn>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
+        {/* Grille des Piliers : 1 col mobile -> 2 tablette -> 3 desktop */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {PILLIERS.map((pil) => {
             const Icon = pil.icon;
             return (
               <div
                 key={pil.id}
-                className="group relative flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white hover:border-[#0a3764]/40 p-7 shadow-xs hover:shadow-lg transition-all duration-200"
+                className="group relative flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white hover:border-[#0a3764]/40 p-5 sm:p-7 shadow-xs hover:shadow-lg transition-all duration-200 overflow-hidden"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="h-12 w-12 rounded-xl bg-[#eaf2f9] border border-slate-100 flex items-center justify-center group-hover:scale-105 transition-transform shadow-xs">
-                      <Icon className={`h-6 w-6 ${pil.accent}`} />
+                    <div className="h-11 w-11 sm:h-12 sm:w-12 rounded-xl bg-[#eaf2f9] border border-slate-100 flex items-center justify-center group-hover:scale-105 transition-transform shadow-xs shrink-0">
+                      <Icon className={`h-5 w-5 sm:h-6 sm:w-6 ${pil.accent}`} />
                     </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200/80">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200/80 truncate max-w-[170px]">
                       {pil.badge}
                     </span>
                   </div>
@@ -535,7 +536,7 @@ export default function HomePage(): ReactNode {
                     {pil.referenceLegale}
                   </span>
 
-                  <h3 className="text-lg font-bold text-slate-900 group-hover:text-[#0a3764] transition-colors leading-snug">
+                  <h3 className="text-base sm:text-lg font-bold text-slate-900 group-hover:text-[#0a3764] transition-colors leading-snug">
                     {pil.title}
                   </h3>
 
@@ -549,8 +550,8 @@ export default function HomePage(): ReactNode {
                   </div>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-[#0a3764]">
-                  <Link href={pil.link} className="flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                <div className="mt-5 sm:mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-[#0a3764]">
+                  <Link href={pil.link} className="inline-flex min-h-[44px] items-center gap-1 group-hover:translate-x-1 transition-transform">
                     <span>Explorer le dispositif</span>
                     <ChevronRight className="h-4 w-4" />
                   </Link>
@@ -561,10 +562,10 @@ export default function HomePage(): ReactNode {
         </div>
       </section>
 
-      {/* 5. ACCÈS DIRECT PAR ACTEUR (Grille Spacieuse 7 Colonnes) */}
-      <section className="w-full py-18 sm:py-20 px-6 sm:px-10 lg:px-12 bg-white border-t border-slate-200">
+      {/* 5. ACCÈS DIRECT PAR ACTEUR (Grille Ergonomique) */}
+      <section className="w-full py-14 sm:py-20 px-4 sm:px-8 lg:px-12 bg-white border-t border-slate-200">
         <div className="max-w-7xl mx-auto">
-          <FadeIn className="text-center max-w-2xl mx-auto mb-10">
+          <FadeIn className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
             <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">
               Accès Dédié par Profil Métier Habilité
             </h2>
@@ -573,23 +574,23 @@ export default function HomePage(): ReactNode {
             </p>
           </FadeIn>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3 sm:gap-4">
             {ACTORS_SHORTCUTS.map((act) => {
               const Icon = act.icon;
               return (
                 <button
                   key={act.role}
                   onClick={() => loginAs(act.role)}
-                  className="p-4 sm:p-5 rounded-2xl border border-slate-200/90 bg-[#f6f8fb] hover:border-[#0a3764]/50 hover:bg-white text-left transition-all duration-200 flex flex-col justify-between gap-4 group shadow-xs hover:shadow-md cursor-pointer"
+                  className="min-h-[44px] p-3.5 sm:p-5 rounded-2xl border border-slate-200/90 bg-[#f6f8fb] hover:border-[#0a3764]/50 hover:bg-white text-left transition-all duration-200 flex flex-col justify-between gap-3 sm:gap-4 group shadow-xs hover:shadow-md cursor-pointer overflow-hidden"
                 >
-                  <div className={`h-11 w-11 rounded-xl ${act.bg} flex items-center justify-center group-hover:scale-105 transition-transform`}>
+                  <div className={`h-10 w-10 sm:h-11 sm:w-11 rounded-xl ${act.bg} flex items-center justify-center group-hover:scale-105 transition-transform shrink-0`}>
                     <Icon className={`h-5 w-5 ${act.color}`} />
                   </div>
                   <div>
                     <span className="text-xs font-bold text-slate-900 block group-hover:text-[#0a3764] transition-colors leading-snug">
                       {act.name}
                     </span>
-                    <span className="text-[10px] font-semibold text-slate-600 block mt-1">
+                    <span className="text-[10px] font-semibold text-slate-600 block mt-1 truncate">
                       {act.roleLabel}
                     </span>
                     <span className="text-[9px] text-slate-400 block mt-0.5 truncate">
@@ -604,9 +605,9 @@ export default function HomePage(): ReactNode {
       </section>
 
       {/* 6. FOOTER OFFICIEL CALQUÉ SUR LE MODÈLE ANIP & GOUVERNEMENTAL */}
-      <footer className="w-full bg-[#1b232d] text-white py-14 px-6 sm:px-10 lg:px-12 border-t border-slate-800">
-        <div className="max-w-7xl mx-auto flex flex-col gap-10">
-          <div className="grid grid-cols-1 md:grid-cols-3 items-start justify-between gap-8 pb-10 border-b border-white/10">
+      <footer className="w-full bg-[#1b232d] text-white py-12 sm:py-14 px-4 sm:px-8 lg:px-12 border-t border-slate-800">
+        <div className="max-w-7xl mx-auto flex flex-col gap-8 sm:gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 items-start justify-between gap-8 pb-8 sm:pb-10 border-b border-white/10">
             {/* Colonne Gauche : Eservices & Ligne Verte */}
             <div className="flex flex-col gap-3">
               <span className="text-sm font-bold text-white uppercase tracking-wider">
@@ -616,10 +617,13 @@ export default function HomePage(): ReactNode {
                 Plateforme opérée sous l&apos;égide conjointe du Ministère de la Santé, de l&apos;ANIP et de l&apos;Autorité de Régulation du Secteur de la Santé (ARS).
               </p>
               <div className="mt-2 flex items-center gap-2">
-                <span className="inline-flex items-center gap-2 rounded-full bg-red-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-xs">
-                  <PhoneCall className="h-3.5 w-3.5" />
-                  <span>Ligne d&apos;Urgence 136 (Appel gratuit 24h/24)</span>
-                </span>
+                <a
+                  href="tel:136"
+                  className="inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-red-600 hover:bg-red-700 px-4 py-2 text-xs font-bold text-white shadow-xs transition-colors"
+                >
+                  <PhoneCall className="h-3.5 w-3.5 shrink-0" />
+                  <span>Ligne d&apos;Urgence 136 (Gratuit 24/7)</span>
+                </a>
               </div>
             </div>
 
@@ -646,16 +650,16 @@ export default function HomePage(): ReactNode {
               <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
                 Réseaux & Signalement
               </span>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <Link
                   href="/projects?module=matching"
-                  className="rounded-lg bg-white/10 hover:bg-white/20 px-3 py-1.5 text-xs text-slate-200 transition-colors font-medium"
+                  className="min-h-[40px] inline-flex items-center rounded-xl bg-white/10 hover:bg-white/20 px-3 py-1.5 text-xs text-slate-200 transition-colors font-medium"
                 >
                   Matching HEMORA
                 </Link>
                 <Link
                   href="/dashboard/apdp"
-                  className="rounded-lg bg-white/10 hover:bg-white/20 px-3 py-1.5 text-xs text-slate-200 transition-colors font-medium"
+                  className="min-h-[40px] inline-flex items-center rounded-xl bg-white/10 hover:bg-white/20 px-3 py-1.5 text-xs text-slate-200 transition-colors font-medium"
                 >
                   Registre APDP
                 </Link>
@@ -667,10 +671,10 @@ export default function HomePage(): ReactNode {
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-            <p>
+            <p className="text-center sm:text-left">
               © 2026 Système d&apos;Information Sanitaire Intégré du Bénin — Tous droits réservés.
             </p>
-            <div className="flex items-center gap-5">
+            <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-5">
               <Link href="/login" className="hover:text-white transition-colors">
                 Protection des Données (Loi 2017-20)
               </Link>

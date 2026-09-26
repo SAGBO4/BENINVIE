@@ -160,26 +160,55 @@ export function Nav(): ReactNode {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#0a3764] text-white shadow-md">
+      {/* 1. Barre d'alerte supérieure institutionnelle (Conformité APDP & Numéro Vert 136) */}
+      <div className="w-full bg-[#06213d] border-b border-white/10 px-3 sm:px-6 py-1 text-[11px] sm:text-xs text-white/90">
+        <div className="mx-auto max-w-7xl flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+            <span className="inline-flex items-center gap-1 font-semibold text-emerald-400">
+              <Shield className="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0" />
+              <span>Conformité APDP</span>
+            </span>
+            <span className="text-white/40">•</span>
+            <span className="text-white/70 text-[10px] sm:text-[11px] truncate max-w-[200px] sm:max-w-none">
+              Loi n° 2017-20 Code du Numérique
+            </span>
+          </div>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <a
+              href="tel:136"
+              className="inline-flex items-center gap-1.5 font-bold text-red-400 hover:text-red-300 transition-colors py-0.5"
+            >
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
+              </span>
+              <PhoneCall className="h-3 w-3 shrink-0" />
+              <span>Numéro Vert 136 (Gratuit 24/7)</span>
+            </a>
+          </div>
+        </div>
+      </div>
+
       {/* Barre Principale de Navigation (Style ANIP Officiel) */}
       <div
         ref={navRef}
-        className="mx-auto flex h-18 sm:h-20 w-full max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8"
+        className="mx-auto flex h-16 sm:h-20 w-full max-w-7xl items-center justify-between gap-2 sm:gap-4 px-3 sm:px-6 lg:px-8"
       >
         {/* Marque Officielle Institutionnelle avec Armoiries de la République du Bénin */}
         <Link
           href="/"
-          className="flex items-center gap-3 shrink-0 group focus:outline-hidden"
+          className="flex items-center gap-2 sm:gap-3 shrink min-w-0 group focus:outline-hidden"
           title="BENINVIE — Accueil Plateforme Nationale"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/armoiries-benin.png"
             alt="Armoiries de la République du Bénin"
-            className="h-11 sm:h-13 w-auto object-contain shrink-0 drop-shadow-sm"
+            className="h-9 sm:h-12 w-auto object-contain shrink-0 drop-shadow-sm"
           />
-          <div className="flex flex-col justify-center">
-            <div className="flex items-center gap-2">
-              <span className="text-xl sm:text-2xl font-black tracking-wider text-white leading-none">
+          <div className="flex flex-col justify-center min-w-0">
+            <div className="flex items-center gap-1.5">
+              <span className="text-lg sm:text-2xl font-black tracking-wider text-white leading-none">
                 BENINVIE
               </span>
               <span className="hidden md:inline-block h-3.5 w-px bg-white/30 mx-1" />
@@ -188,13 +217,13 @@ export function Nav(): ReactNode {
               </span>
             </div>
             {/* Ligne Tricolore Nationale Verte-Jaune-Rouge */}
-            <div className="my-1 flex h-[2.5px] w-full rounded-full overflow-hidden shadow-xs">
+            <div className="my-0.5 sm:my-1 flex h-[2.5px] w-full rounded-full overflow-hidden shadow-xs">
               <div className="w-1/3 bg-[#008751]" />
               <div className="w-1/3 bg-[#ffbe00]" />
               <div className="w-1/3 bg-[#eb0000]" />
             </div>
-            <span className="text-[9px] sm:text-[10px] font-semibold uppercase tracking-wider text-white/80">
-              RÉPUBLIQUE DU BÉNIN • MINISTÈRE DE LA SANTÉ
+            <span className="text-[8px] sm:text-[10px] font-semibold uppercase tracking-wider text-white/80 truncate">
+              RÉPUBLIQUE DU BÉNIN • SANTÉ
             </span>
           </div>
         </Link>
@@ -444,18 +473,19 @@ export function Nav(): ReactNode {
           ) : (
             <Link
               href="/login"
-              className="inline-flex items-center gap-2 rounded-lg bg-[#3f6184] hover:bg-[#4a729c] px-4 sm:px-5 py-2 sm:py-2.5 text-xs font-bold uppercase tracking-wider text-white border border-white/20 shadow-sm transition-all duration-200 active:scale-95 shrink-0"
+              className="inline-flex min-h-[44px] items-center justify-center gap-1.5 sm:gap-2 rounded-xl bg-[#3f6184] hover:bg-[#4a729c] px-3 sm:px-5 py-2 sm:py-2.5 text-xs font-bold uppercase tracking-wider text-white border border-white/20 shadow-sm transition-all duration-200 active:scale-95 shrink-0"
             >
-              <LogIn className="h-3.5 w-3.5" />
-              <span>ACCÉDER À MON ESPACE</span>
+              <LogIn className="h-3.5 w-3.5 shrink-0" />
+              <span className="hidden sm:inline">ACCÉDER À MON ESPACE</span>
+              <span className="sm:hidden">ESPACE</span>
             </Link>
           )}
 
-          {/* Bouton Menu Mobile */}
+          {/* Bouton Menu Mobile Ergonomique (44px) */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
-            aria-label="Menu Mobile"
+            className="lg:hidden min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+            aria-label={mobileMenuOpen ? "Fermer le menu" : "Ouvrir le menu de navigation"}
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -469,77 +499,176 @@ export function Nav(): ReactNode {
         <div className="w-1/3 bg-[#eb0000]" />
       </div>
 
-      {/* Menu Mobile Déroulant */}
+      {/* Menu Mobile Déroulant avec Volet Tactile Complet & Backdrop */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="lg:hidden fixed inset-x-3 top-22 max-h-[85vh] overflow-y-auto rounded-2xl border border-slate-200 bg-white p-5 shadow-2xl z-50 flex flex-col gap-4 text-slate-900"
-          >
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-2">
-                Consoles d&apos;Urgence & HEMORA
-              </span>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {URGENCES_GROUP.items.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-2.5 p-2 rounded-xl border border-slate-100 hover:bg-slate-50"
-                    >
-                      <Icon className="h-4 w-4 text-[#0a3764] shrink-0" />
-                      <span className="text-xs font-bold text-slate-900 truncate">{item.label}</span>
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
+          <>
+            {/* Backdrop assombrissant fermant au toucher */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileMenuOpen(false)}
+              className="lg:hidden fixed inset-0 bg-black/60 backdrop-blur-xs z-40"
+              aria-hidden="true"
+            />
 
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-2">
-                Services Citoyens
-              </span>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {CITOYENS_GROUP.items.map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="flex items-center gap-2.5 p-2 rounded-xl border border-slate-100 hover:bg-slate-50"
-                    >
-                      <Icon className="h-4 w-4 text-emerald-600 shrink-0" />
-                      <span className="text-xs font-bold text-slate-900 truncate">{item.label}</span>
-                    </Link>
-                  );
-                })}
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="lg:hidden fixed inset-x-3 top-24 sm:top-28 max-h-[82vh] overflow-y-auto rounded-3xl border border-slate-200 bg-white p-4 sm:p-6 shadow-2xl z-50 flex flex-col gap-5 text-slate-900"
+            >
+              {/* Entête du tiroir avec profil ou statut */}
+              <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div className="flex items-center gap-2">
+                  <span className="h-2.5 w-2.5 rounded-full bg-[#008751] animate-pulse" />
+                  <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                    Portail Officiel BENINVIE
+                  </span>
+                </div>
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="min-h-[40px] min-w-[40px] flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 cursor-pointer"
+                  aria-label="Fermer"
+                >
+                  <X className="h-4 w-4" />
+                </button>
               </div>
-            </div>
 
-            <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
-              <a
-                href="tel:136"
-                className="inline-flex items-center gap-2 text-xs font-bold text-red-600"
-              >
-                <span className="h-2 w-2 rounded-full bg-red-600 animate-pulse" />
-                <span>136 Ligne Verte Urgence 24/7 (Appel Gratuit)</span>
-              </a>
-              <Link
-                href="/login"
-                onClick={() => setMobileMenuOpen(false)}
-                className="text-xs font-bold text-[#0a3764] hover:underline"
-              >
-                Se connecter à mon espace →
-              </Link>
-            </div>
-          </motion.div>
+              {/* 1. Consoles d'Urgence & HEMORA */}
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-2 px-1">
+                  Consoles d&apos;Urgence & Transfusion HEMORA
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {URGENCES_GROUP.items.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center justify-between min-h-[44px] px-3 py-2.5 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-slate-100 active:bg-slate-200 transition-colors group"
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <Icon className="h-4 w-4 text-[#0a3764] shrink-0" />
+                          <span className="text-xs font-bold text-slate-900 truncate">{item.label}</span>
+                        </div>
+                        {item.badge && (
+                          <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-700 shrink-0 ml-1">
+                            {item.badge}
+                          </span>
+                        )}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 2. Services Citoyens */}
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-2 px-1">
+                  Services Citoyens & Droits de Couverture
+                </span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {CITOYENS_GROUP.items.map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="flex items-center justify-between min-h-[44px] px-3 py-2.5 rounded-xl border border-slate-100 bg-slate-50/50 hover:bg-slate-100 active:bg-slate-200 transition-colors group"
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <Icon className="h-4 w-4 text-emerald-600 shrink-0" />
+                          <span className="text-xs font-bold text-slate-900 truncate">{item.label}</span>
+                        </div>
+                        {item.badge && (
+                          <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 shrink-0 ml-1">
+                            {item.badge}
+                          </span>
+                        )}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* 3. Portails de Connexion Rapide par Rôle */}
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-2 px-1">
+                  Portails Métier & Connexion
+                </span>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  <Link
+                    href="/login?role=PATIENT"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="min-h-[44px] flex items-center justify-center text-center p-2 rounded-xl border border-slate-200 bg-white hover:bg-pink-50 text-xs font-bold text-slate-800"
+                  >
+                    Espace Citoyen
+                  </Link>
+                  <Link
+                    href="/login?role=MEDECIN"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="min-h-[44px] flex items-center justify-center text-center p-2 rounded-xl border border-slate-200 bg-white hover:bg-red-50 text-xs font-bold text-slate-800"
+                  >
+                    Médecin Urgence
+                  </Link>
+                  <Link
+                    href="/login?role=PHARMACIE"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="min-h-[44px] flex items-center justify-center text-center p-2 rounded-xl border border-slate-200 bg-white hover:bg-sky-50 text-xs font-bold text-slate-800"
+                  >
+                    Pharmacie
+                  </Link>
+                  <Link
+                    href="/login?role=ARS"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="min-h-[44px] flex items-center justify-center text-center p-2 rounded-xl border border-slate-200 bg-white hover:bg-amber-50 text-xs font-bold text-slate-800"
+                  >
+                    Régulateur ARS
+                  </Link>
+                  <Link
+                    href="/login?role=APDP"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="min-h-[44px] flex items-center justify-center text-center p-2 rounded-xl border border-slate-200 bg-white hover:bg-purple-50 text-xs font-bold text-slate-800"
+                  >
+                    Auditeur APDP
+                  </Link>
+                  <Link
+                    href="/verify"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="min-h-[44px] flex items-center justify-center text-center p-2 rounded-xl border border-[#0a3764]/30 bg-[#0a3764]/5 hover:bg-[#0a3764]/10 text-xs font-bold text-[#0a3764]"
+                  >
+                    Guichet /verify
+                  </Link>
+                </div>
+              </div>
+
+              {/* 4. Barre Actions Bas : Ligne 136 et Connexion */}
+              <div className="pt-3 border-t border-slate-100 flex flex-col gap-2.5">
+                <a
+                  href="tel:136"
+                  className="min-h-[44px] flex items-center justify-center gap-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-xs transition-colors"
+                >
+                  <PhoneCall className="h-4 w-4" />
+                  <span>Appeler le 136 • Urgences 24/7 (Gratuit)</span>
+                </a>
+
+                <Link
+                  href="/login"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="min-h-[44px] flex items-center justify-center gap-2 rounded-xl bg-[#0a3764] hover:bg-[#072544] text-white text-xs font-bold shadow-xs transition-colors"
+                >
+                  <LogIn className="h-4 w-4" />
+                  <span>Accéder à mon espace sécurisé</span>
+                </Link>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </header>

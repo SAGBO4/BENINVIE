@@ -4,9 +4,11 @@ import {
   ArrowDown,
   ArrowRight,
   Award,
+  Clock,
   Gamepad2,
   Rocket,
   ShieldCheck,
+  SlidersHorizontal,
   Sparkles,
   TrendingUp,
   Users,
@@ -181,6 +183,33 @@ export function Projects({
   viewMoreVisible = false,
 }: ProjectsProps): ReactNode {
   const { data } = usePortfolio();
+  const [activeModule, setActiveModule] = useState<"scenario" | "matching" | "stocks" | "passport" | "all">("all");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const handleSync = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const mod = urlParams.get("module");
+        if (mod && ["scenario", "matching", "stocks", "passport", "all"].includes(mod)) {
+          setActiveModule(mod as any);
+          return;
+        }
+        const hash = window.location.hash.replace("#", "");
+        if (hash === "scenario") setActiveModule("scenario");
+        else if (hash === "matching") setActiveModule("matching");
+        else if (hash === "stocks") setActiveModule("stocks");
+        else if (hash === "passport") setActiveModule("passport");
+      };
+
+      handleSync();
+      window.addEventListener("popstate", handleSync);
+      window.addEventListener("hashchange", handleSync);
+      return () => {
+        window.removeEventListener("popstate", handleSync);
+        window.removeEventListener("hashchange", handleSync);
+      };
+    }
+  }, []);
 
   const getSafeImage = (img: string | undefined, defaultImg: string): string => {
     if (!img || img.trim() === "" || img.startsWith("blob:")) {
@@ -280,16 +309,66 @@ export function Projects({
         </div>
       )}
 
-      {/* Live Interactive Consoles Connected to Backend */}
-      <div className="mx-auto w-full max-w-275 px-6 sm:px-10 mt-12 space-y-12">
-        <div id="scenario" className="scroll-mt-24">
-          <InteractiveScenarioKalale />
+      {/* Live Interactive Consoles with Dedicated Select Switcher */}
+      <div className="mx-auto w-full max-w-275 px-6 sm:px-10 mt-12">
+        {/* Module Switcher Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-3xl border border-foreground/10 bg-background/80 backdrop-blur-md shadow-sm mb-8">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+              <SlidersHorizontal className="h-5 w-5" />
+            </div>
+            <div>
+              <h3 className="text-sm font-bold text-foreground">
+                Sélecteur de Module Opérationnel
+              </h3>
+              <p className="text-[11px] text-foreground/60">
+                Affichez un module spécifique ou l&apos;intégralité des consoles en direct
+              </p>
+            </div>
+          </div>
+
+          {/* Select Dropdown (Mobile & Quick Choice) */}
+          <div className="flex items-center gap-2">
+            <select
+              value={activeModule}
+              onChange={(e) => setActiveModule(e.target.value as any)}
+              className="w-full sm:w-auto rounded-2xl border border-foreground/15 bg-background px-4 py-2 text-xs font-semibold text-foreground focus:border-emerald-500 focus:outline-none transition-colors cursor-pointer"
+            >
+              <option value="all">Afficher tous les modules</option>
+              <option value="scenario">1. Démo Scénario Kalalé (7 étapes)</option>
+              <option value="matching">2. Matching Haversine (&lt; 45 km)</option>
+              <option value="stocks">3. Stocks de Sang (77 Communes)</option>
+              <option value="passport">4. Passeport Donneur & MoMo</option>
+            </select>
+          </div>
         </div>
-        <div id="matching" className="scroll-mt-24">
-          <HaversineEmergencyConsole />
+
+        {/* Modular Consoles Display */}
+        <div className="space-y-10">
+          {(activeModule === "all" || activeModule === "scenario") && (
+            <div id="scenario" className="scroll-mt-28">
+              <InteractiveScenarioKalale />
+            </div>
+          )}
+
+          {(activeModule === "all" || activeModule === "matching") && (
+            <div id="matching" className="scroll-mt-28">
+              <HaversineEmergencyConsole />
+            </div>
+          )}
+
+          {(activeModule === "all" || activeModule === "stocks") && (
+            <div id="stocks" className="scroll-mt-28">
+              <NationalStockConsole />
+            </div>
+          )}
+
+          {(!viewMoreVisible && (activeModule === "all" || activeModule === "passport")) && (
+            <div id="passport" className="scroll-mt-28">
+              <DonorPassportConsole />
+            </div>
+          )}
         </div>
-        <NationalStockConsole />
-        {!viewMoreVisible && <DonorPassportConsole />}
       </div>
 
       {viewMoreVisible ? (

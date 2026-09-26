@@ -1555,8 +1555,9 @@ function ImageUploader({
       />
 
       {value && value.startsWith("blob:") && (
-        <p className="text-[11px] text-amber-500 font-medium">
-          ⚠️ Attention : Vous avez entré une URL locale &ldquo;blob:&rdquo;. Les URLs blob ne sont valables que dans la mémoire de votre navigateur et ne s&apos;afficheront pas pour les visiteurs. Veuillez cliquer sur &ldquo;Téléverser une image&rdquo; ou renseigner une URL https://.
+        <p className="text-[11px] text-amber-500 font-medium flex items-center gap-1.5">
+          <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+          <span>Attention : Vous avez entré une URL locale &ldquo;blob:&rdquo;. Les URLs blob ne sont valables que dans la mémoire de votre navigateur et ne s&apos;afficheront pas pour les visiteurs. Veuillez cliquer sur &ldquo;Téléverser une image&rdquo; ou renseigner une URL https://.</span>
         </p>
       )}
 

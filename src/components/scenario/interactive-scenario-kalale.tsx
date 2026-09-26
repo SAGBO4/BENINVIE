@@ -3,6 +3,7 @@
 import { useState, type ReactNode } from "react";
 import {
   Baby,
+  Check,
   CheckCircle2,
   Clock,
   Compass,
@@ -114,7 +115,7 @@ export function InteractiveScenarioKalale(): ReactNode {
         const json = await res.json();
         setStepLogs((prev) => ({
           ...prev,
-          1: `✓ Patient identifié : Bio GOUDA (28 ans, Basso/Kalalé, 34 SA, Langue: Bariba). Dossier FHIR intègre.`,
+          1: `Patient identifié : Bio GOUDA (28 ans, Basso/Kalalé, 34 SA, Langue: Bariba). Dossier FHIR intègre.`,
         }));
       } else if (activeStep.num === 2) {
         const res = await fetch("/api/v1/simulation/sms", {
@@ -129,24 +130,24 @@ export function InteractiveScenarioKalale(): ReactNode {
         const json = await res.json();
         setStepLogs((prev) => ({
           ...prev,
-          2: `✓ Rappel SMS et vocal en Bariba transmis avec succès via la passerelle GSM rurale.`,
+          2: `Rappel SMS et vocal en Bariba transmis avec succès via la passerelle GSM rurale.`,
         }));
       } else if (activeStep.num === 3) {
         const res = await fetch("/api/v1/ordonnances");
         const json = await res.json();
         setStepLogs((prev) => ({
           ...prev,
-          3: `✓ Ordonnance ORD-2026-KAL-042 émise : Fer Folate 60mg + Sulfadoxine-Pyriméthamine (TPI paludisme). QR scellé.`,
+          3: `Ordonnance ORD-2026-KAL-042 émise : Fer Folate 60mg + Sulfadoxine-Pyriméthamine (TPI paludisme). QR scellé.`,
         }));
       } else if (activeStep.num === 4) {
         setStepLogs((prev) => ({
           ...prev,
-          4: `✓ Retrait à la Pharmacie Communale de Kalalé validé. Tiers-payant ARCH à 100% (Reste à charge: 0 FCFA). QR code invalidé à usage unique.`,
+          4: `Retrait à la Pharmacie Communale de Kalalé validé. Tiers-payant ARCH à 100% (Reste à charge: 0 FCFA). QR code invalidé à usage unique.`,
         }));
       } else if (activeStep.num === 5) {
         setStepLogs((prev) => ({
           ...prev,
-          5: `✓ Transfert monétaire GBESSOKE exécuté : 5 000 FCFA crédités sur le compte MTN MoMo de la famille. Preuve OTS ancrée.`,
+          5: `Transfert monétaire GBESSOKE exécuté : 5 000 FCFA crédités sur le compte MTN MoMo de la famille. Preuve OTS ancrée.`,
         }));
       } else if (activeStep.num === 6) {
         const res = await fetch("/api/v1/encounters/bris-de-glace", {
@@ -162,20 +163,20 @@ export function InteractiveScenarioKalale(): ReactNode {
         const json = await res.json();
         setStepLogs((prev) => ({
           ...prev,
-          6: `✓ Protocole Bris de Glace activé à l'HZ de Nikki. Accès immédiat au groupe O+ sans caution financière. Garantie de l'État engagée.`,
+          6: `Protocole Bris de Glace activé à l'HZ de Nikki. Accès immédiat au groupe O+ sans caution financière. Garantie de l'État engagée.`,
         }));
       } else if (activeStep.num === 7) {
         const res = await fetch("/api/v1/hemora/matching?lat=9.9400&lng=3.2108&groupe=O%2B");
         const json = await res.json();
         setStepLogs((prev) => ({
           ...prev,
-          7: `✓ Matching HEMORA réussi : 2 donneurs O+ mobilisés (Bio Boni à 3.2 km, Sabi Kora à 38 km). Poches délivrées, vie de la mère et du nouveau-né préservée. Forfait 2 000 FCFA MoMo versé.`,
+          7: `Matching HEMORA réussi : 2 donneurs O+ mobilisés (Bio Boni à 3.2 km, Sabi Kora à 38 km). Poches délivrées, vie de la mère et du nouveau-né préservée. Forfait 2 000 FCFA MoMo versé.`,
         }));
       }
     } catch {
       setStepLogs((prev) => ({
         ...prev,
-        [activeStep.num]: `✓ Étape ${activeStep.num} simulée avec succès selon le référentiel SSOT.`,
+        [activeStep.num]: `Étape ${activeStep.num} simulée avec succès selon le référentiel SSOT.`,
       }));
     } finally {
       setExecuting(false);
@@ -243,7 +244,7 @@ export function InteractiveScenarioKalale(): ReactNode {
                     : "bg-foreground/10 text-foreground/60"
                 }`}
               >
-                {isDone ? "✓" : step.num}
+                {isDone ? <Check className="h-3 w-3" /> : step.num}
               </span>
               <span className="whitespace-nowrap">{step.titre.slice(0, 22)}...</span>
             </button>

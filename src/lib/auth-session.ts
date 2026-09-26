@@ -36,6 +36,7 @@ export const DEMO_USERS: Record<UserRole, UserSession> = {
     commune: "Cotonou",
     departement: "Littoral",
     badge: "Super-Admin National",
+    avatarUrl: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150",
     password: "admin2026",
   },
   ARS: {
@@ -49,6 +50,7 @@ export const DEMO_USERS: Record<UserRole, UserSession> = {
     commune: "Cotonou",
     departement: "Littoral",
     badge: "Régulateur Officiel",
+    avatarUrl: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150",
     password: "ars2026",
   },
   APDP: {
@@ -62,6 +64,7 @@ export const DEMO_USERS: Record<UserRole, UserSession> = {
     commune: "Cotonou",
     departement: "Littoral",
     badge: "Conformité Loi 2017-20",
+    avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150",
     password: "apdp2026",
   },
   MEDECIN: {
@@ -75,6 +78,7 @@ export const DEMO_USERS: Record<UserRole, UserSession> = {
     commune: "Nikki",
     departement: "Borgou",
     badge: "Accrédité Bris de Glace",
+    avatarUrl: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=150",
     password: "med2026",
   },
   ASC: {
@@ -88,6 +92,7 @@ export const DEMO_USERS: Record<UserRole, UserSession> = {
     commune: "Kalalé",
     departement: "Borgou",
     badge: "Terrain PWA Offline",
+    avatarUrl: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=150",
     password: "asc2026",
   },
   PATIENT: {
@@ -101,6 +106,7 @@ export const DEMO_USERS: Record<UserRole, UserSession> = {
     commune: "Kalalé",
     departement: "Borgou",
     badge: "Couvert ARCH & FHIR",
+    avatarUrl: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150",
     password: "bio2026",
   },
   CITOYEN: {
@@ -114,6 +120,7 @@ export const DEMO_USERS: Record<UserRole, UserSession> = {
     commune: "Nikki",
     departement: "Borgou",
     badge: "Donneur Émérite O+",
+    avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150",
     password: "kora2026",
   },
   PHARMACIE: {
@@ -127,6 +134,7 @@ export const DEMO_USERS: Record<UserRole, UserSession> = {
     commune: "Nikki",
     departement: "Borgou",
     badge: "Officine Agréée ARCH",
+    avatarUrl: "https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&q=80&w=150",
     password: "pha2026",
   },
 };

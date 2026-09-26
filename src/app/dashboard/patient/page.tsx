@@ -37,6 +37,8 @@ import {
   Share2,
   Lock,
 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
+import { NfcCardConsole } from "@/components/nfc/nfc-card-console";
 import { FadeIn, ScaleUnblur } from "@/components/ui/motion-primitives";
 
 type PatientModuleCard = {
@@ -725,12 +727,17 @@ export default function PatientDashboardPage(): ReactNode {
                     className="group relative cursor-pointer shrink-0 rounded-2xl bg-white p-3 shadow-xl border-2 border-rose-500/30 hover:border-rose-500 transition-all"
                     title="Cliquer pour agrandir le QR Code de prélèvement"
                   >
-                    <QrCode className="h-32 w-32 text-black transition-transform group-hover:scale-105" />
+                    <QRCodeSVG
+                      value={`https://beninvie.bj/verify?token=DONNEUR-${user?.npi || "NPI-CIT-1995-1029"}-HEMORA`}
+                      size={128}
+                      level="M"
+                      className="transition-transform group-hover:scale-105"
+                    />
                     <div className="absolute inset-0 bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
                       <Eye className="h-6 w-6 text-white" />
                     </div>
                     <span className="block text-[9px] font-mono text-zinc-700 text-center font-bold mt-1">
-                      Scellé ANIP Valide
+                      Scellé ANIP Scannable
                     </span>
                   </div>
 
@@ -1136,6 +1143,11 @@ export default function PatientDashboardPage(): ReactNode {
               </div>
             </div>
           </div>
+
+          {/* 4. CARTE SANS CONTACT NFC DU DONNEUR HEMORA */}
+          <div className="mt-8">
+            <NfcCardConsole userRole="CITOYEN" />
+          </div>
         </ScaleUnblur>
       )}
 
@@ -1392,16 +1404,29 @@ export default function PatientDashboardPage(): ReactNode {
               <p className="font-mono text-xs text-emerald-500 font-bold mt-1">#{showQrModal}</p>
             </div>
 
-            <div className="p-4 rounded-2xl bg-white border border-foreground/15 shadow-inner">
-              <div className="h-44 w-44 bg-zinc-950 flex flex-col items-center justify-center rounded-xl p-3 text-white text-[10px] font-mono text-center break-all">
-                <QrCode className="h-28 w-28 text-white mb-2" />
-                <span>BENINVIE-ORD-2026</span>
+            <div className="p-4 rounded-2xl bg-white border border-foreground/15 shadow-inner flex flex-col items-center">
+              <QRCodeSVG
+                value={`https://beninvie.bj/verify?token=ORD-${showQrModal || "2026-001"}-SCELLÉ`}
+                size={176}
+                level="M"
+              />
+              <div className="mt-2 text-[10px] font-mono text-zinc-800 font-bold">
+                BENINVIE-{showQrModal} • SCELLÉ ANIP
               </div>
             </div>
 
             <p className="text-[11px] text-foreground/50">
               Validité à usage unique • Prise en charge intégrale ARCH (Reste à charge 0 FCFA).
             </p>
+
+            <a
+              href={`/verify?token=ORD-${showQrModal || "2026-001"}-SCELLÉ`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs font-bold text-[#0a3764] hover:underline"
+            >
+              Tester le guichet de vérification pharmacie ↗
+            </a>
 
             <button
               onClick={() => setShowQrModal(null)}
@@ -1450,11 +1475,24 @@ export default function PatientDashboardPage(): ReactNode {
 
             {/* Grand QR Code scannable */}
             <div className="p-4 rounded-3xl bg-white border-2 border-rose-500/30 shadow-inner flex flex-col items-center justify-center mx-auto">
-              <QrCode className="h-56 w-56 text-black" />
+              <QRCodeSVG
+                value={`https://beninvie.bj/verify?token=DONNEUR-${user?.npi || "NPI-CIT-1995-1029"}-HEMORA`}
+                size={220}
+                level="M"
+              />
               <div className="mt-2 text-[10px] font-mono text-zinc-800 font-bold">
                 HEMORA-BJ-2026-O-8871 • SCELLÉ ANIP
               </div>
             </div>
+
+            <a
+              href={`/verify?token=DONNEUR-${user?.npi || "NPI-CIT-1995-1029"}-HEMORA`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs font-bold text-rose-600 hover:underline"
+            >
+              Tester le guichet de contrôle transfusionnel CNTS ↗
+            </a>
 
             <div className="grid grid-cols-2 gap-3 text-xs text-left">
               <div className="p-3 rounded-2xl bg-foreground/5 border border-foreground/8">

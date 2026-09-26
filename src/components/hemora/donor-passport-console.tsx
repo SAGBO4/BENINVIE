@@ -1,7 +1,10 @@
 "use client";
 
 import { useState, type ReactNode } from "react";
-import { Award, Check, CreditCard, Heart, QrCode, Search, ShieldCheck, Sparkles, UserCheck } from "lucide-react";
+import Link from "next/link";
+import { Award, Check, CreditCard, Heart, QrCode, Search, ShieldCheck, Sparkles, UserCheck, Radio, ExternalLink } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
+import { NfcCardConsole, NfcCardData } from "@/components/nfc/nfc-card-console";
 
 type DonorData = {
   id: string;
@@ -22,9 +25,23 @@ type DonorData = {
 export function DonorPassportConsole(): ReactNode {
   const [npiInput, setNpiInput] = useState("109876543210");
   const [loading, setLoading] = useState(false);
-  const [donor, setDonor] = useState<DonorData | null>(null);
+  const [donor, setDonor] = useState<DonorData | null>({
+    id: "don-01",
+    npi: "109876543210",
+    nomComplet: "Sabi KORA",
+    groupeSanguin: "O+",
+    telephone: "+229 97 00 11 22",
+    commune: "Kalalé",
+    profileHash: "0x89abf4219c0012e847cba99142e0",
+    nombreDonsValides: 6,
+    disponiblePourUrgence: true,
+    soldeDefraiementFcfa: 4000,
+    eligibleDelai: true,
+    joursRestantsAvantEligibilite: 0,
+  });
   const [error, setError] = useState<string | null>(null);
   const [momoTriggered, setMomoTriggered] = useState(false);
+  const [activeView, setActiveView] = useState<"passport" | "nfc">("passport");
 
   const fetchDonor = async (npiToQuery: string) => {
     try {
@@ -51,50 +68,95 @@ export function DonorPassportConsole(): ReactNode {
   const handleSimulateMoMo = async () => {
     if (!donor) return;
     setMomoTriggered(true);
-    try {
-      await fetch("/api/v1/simulation/sms", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          destinataire: donor.telephone,
-          message: `MTN MoMo Bénin : Vous avez reçu un virement de 2 000 FCFA du CNTS (Forfait transport don de sang bénévole - Décret Transfusionnel). Nouveau solde disponible.`,
-          type: "PAIEMENT_MOMO",
-        }),
-      });
-    } catch {}
   };
 
+  const verificationUrl = donor
+    ? `/verify?token=DONNEUR-${donor.npi}-HEMORA`
+    : "/verify";
+
+  const nfcCardPayload: NfcCardData = donor
+    ? {
+        uid: "04:C8:7B:A2:3F:89:E1",
+        typeCarte: "DONNEUR_HEMORA",
+        nom: donor.nomComplet.split(" ").slice(1).join(" ") || donor.nomComplet,
+        prenom: donor.nomComplet.split(" ")[0] || "Donneur",
+        npi: donor.npi,
+        groupeSanguin: donor.groupeSanguin,
+        rhesus: donor.groupeSanguin.includes("+") ? "RH+ (Positif)" : "RH- (Négatif)",
+        statutDon: donor.eligibleDelai ? "APTE" : "AJOURNE",
+        nbDons: donor.nombreDonsValides,
+        dernierDon: "12 Janvier 2026",
+        prochainDon: donor.eligibleDelai ? "Immédiat" : `Dans ${donor.joursRestantsAvantEligibilite} jours`,
+        pointsSanteMoMo: donor.nombreDonsValides * 50,
+        allergies: ["Pénicilline (réaction modérée)"],
+        contactUrgence: {
+          nom: "KORA Bio",
+          relation: "Frère",
+          telephone: "+229 97 45 12 34",
+        },
+        scelleSha256: donor.profileHash,
+      }
+    : {
+        uid: "04:C8:7B:A2:3F:89:E1",
+        typeCarte: "DONNEUR_HEMORA",
+        nom: "KORA",
+        prenom: "Sabi",
+        npi: "109876543210",
+        groupeSanguin: "O+",
+        rhesus: "RH+ (Positif)",
+        statutDon: "APTE",
+        nbDons: 6,
+        dernierDon: "12 Janvier 2026",
+        prochainDon: "Immédiat",
+        pointsSanteMoMo: 300,
+        allergies: [],
+        contactUrgence: { nom: "KORA Bio", relation: "Famille", telephone: "+229 97 00 00 00" },
+        scelleSha256: "0x89abf4219c0012e847cba99142e0",
+      };
+
   return (
-    <div className="w-full rounded-3xl border border-foreground/10 bg-background/90 p-6 sm:p-8 backdrop-blur-md shadow-xl">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-foreground/8 pb-6">
+    <div className="w-full">
+      {/* Title & Presets */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-red-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-red-600 dark:text-red-400">
-            <UserCheck className="h-3.5 w-3.5" />
-            <span>SF-3.4 • Passeport Donneur Numérique & Forfait MoMo</span>
-          </div>
-          <h3 className="mt-2 font-serif text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-            Espace Citoyen Donneur de Sang
+          <h3 className="text-lg font-bold text-foreground">
+            Passeport Donneur Numérique & Carte NFC HEMORA
           </h3>
-          <p className="mt-1 text-sm text-foreground/70">
-            Vérification de l&apos;éligibilité médicale (délai 60 jours) et déblocage du forfait de transport (2 000 FCFA MTN/Moov).
+          <p className="text-xs text-foreground/60">
+            Contrôle cryptographique, QR Code 2D scellé et lecture de carte sans contact
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-1.5">
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Onglets de vue */}
+          <div className="flex items-center p-1 bg-foreground/5 rounded-xl border border-foreground/10 text-xs mr-2">
+            <button
+              onClick={() => setActiveView("passport")}
+              className={`px-3 py-1.5 rounded-lg font-bold transition-all ${
+                activeView === "passport"
+                  ? "bg-[#0a3764] text-white shadow-xs"
+                  : "text-foreground/70 hover:text-foreground"
+              }`}
+            >
+              Passeport QR Scellé
+            </button>
+            <button
+              onClick={() => setActiveView("nfc")}
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-all ${
+                activeView === "nfc"
+                  ? "bg-[#008751] text-white shadow-xs"
+                  : "text-foreground/70 hover:text-foreground"
+              }`}
+            >
+              <Radio className="h-3 w-3" />
+              <span>Carte NFC & Terminal</span>
+            </button>
+          </div>
+
           <button
             onClick={() => {
-              setNpiInput("NPI-DON-2026-001");
-              fetchDonor("NPI-DON-2026-001");
-            }}
-            className="rounded-xl border border-foreground/10 bg-foreground/3 px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-foreground/6 transition-colors"
-          >
-            Bio BONI (Nikki, O+)
-          </button>
-          <button
-            onClick={() => {
-              setNpiInput("NPI-DON-2026-002");
-              fetchDonor("NPI-DON-2026-002");
+              setNpiInput("109876543210");
+              fetchDonor("109876543210");
             }}
             className="rounded-xl border border-foreground/10 bg-foreground/3 px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-foreground/6 transition-colors"
           >
@@ -139,11 +201,11 @@ export function DonorPassportConsole(): ReactNode {
         </div>
       )}
 
-      {/* Result Donor Card */}
-      {donor && (
+      {/* VUE 1 : PASSEPORT AVEC VRAI QR CODE SCANNABLE */}
+      {donor && activeView === "passport" && (
         <div className="mt-6 grid grid-cols-1 md:grid-cols-12 gap-6 items-stretch">
           {/* Visual Digital Card */}
-          <div className="md:col-span-7 flex flex-col justify-between rounded-3xl bg-gradient-to-br from-zinc-900 via-neutral-900 to-black p-6 text-white shadow-2xl border border-white/10 relative overflow-hidden">
+          <div className="md:col-span-7 flex flex-col justify-between rounded-3xl bg-gradient-to-br from-[#0a3764] via-slate-900 to-black p-6 text-white shadow-2xl border border-white/10 relative overflow-hidden">
             <div className="pointer-events-none absolute right-0 top-0 h-40 w-40 rounded-full bg-red-600/20 blur-2xl" />
 
             <div>
@@ -173,16 +235,42 @@ export function DonorPassportConsole(): ReactNode {
               </div>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs">
+            {/* VRAI QR CODE SCANNABLE CERTIFIÉ */}
+            <div className="my-6 p-4 rounded-2xl bg-white text-slate-900 flex flex-col sm:flex-row items-center gap-4 shadow-inner">
+              <div className="p-2 bg-white rounded-xl shadow-xs">
+                <QRCodeSVG
+                  value={typeof window !== "undefined" ? `${window.location.origin}${verificationUrl}` : `https://beninvie.bj${verificationUrl}`}
+                  size={96}
+                  level="M"
+                />
+              </div>
+              <div className="flex-1 text-center sm:text-left">
+                <div className="flex items-center gap-1.5 text-xs font-bold text-[#0a3764]">
+                  <ShieldCheck className="h-4 w-4 text-[#008751]" />
+                  <span>QR Code Cryptographique Vérifiable</span>
+                </div>
+                <p className="text-[11px] text-slate-600 mt-1 leading-snug">
+                  Scannable par toute caméra ou douchette. Vérification réservée aux centres CNTS et services d&apos;urgence.
+                </p>
+                <Link
+                  href={verificationUrl}
+                  className="inline-flex items-center gap-1 text-[11px] font-bold text-[#0a3764] hover:underline mt-1.5"
+                >
+                  <span>Tester le guichet de contrôle légal</span>
+                  <ExternalLink className="h-3 w-3" />
+                </Link>
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-white/10 flex items-center justify-between text-xs">
               <div className="flex items-center gap-2 text-zinc-400">
-                <QrCode className="h-4 w-4 text-white" />
-                <span className="font-mono text-[11px] truncate max-w-[200px]">
-                  {donor.profileHash}
+                <span className="font-mono text-[10px] truncate max-w-[200px]">
+                  Scellé: {donor.profileHash}
                 </span>
               </div>
-              <span className="text-emerald-400 font-semibold flex items-center gap-1">
-                <ShieldCheck className="h-4 w-4" />
-                APDP Conforme
+              <span className="text-emerald-400 font-semibold flex items-center gap-1 text-[11px]">
+                <ShieldCheck className="h-3.5 w-3.5" />
+                Loi APDP Conforme
               </span>
             </div>
           </div>
@@ -245,6 +333,13 @@ export function DonorPassportConsole(): ReactNode {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* VUE 2 : CARTE NFC PHYSIQUE & LECTEUR PC/SC */}
+      {activeView === "nfc" && (
+        <div className="mt-6">
+          <NfcCardConsole initialCard={nfcCardPayload} userRole="CNTS_AGENT" />
         </div>
       )}
     </div>

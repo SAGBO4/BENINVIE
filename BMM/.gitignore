@@ -32,7 +32,9 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
-!.env.example
+
+# local security
+data/auth.json
 
 # vercel
 .vercel
@@ -40,23 +42,3 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
-
-
-CLAUDE.md
-.claude/
-
-# playwright-cli artifacts (screenshots, logs)
-.playwright-cli/
-
-
-demo/
-
-analyse_strategique.md
-
-# Document de travail interne (non versionné)
-GUIDE_PLATEFORME.md
-
-# Sources de la marque et de l'équipe (photos, présentation): fichiers lourds
-# et images de personnes. Les visuels réellement publiés vivent dans
-# public/team/. Voir docs/assets-marque.md.
-docs/team/

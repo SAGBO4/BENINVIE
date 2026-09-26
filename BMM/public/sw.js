@@ -1,148 +1,110 @@
-/* Service worker HEMORA.
- *
- * Trois règles, dans cet ordre:
- *  - navigations: réseau d'abord, repli sur la page hors-ligne mise en cache;
- *  - ressources statiques du domaine: cache d'abord, réseau en arrière-plan;
- *  - tout le reste, API comprise: réseau seul, jamais servi depuis le cache.
- *
- * L'API n'est jamais mise en cache: afficher un stock ou une urgence périmés
- * serait pire que d'afficher une erreur, sur un produit où la fraîcheur de la
- * donnée conditionne une décision de soin.
- */
+const CACHE_NAME = 'guy-portfolio-cache-v1';
 
-const VERSION = "hemora-v2";
-const SHELL = `${VERSION}-shell`;
-const ASSETS = `${VERSION}-assets`;
+const STATIC_PRECACHE = [
+  '/',
+  '/about',
+  '/projects',
+  '/icon.svg',
+  '/icon-192.png',
+  '/icon-512.png',
+  '/apple-touch-icon.png'
+];
 
-const OFFLINE_URL = "/hors-ligne";
-const PRECACHE = [OFFLINE_URL, "/manifest.webmanifest", "/icons/icon-192.png"];
-
-self.addEventListener("install", (event) => {
+self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches
-      .open(SHELL)
-      .then((cache) => cache.addAll(PRECACHE))
-      .then(() => self.skipWaiting())
-      .catch(() => self.skipWaiting()),
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(STATIC_PRECACHE).catch((err) => {
+        console.warn('Precache partial failure:', err);
+      });
+    }).then(() => self.skipWaiting())
   );
 });
 
-self.addEventListener("activate", (event) => {
+self.addEventListener('activate', (event) => {
   event.waitUntil(
-    caches
-      .keys()
-      .then((keys) =>
-        Promise.all(
-          keys
-            .filter((key) => key !== SHELL && key !== ASSETS)
-            .map((key) => caches.delete(key)),
-        ),
-      )
-      .then(() => self.clients.claim()),
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+      );
+    }).then(() => self.clients.claim())
   );
 });
 
-/** Ressources dont une version légèrement ancienne ne gêne personne. */
-function isStaticAsset(url) {
-  return (
-    url.pathname.startsWith("/icons/") ||
-    url.pathname.startsWith("/team/") ||
-    url.pathname === "/manifest.webmanifest" ||
-    /\.(png|jpg|jpeg|svg|webp|avif|woff2?)$/i.test(url.pathname)
-  );
-}
-
-self.addEventListener("fetch", (event) => {
+self.addEventListener('fetch', (event) => {
   const { request } = event;
-  if (request.method !== "GET") return;
-
   const url = new URL(request.url);
-  if (url.origin !== self.location.origin) return;
 
-  // L'API reste toujours en direct: pas de donnée médicale périmée.
-  if (url.pathname.startsWith("/api/")) return;
+  // Skip non-GET requests, API calls, and Admin panel
+  if (
+    request.method !== 'GET' ||
+    url.pathname.startsWith('/api/') ||
+    url.pathname.startsWith('/HUBGUY') ||
+    url.protocol.startsWith('chrome-extension')
+  ) {
+    return;
+  }
 
-  if (request.mode === "navigate") {
+  // Navigation requests: Network-First with cache fallback
+  if (request.mode === 'navigate') {
     event.respondWith(
-      fetch(request).catch(async () => {
-        const cache = await caches.open(SHELL);
-        return (
-          (await cache.match(OFFLINE_URL)) ??
-          new Response("Hors ligne", {
-            status: 503,
-            headers: { "Content-Type": "text/plain; charset=utf-8" },
-          })
-        );
-      }),
+      fetch(request)
+        .then((response) => {
+          if (response.status === 200) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+          }
+          return response;
+        })
+        .catch(async () => {
+          const cached = await caches.match(request);
+          if (cached) return cached;
+          const fallbackHome = await caches.match('/');
+          if (fallbackHome) return fallbackHome;
+          return new Response('Hors ligne - Guy Tibro Portfolio', {
+            headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+          });
+        })
     );
     return;
   }
 
-  if (isStaticAsset(url)) {
+  // Static assets (Next.js bundles, images, icons, fonts): Stale-While-Revalidate
+  if (
+    url.pathname.startsWith('/_next/static/') ||
+    url.pathname.startsWith('/icons/') ||
+    url.pathname.startsWith('/uploads/') ||
+    url.pathname.endsWith('.png') ||
+    url.pathname.endsWith('.svg') ||
+    url.pathname.endsWith('.woff2')
+  ) {
     event.respondWith(
-      caches.open(ASSETS).then(async (cache) => {
-        const cached = await cache.match(request);
-        // Cache d'abord, puis rafraîchissement discret en arrière-plan.
-        const network = fetch(request)
-          .then((response) => {
-            if (response.ok) cache.put(request, response.clone());
-            return response;
+      caches.match(request).then((cached) => {
+        const fetchPromise = fetch(request)
+          .then((networkResponse) => {
+            if (networkResponse && networkResponse.status === 200) {
+              const copy = networkResponse.clone();
+              caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
+            }
+            return networkResponse;
           })
           .catch(() => cached);
 
-        return cached ?? network;
-      }),
+        return cached || fetchPromise;
+      })
     );
-  }
-});
-
-/* --------------------------- Notifications --------------------------- */
-
-/**
- * Alerte d'urgence poussée par le serveur.
- *
- * Tant qu'aucun serveur de push n'est configuré, ce gestionnaire ne se
- * déclenche jamais: il est en place pour que le branchement ne demande que
- * la clé VAPID et l'envoi côté serveur.
- */
-self.addEventListener("push", (event) => {
-  let payload = {};
-  try {
-    payload = event.data ? event.data.json() : {};
-  } catch {
-    payload = { body: event.data ? event.data.text() : "" };
+    return;
   }
 
-  const title = payload.title ?? "Besoin de sang près de chez vous";
-  const options = {
-    body: payload.body ?? "Une structure recherche votre groupe sanguin.",
-    icon: "/icons/icon-192.png",
-    badge: "/icons/icon-192.png",
-    tag: payload.tag ?? "urgence",
-    // Une seconde alerte remplace la première plutôt que de s'empiler.
-    renotify: true,
-    requireInteraction: true,
-    data: { url: payload.url ?? "/donneur" },
-  };
-
-  event.waitUntil(self.registration.showNotification(title, options));
-});
-
-self.addEventListener("notificationclick", (event) => {
-  event.notification.close();
-  const target = event.notification.data?.url ?? "/donneur";
-
-  event.waitUntil(
-    self.clients
-      .matchAll({ type: "window", includeUncontrolled: true })
-      .then((clients) => {
-        // Réutilise un onglet déjà ouvert plutôt que d'en ajouter un.
-        for (const client of clients) {
-          if (client.url.includes(target) && "focus" in client) {
-            return client.focus();
-          }
+  // Default: Network with Cache fallback
+  event.respondWith(
+    fetch(request)
+      .then((response) => {
+        if (response.status === 200) {
+          const copy = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(request, copy));
         }
-        return self.clients.openWindow(target);
-      }),
+        return response;
+      })
+      .catch(() => caches.match(request))
   );
 });

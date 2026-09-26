@@ -1,9 +1,20 @@
+# Dependencies
+node_modules
+
+# Build outputs
 .next
 out
 build
-coverage
-node_modules
-drizzle
+dist
+
+# Cache
+.cache
+
+# Package manager
+pnpm-lock.yaml
 package-lock.json
-next-env.d.ts
-*.tsbuildinfo
+yarn.lock
+
+# Generated files
+*.min.js
+*.min.css

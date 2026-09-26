@@ -1,14 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { NationalShowcase } from "@/components/marketing/NationalShowcase";
+import { SmoothScroll } from "@/components/layout/smooth-scroll";
+import { PageBackdrop } from "@/components/layout/page-backdrop";
+import { BmmNav } from "@/components/layout/bmm-nav";
+import { BmmHero } from "@/components/hero/bmm-hero";
+import { BmmModules } from "@/components/modules/bmm-modules";
 import { NationalDashboard } from "@/components/dashboard/NationalDashboard";
+import { EmergencyBrisDeGlace } from "@/components/emergencies/EmergencyBrisDeGlace";
 import { DonorPortal } from "@/components/donor/DonorPortal";
 import { InteractiveScenarioKalale } from "@/components/scenario/InteractiveScenarioKalale";
-import { EmergencyBrisDeGlace } from "@/components/emergencies/EmergencyBrisDeGlace";
-import { PharmacopeeCatalog } from "@/components/pharmacopee/PharmacopeeCatalog";
+import { Footer } from "@/components/layout/Footer";
 import { MobileMoneyModal } from "@/components/simulators/MobileMoneyModal";
 import {
   Patient,
@@ -22,11 +24,8 @@ import {
 } from "@/lib/types";
 import { SimulatedSmsResult } from "@/lib/simulation";
 
-export default function GbEMainPage() {
-  // Onglet actif : vitrine par défaut
-  const [activeTab, setActiveTab] = useState("vitrine");
-
-  // Données chargées depuis l'API
+export default function BmmMainPage() {
+  // Données d'état chargées depuis les APIs
   const [patient, setPatient] = useState<Patient | null>(null);
   const [ordonnance, setOrdonnance] = useState<Ordonnance | null>(null);
   const [donneurs, setDonneurs] = useState<DonneurHemora[]>([]);
@@ -37,7 +36,7 @@ export default function GbEMainPage() {
   const [auditLogs, setAuditLogs] = useState<AuditLog[]>([]);
   const [smsLogs, setSmsLogs] = useState<SimulatedSmsResult[]>([]);
 
-  // Modale Simulateur Mobile Money
+  // Simulateur Mobile Money MTN/Moov
   const [momoOpen, setMomoOpen] = useState(false);
   const [momoParams, setMomoParams] = useState({
     montant: 2000,
@@ -55,7 +54,6 @@ export default function GbEMainPage() {
   const [brisDeGlaceData, setBrisDeGlaceData] = useState<any>(null);
   const [matchingResults, setMatchingResults] = useState<any[]>([]);
 
-  // Rafraîchissement global des données
   const refreshData = async () => {
     try {
       const [patRes, ordRes, donRes, stRes, audRes, smsRes, campRes, trfRes, ptsRes] =
@@ -81,7 +79,7 @@ export default function GbEMainPage() {
       if (audRes?.data) setAuditLogs(audRes.data);
       if (smsRes?.data) setSmsLogs(smsRes.data);
     } catch (e) {
-      console.error("Erreur de chargement des données :", e);
+      console.error("Erreur chargement données BMM :", e);
     }
   };
 
@@ -89,7 +87,6 @@ export default function GbEMainPage() {
     refreshData();
   }, []);
 
-  // Déroulement pas-à-pas du Scénario Bio à Kalalé
   const handleNextStep = async () => {
     setStepLoading(true);
     setScenarioMessage(null);
@@ -227,20 +224,33 @@ export default function GbEMainPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-emerald-500 selection:text-white">
-      <div>
-        {/* Navigation & En-tête Supérieur */}
-        <Header activeTab={activeTab} onTabChange={setActiveTab} />
+    <SmoothScroll>
+      <div className="relative min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between selection:bg-emerald-500 selection:text-white">
+        {/* Fond WebGL ShaderFlow dynamique issu de Guy */}
+        <PageBackdrop />
 
-        {/* Conteneur Principal */}
-        <main className="mx-auto max-w-7xl px-4 py-6">
-          {/* ONGLET 1 : VITRINE & PRÉSENTATION NATIONALE */}
-          {activeTab === "vitrine" && (
-            <NationalShowcase onNavigateToTab={(t) => setActiveTab(t)} />
-          )}
+        {/* Navigation Flottante Pill façon Guy */}
+        <BmmNav />
 
-          {/* ONGLET 2 : TABLEAU DE BORD HOSPITALIER & RÉGULATION TRANSFUSIONNELLE */}
-          {activeTab === "dashboard" && (
+        {/* Contenu Principal Fluide */}
+        <main className="relative z-10 mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 space-y-20 pb-24">
+          {/* 1. HÉRO BMM */}
+          <BmmHero />
+
+          {/* 2. PILIERS ET MODULES BMM (FORMAT DRIBBLE CARDS) */}
+          <BmmModules />
+
+          {/* 3. TABLEAU DE BORD HOSPITALIER & STOCKS 77 COMMUNES */}
+          <section id="stocks" className="pt-10 scroll-mt-24 space-y-4">
+            <div className="flex flex-col items-center justify-center pb-4 text-center">
+              <span className="text-xs font-mono font-bold uppercase tracking-widest text-emerald-400 bg-emerald-950/60 px-3.5 py-1 rounded-full border border-emerald-500/20">
+                03 • Régulation Hospitalière & Stocks Sanguins
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-3">
+                Monitoring National des Stocks en Temps Réel
+              </h2>
+            </div>
+
             <NationalDashboard
               stocks={stocks}
               transferts={transferts}
@@ -318,24 +328,62 @@ export default function GbEMainPage() {
                 refreshData();
               }}
             />
-          )}
+          </section>
 
-          {/* ONGLET 3 : SCÉNARIO OFFICIEL DE VALIDATION (BIO À KALALÉ) */}
-          {activeTab === "scenario" && (
-            <InteractiveScenarioKalale
-              currentStep={currentStep}
-              stepLoading={stepLoading}
-              scenarioMessage={scenarioMessage}
+          {/* 4. URGENCES VITALES & PAIEMENT DIFFÉRÉ */}
+          <section id="urgences" className="pt-10 scroll-mt-24 space-y-4">
+            <div className="flex flex-col items-center justify-center pb-4 text-center">
+              <span className="text-xs font-mono font-bold uppercase tracking-widest text-rose-400 bg-rose-950/60 px-3.5 py-1 rounded-full border border-rose-500/20">
+                04 • Urgences Vitales
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-3">
+                Dispositif Bris de Glace & Garantie État
+              </h2>
+            </div>
+
+            <EmergencyBrisDeGlace
               brisDeGlaceActive={brisDeGlaceActive}
               brisDeGlaceData={brisDeGlaceData}
-              matchingResults={matchingResults}
-              smsLogs={smsLogs}
-              onNextStep={handleNextStep}
+              onTriggerBrisDeGlace={() => {
+                fetch("/api/v1/encounters/bris-de-glace", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    patientNpi: "2026-KAL-9821-BIO",
+                    praticienNpi: "NPI-MED-2026-0042",
+                    praticienNom: "Dr. Emmanuel Tossou",
+                    motifUrgence: "Urgence vitale choc hémorragique",
+                  }),
+                })
+                  .then((r) => r.json())
+                  .then((d) => {
+                    setBrisDeGlaceActive(true);
+                    setBrisDeGlaceData(d.profilVital);
+                    refreshData();
+                  });
+              }}
+              onOpenMobileMoney={(montant, motif) => {
+                setMomoParams({
+                  montant,
+                  motif,
+                  telephone: "+229 01 97 00 12 34",
+                });
+                setMomoOpen(true);
+              }}
             />
-          )}
+          </section>
 
-          {/* ONGLET 4 : ESPACE DONNEUR & CARTES QR CERTIFIÉES */}
-          {activeTab === "donneur" && (
+          {/* 5. ESPACE DONNEUR & CARTES QR SCELLES */}
+          <section id="donneur" className="pt-10 scroll-mt-24 space-y-4">
+            <div className="flex flex-col items-center justify-center pb-4 text-center">
+              <span className="text-xs font-mono font-bold uppercase tracking-widest text-emerald-400 bg-emerald-950/60 px-3.5 py-1 rounded-full border border-emerald-500/20">
+                05 • Espace Donneur Citoyen
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-3">
+                Cartes de Donneur & Points Civiques
+              </h2>
+            </div>
+
             <DonorPortal
               donneurs={donneurs}
               pointsTransactions={pointsTransactions}
@@ -369,58 +417,44 @@ export default function GbEMainPage() {
                 refreshData();
               }}
             />
-          )}
+          </section>
 
-          {/* ONGLET 5 : URGENCES VITALES & PAIEMENT DIFFÉRÉ */}
-          {activeTab === "urgences" && (
-            <EmergencyBrisDeGlace
+          {/* 6. SCÉNARIO INTERACTIF BIO GOUDA À KALALÉ */}
+          <section id="scenario" className="pt-10 scroll-mt-24 space-y-4">
+            <div className="flex flex-col items-center justify-center pb-4 text-center">
+              <span className="text-xs font-mono font-bold uppercase tracking-widest text-amber-400 bg-amber-950/60 px-3.5 py-1 rounded-full border border-amber-500/20">
+                06 • Démonstration Interactive
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-white mt-3">
+                Le Parcours Complet de Soins de Bio à Kalalé
+              </h2>
+            </div>
+
+            <InteractiveScenarioKalale
+              currentStep={currentStep}
+              stepLoading={stepLoading}
+              scenarioMessage={scenarioMessage}
               brisDeGlaceActive={brisDeGlaceActive}
               brisDeGlaceData={brisDeGlaceData}
-              onTriggerBrisDeGlace={() => {
-                fetch("/api/v1/encounters/bris-de-glace", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    patientNpi: "2026-KAL-9821-BIO",
-                    praticienNpi: "NPI-MED-2026-0042",
-                    praticienNom: "Dr. Emmanuel Tossou",
-                    motifUrgence: "Urgence vitale polytraumatisé / choc hémorragique",
-                  }),
-                })
-                  .then((r) => r.json())
-                  .then((d) => {
-                    setBrisDeGlaceActive(true);
-                    setBrisDeGlaceData(d.profilVital);
-                    refreshData();
-                  });
-              }}
-              onOpenMobileMoney={(montant, motif) => {
-                setMomoParams({
-                  montant,
-                  motif,
-                  telephone: "+229 01 97 00 12 34",
-                });
-                setMomoOpen(true);
-              }}
+              matchingResults={matchingResults}
+              smsLogs={smsLogs}
+              onNextStep={handleNextStep}
             />
-          )}
-
-          {/* ONGLET 6 : PHARMACOPÉE TRADITIONNELLE ARS (MTA) */}
-          {activeTab === "pharmacopee" && <PharmacopeeCatalog />}
+          </section>
         </main>
+
+        {/* Footer Sobre & Professionnel */}
+        <Footer />
+
+        {/* Modale de simulation Mobile Money MTN / Moov */}
+        <MobileMoneyModal
+          isOpen={momoOpen}
+          onClose={() => setMomoOpen(false)}
+          montantDefault={momoParams.montant}
+          motifDefault={momoParams.motif}
+          telephoneDefault={momoParams.telephone}
+        />
       </div>
-
-      {/* Footer Officiel de Marque */}
-      <Footer />
-
-      {/* Modale Simulateur Mobile Money MTN/Moov */}
-      <MobileMoneyModal
-        isOpen={momoOpen}
-        onClose={() => setMomoOpen(false)}
-        montantDefault={momoParams.montant}
-        motifDefault={momoParams.motif}
-        telephoneDefault={momoParams.telephone}
-      />
-    </div>
+    </SmoothScroll>
   );
 }

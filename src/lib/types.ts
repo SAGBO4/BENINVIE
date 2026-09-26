@@ -1,4 +1,4 @@
-// Types et modèles centraux pour la Plateforme Gbɛ (BENINVIE)
+// Types et modèles centraux pour la Plateforme BENINVIE
 
 export type GroupeSanguin = "O+" | "O-" | "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-";
 

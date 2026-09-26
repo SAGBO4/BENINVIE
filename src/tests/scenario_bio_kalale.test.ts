@@ -43,7 +43,7 @@ describe("Scénario Officiel de Démonstration : Bio à Kalalé (7 Étapes Compl
     // -------------------------------------------------------------
     const sms = sendSimulatedSms({
       telephone: bio!.telephone,
-      message: "Gbɛ Santé : Fofo Bio ! CPN3 waasi gari Kalalé CSC suba. Munissez-vous de votre carte QR.",
+      message: "BENINVIE Santé : Fofo Bio ! CPN3 waasi gari Kalalé CSC suba. Munissez-vous de votre carte QR.",
       langue: "bariba",
     });
     dbStore.smsLogs.unshift(sms);

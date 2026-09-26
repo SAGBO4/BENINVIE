@@ -6,25 +6,35 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 export const metadata: Metadata = createMetadata({
-  title: "Modules & Consoles Opérationnelles",
+  title: "Consoles Cliniques & Modules HEMORA",
   description: "Dispositif Bris de Glace, Matching Haversine 0-45 km, Supervision des Stocks et Passeport Donneur.",
   path: "/projects",
 });
 
 export default function ProjectsPage(): ReactNode {
   return (
-    <main id="main-content" className="flex flex-1 flex-col">
-      <section className="mx-auto w-full max-w-275 px-6 pt-44 pb-16 sm:px-10 sm:pt-48 sm:pb-20">
-        <FadeIn className="flex flex-col items-center gap-5 text-center">
-          <h1 className="font-serif text-[2.75rem] font-medium leading-[1.05] tracking-tight text-foreground md:text-[3.25rem] lg:text-[3.75rem]">
-            Consoles d&apos;Urgence & Modules BMM
+    <main id="main-content" className="flex flex-1 flex-col bg-[#f6f8fb] text-slate-900">
+      <section className="mx-auto w-full max-w-7xl px-6 sm:px-10 lg:px-12 pt-10 pb-16 border-b border-slate-200/90 bg-white">
+        <FadeIn className="flex flex-col items-center gap-4 text-center">
+          <div className="inline-flex items-center gap-2 rounded-full border border-[#0a3764]/20 bg-[#0a3764]/5 px-4 py-1.5 text-xs font-bold text-[#0a3764]">
+            <span className="h-2 w-2 rounded-full bg-[#008751] animate-pulse" />
+            <span>RÉSEAU TRANSFUSIONNEL & URGENCES SANITAIRES DU BÉNIN</span>
+          </div>
+
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-tight">
+            Consoles Opérationnelles & Modules Cliniques
           </h1>
-          <p className="max-w-[44ch] text-[18px] leading-[1.45] tracking-tight text-foreground/70 sm:text-[21px]">
-            Supervision temps réel, matching géodésique Haversine (&lt; 45 km) et garantie de prise en charge immédiate Bris de Glace dans les 77 communes.
+
+          <p className="max-w-[58ch] text-base sm:text-lg leading-relaxed text-slate-600">
+            Supervision télémétrique en temps réel, matching géodésique Haversine (&lt; 45 km) du Centre National de Transfusion Sanguine (CNTS) et garantie de prise en charge immédiate Bris de Glace dans les 77 communes.
           </p>
         </FadeIn>
       </section>
-      <Projects />
+
+      <div className="w-full bg-[#f6f8fb] py-8 sm:py-12">
+        <Projects />
+      </div>
+
       <ContactCard />
       <div className="h-12 sm:h-16" />
     </main>

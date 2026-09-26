@@ -13,7 +13,6 @@ import {
   Pill,
   Lock,
   ArrowRight,
-  Sparkles,
   MapPin,
   CheckCircle,
   Zap,
@@ -21,17 +20,101 @@ import {
   QrCode,
   Droplet,
   Compass,
-  Coins,
   ChevronRight,
+  FileText,
+  CreditCard,
+  UserCheck,
+  ShieldCheck,
+  Radio,
+  FileCheck2,
+  Clock,
+  Sparkles,
 } from "lucide-react";
 import { FadeIn, ScaleUnblur } from "@/components/ui/motion-primitives";
 import { BmmTelemetryRadar } from "@/components/hero/bmm-telemetry-radar";
 
+type ServiceItem = {
+  id: string;
+  category: string;
+  title: string;
+  subtitle: string;
+  tarif: string;
+  delai: string;
+  link: string;
+  icon: typeof ShieldAlert;
+};
+
+// Services officiels en ligne calqués sur l'architecture ANIP (e-services de l'État béninois)
+const SERVICES_EN_LIGNE: ServiceItem[] = [
+  {
+    id: "urgence-bris",
+    category: "Urgences Vitales & Décret d'État",
+    title: "Prise en Charge Vitale & Bris de Glace",
+    subtitle: "Déverrouillage immédiat des soins d'urgence sans condition de solvabilité préalable",
+    tarif: "0 FCFA (Caution interdite)",
+    delai: "Immédiat (< 2 min)",
+    link: "/login?role=MEDECIN",
+    icon: ShieldAlert,
+  },
+  {
+    id: "hemora-sang",
+    category: "Transfusion Sanguine CNTS",
+    title: "Chaîne Transfusionnelle HEMORA",
+    subtitle: "Supervision des poches CGR et matching géodésique Haversine dans les 77 communes",
+    tarif: "Prise en charge CNTS",
+    delai: "Alerte < 15 min",
+    link: "/projects?module=matching",
+    icon: Droplet,
+  },
+  {
+    id: "dossier-fhir",
+    category: "Identification & Dossier National",
+    title: "Carnet de Santé Numérique HL7 FHIR",
+    subtitle: "Dossier médical partagé unifié adossé au Numéro Personnel d'Identification (NPI ANIP)",
+    tarif: "Gratuit (Inclus NPI)",
+    delai: "Permanent 24h/24",
+    link: "/login?role=PATIENT",
+    icon: Stethoscope,
+  },
+  {
+    id: "passeport-donneur",
+    category: "Incentive Civique & Volontariat",
+    title: "Passeport Donneur & Forfait MoMo",
+    subtitle: "Carte QR chiffrée APDP, contrôle des 60 jours et défraiement de déplacement forfaitaire",
+    tarif: "2 000 FCFA versés",
+    delai: "Virement instantané",
+    link: "/projects?module=passport",
+    icon: CreditCard,
+  },
+  {
+    id: "assurance-arch",
+    category: "Protection Sociale Universelle",
+    title: "Assurance Maladie ARCH Bénin",
+    subtitle: "Prise en charge intégrale des soins obstétriques, paludisme et panier de base",
+    tarif: "Tiers-payant 100%",
+    delai: "Validation temps réel",
+    link: "/login?role=PATIENT",
+    icon: HeartHandshake,
+  },
+  {
+    id: "pharmacopee-mta",
+    category: "Régulation Pharmaceutique ARS",
+    title: "Pharmacopée Homologuée MTA",
+    subtitle: "Catalogue officiel des Médicaments Traditionnels Améliorés certifiés et tradipraticiens accrédités",
+    tarif: "Tarif conventionné",
+    delai: "Catalogue officiel",
+    link: "/dashboard/ars",
+    icon: Pill,
+  },
+];
+
 type FeatureCard = {
   id: string;
   badge: string;
+  referenceLegale: string;
   title: string;
   description: string;
+  facility: string;
   icon: typeof ShieldAlert;
   color: string;
   accent: string;
@@ -42,144 +125,215 @@ const PILLIERS: FeatureCard[] = [
   {
     id: "urgence",
     badge: "Règle d'or nationale",
-    title: "Paiement Différé & Bris de Glace",
+    referenceLegale: "Décret d'application de l'Urgence Vitale",
+    title: "Paiement Différé & Bris de Glace APDP",
     description:
-      "Zéro refus d'admission pour motif financier. Déverrouillage d'urgence en 1 clic des constantes vitales avec traçabilité inaltérable APDP.",
+      "Zéro refus d'admission pour motif financier. Les hôpitaux nationaux et de zone activent le protocole de déverrouillage d'urgence en un clic. Chaque accès exceptionnel aux données de santé est consigné dans un registre inaltérable d'audit soumis à l'APDP.",
+    facility: "Déployé au CNHU-HKM Cotonou, CHIC Calavi et CHUD Borgou",
     icon: ShieldAlert,
     color: "from-red-600 to-rose-700",
-    accent: "text-red-500",
-    link: "/login",
+    accent: "text-red-600",
+    link: "/login?role=MEDECIN",
   },
   {
     id: "hemora",
     badge: "Souveraineté Transfusionnelle",
-    title: "Chaîne HEMORA & Matching Haversine",
+    referenceLegale: "Protocole National CNTS - Rayon 45 km",
+    title: "Chaîne HEMORA & Matching Haversine WGS84",
     description:
-      "Matching géodésique < 45 km, surveillance temps réel des stocks de sang dans les 77 communes et défraiement forfaitaire 2 000 FCFA Mobile Money.",
+      "Algorithme géodésique interconnectant en temps réel les banques de sang hospitalières et les donneurs volontaires compatibles (ABO/Rhésus). Alerte SMS ciblée sous 15 minutes avec défraiement forfaitaire de déplacement de 2 000 FCFA Mobile Money.",
+    facility: "Interconnexion des 77 communes et banques de dépôts départementales",
     icon: Droplet,
     color: "from-pink-600 to-red-600",
-    accent: "text-pink-500",
-    link: "/projects",
+    accent: "text-rose-600",
+    link: "/projects?module=matching",
   },
   {
     id: "fhir",
-    badge: "Continuité des Soins",
-    title: "Carnet HL7 FHIR & Cartographie IASO",
+    badge: "Continuité Territoriale des Soins",
+    referenceLegale: "Standard International HL7 FHIR Release 4 & ANIP",
+    title: "Carnet de Santé Unifié adossé au NPI ANIP",
     description:
-      "Dossier patient numérique unique adossé au NPI ANIP, interconnectant le CHIC Calavi, CNHU, CHD et les 600 centres de santé d'arrondissement.",
+      "Interconnexion souveraine des dossiers patients entre les centres de référence (CNHU, CHIC Calavi, CHD) et les 600 centres de santé d'arrondissement. Accès aux antécédents, constantes vitales et allergies sans barrière de format.",
+    facility: "Cartographie sanitaire nationale synchronisée sur le référentiel IASO",
     icon: Stethoscope,
     color: "from-blue-600 to-indigo-600",
-    accent: "text-blue-500",
-    link: "/login",
+    accent: "text-[#0a3764]",
+    link: "/login?role=PATIENT",
   },
   {
     id: "mta",
-    badge: "Filière Innovante ARS",
-    title: "Pharmacopée & Ordonnances MTA",
+    badge: "Régulation & Souveraineté Thérapeutique",
+    referenceLegale: "Cadre Réglementaire ARS - Homologation Pharmacopée",
+    title: "Pharmacopée Homologuée MTA & Ordonnances Sécurisées",
     description:
-      "Registre national des tradipraticiens accrédités, catalogue des Médicaments Traditionnels Améliorés certifiés et prescriptions QR infalsifiables.",
+      "Registre national des tradipraticiens dûment accrédités par l'Autorité de Régulation du Secteur de la Santé (ARS). Délivrance d'ordonnances munies de QR codes scellés anti-contrefaçon et intégration progressive aux officines pharmaceutiques.",
+    facility: "Contrôles botaniques, toxicologiques et cliniques validés par l'ARS",
     icon: Pill,
     color: "from-amber-600 to-yellow-600",
-    accent: "text-amber-500",
-    link: "/login",
+    accent: "text-amber-600",
+    link: "/dashboard/ars",
   },
   {
     id: "pwa-asc",
-    badge: "Inclusion Territoriale",
-    title: "IA Multilingue & PWA 16 000 ASC",
+    badge: "Dernier Kilomètre Sanitaire",
+    referenceLegale: "Plan Stratégique National de Santé Communautaire",
+    title: "PWA Hors-Ligne des 16 000 ASC & Programme GBESSOKE",
     description:
-      "Triage vocal précoce en Bariba, Fon, Yoruba et Dendi fonctionnant hors-ligne, articulé aux transferts monétaires fléchés GBESSOKE post-CPN.",
+      "Application web progressive (PWA) fonctionnant sans connexion internet pour les 16 000 Agents de Santé Communautaire. Triage vocal précoce en langues nationales (Bariba, Fon, Dendi, Yoruba) et fléchage des transferts monétaires post-CPN.",
+    facility: "Expérimenté en conditions réelles à Kalalé, Nikki, Bembèrèkè et Tchaourou",
     icon: Activity,
     color: "from-emerald-600 to-teal-700",
-    accent: "text-emerald-500",
-    link: "/projects#scenario",
+    accent: "text-emerald-600",
+    link: "/projects?module=scenario",
   },
 ];
 
 const ACTORS_SHORTCUTS = [
-  { role: "MINISTERE" as UserRole, name: "Ministère de la Santé", roleLabel: "Super-Admin", icon: Building2, color: "text-blue-500" },
-  { role: "ARS" as UserRole, name: "Régulateur ARS", roleLabel: "Accréditations & MTA", icon: Pill, color: "text-amber-500" },
-  { role: "APDP" as UserRole, name: "Auditeur APDP", roleLabel: "Sécurité & Bris de Glace", icon: Lock, color: "text-purple-500" },
-  { role: "MEDECIN" as UserRole, name: "Médecin / Urgentiste", roleLabel: "Urgences & Soins", icon: Stethoscope, color: "text-red-500" },
-  { role: "ASC" as UserRole, name: "Agent de Santé (ASC)", roleLabel: "Terrain PWA & Triage", icon: Activity, color: "text-emerald-500" },
-  { role: "PATIENT" as UserRole, name: "Espace Patient", roleLabel: "Carnet HL7 FHIR & ARCH", icon: HeartHandshake, color: "text-pink-500" },
-  { role: "PHARMACIE" as UserRole, name: "Officine Agréée", roleLabel: "Scan Ordonnance ARCH", icon: QrCode, color: "text-cyan-500" },
+  {
+    role: "MINISTERE" as UserRole,
+    name: "Ministère de la Santé",
+    roleLabel: "Super-Admin National",
+    subtext: "Direction des Hôpitaux",
+    icon: Building2,
+    color: "text-[#0a3764]",
+    bg: "bg-[#0a3764]/10",
+  },
+  {
+    role: "ARS" as UserRole,
+    name: "Régulateur ARS",
+    roleLabel: "Autorité de Régulation",
+    subtext: "Accréditations & MTA",
+    icon: Pill,
+    color: "text-amber-600",
+    bg: "bg-amber-500/10",
+  },
+  {
+    role: "APDP" as UserRole,
+    name: "Auditeur APDP",
+    roleLabel: "Loi 2017-20 Numérique",
+    subtext: "Audit Bris de Glace",
+    icon: Lock,
+    color: "text-purple-600",
+    bg: "bg-purple-500/10",
+  },
+  {
+    role: "MEDECIN" as UserRole,
+    name: "Médecin Urgentiste",
+    roleLabel: "Service des Urgences",
+    subtext: "CNHU & Hôpitaux Zone",
+    icon: Stethoscope,
+    color: "text-red-600",
+    bg: "bg-red-500/10",
+  },
+  {
+    role: "ASC" as UserRole,
+    name: "Agent ASC de Terrain",
+    roleLabel: "Santé Communautaire",
+    subtext: "16 000 ASC en PWA",
+    icon: Activity,
+    color: "text-emerald-600",
+    bg: "bg-emerald-500/10",
+  },
+  {
+    role: "PATIENT" as UserRole,
+    name: "Espace Patient",
+    roleLabel: "Carnet HL7 FHIR",
+    subtext: "Assuré ARCH & NPI",
+    icon: HeartHandshake,
+    color: "text-pink-600",
+    bg: "bg-pink-500/10",
+  },
+  {
+    role: "PHARMACIE" as UserRole,
+    name: "Officine Conventionnée",
+    roleLabel: "Dispensation Sécurisée",
+    subtext: "Scan QR & ARCH 100%",
+    icon: QrCode,
+    color: "text-sky-600",
+    bg: "bg-sky-500/10",
+  },
 ];
 
 export default function HomePage(): ReactNode {
   const { loginAs } = useAuth();
 
   return (
-    <main id="main-content" className="flex flex-1 flex-col overflow-hidden">
-      {/* 1. HERO SECTION MAJESTUEUSE */}
-      <section className="relative w-full pt-36 pb-20 sm:pt-48 sm:pb-32 px-4 sm:px-8">
+    <main id="main-content" className="flex flex-1 flex-col overflow-hidden bg-[#f6f8fb] text-slate-900">
+      {/* 1. HERO SECTION INSTITUTIONNELLE SPACIEUSE ET SOLENNELLE */}
+      <section className="relative w-full pt-12 pb-18 sm:pt-16 sm:pb-24 px-6 sm:px-10 lg:px-12 border-b border-slate-200/90 bg-white">
         <div className="mx-auto w-full max-w-7xl">
-          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
-            {/* Texte Gauche */}
+          <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12 lg:gap-16">
+            {/* Texte Gauche : Copywriter institutionnel humain, rigoureux et direct */}
             <FadeIn className="flex flex-col gap-6 lg:col-span-7">
-              <div className="inline-flex items-center gap-2 self-start rounded-full border border-emerald-500/25 bg-background/80 px-4 py-1.5 text-xs font-semibold text-emerald-600 dark:text-emerald-400 backdrop-blur-md shadow-sm">
-                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="uppercase tracking-wider">Système d&apos;Information Sanitaire Intégré du Bénin</span>
+              <div className="inline-flex items-center gap-2.5 self-start rounded-full border border-[#0a3764]/20 bg-[#0a3764]/5 px-4 py-1.5 text-xs font-bold text-[#0a3764] shadow-xs">
+                <span className="h-2 w-2 rounded-full bg-[#008751] animate-pulse" />
+                <span className="uppercase tracking-wider">République du Bénin • Système National d&apos;Information Sanitaire</span>
               </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-[1.08] tracking-tight text-foreground">
-                Gbɛ (BENINVIE) <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 via-amber-500 to-red-500">
-                  Chaque vie compte.
+              <h1 className="text-3xl sm:text-5xl lg:text-5xl font-black leading-[1.12] tracking-tight text-slate-900">
+                BENINVIE <br />
+                <span className="text-[#0a3764]">
+                  Chaque seconde compte.
                 </span>{" "}
                 <br />
-                Chaque urgence prise en charge.
+                <span className="text-slate-800 text-2xl sm:text-4xl font-bold">
+                  Zéro refus de soin pour motif financier.
+                </span>
               </h1>
 
-              <p className="max-w-[46ch] text-base sm:text-lg leading-relaxed text-foreground/75">
-                La plateforme souveraine de santé numérique unifiant la prise en charge vitale immédiate sans caution, la chaîne transfusionnelle <strong>HEMORA</strong>, le dossier <strong>HL7 FHIR</strong> et la valorisation sécurisée de la <strong>pharmacopée traditionnelle béninoise</strong>.
+              <p className="max-w-[54ch] text-base sm:text-lg leading-relaxed text-slate-700">
+                Le portail régalien de santé numérique de la République du Bénin. Il unifie le déverrouillage d&apos;urgence vitale sans caution (<strong>Bris de Glace</strong>), le réseau transfusionnel <strong>HEMORA</strong> adossé au CNTS, le carnet de santé <strong>HL7 FHIR</strong> indexé sur le NPI ANIP et la régulation de la pharmacopée traditionnelle béninoise (<strong>MTA</strong>).
               </p>
 
-              {/* Boutons d'Action Principaux */}
+              {/* Actions Métier Directes */}
               <div className="flex flex-wrap items-center gap-3 pt-2">
                 <Link
                   href="/login"
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-emerald-600 hover:bg-emerald-500 px-6 py-3.5 text-sm font-bold text-white shadow-xl shadow-emerald-600/30 transition-all active:scale-95"
+                  className="inline-flex items-center justify-center gap-2.5 rounded-lg bg-[#0a3764] hover:bg-[#082a4d] px-6 py-3.5 text-sm font-bold text-white shadow-md shadow-[#0a3764]/20 transition-all active:scale-95"
                 >
                   <Lock className="h-4 w-4" />
-                  <span>Se connecter à mon espace</span>
+                  <span>ESPACE PROFESSIONNEL & CITOYEN</span>
                   <ArrowRight className="h-4 w-4" />
                 </Link>
 
                 <Link
                   href="/projects"
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl border border-foreground/15 bg-background/70 hover:bg-background px-6 py-3.5 text-sm font-semibold text-foreground backdrop-blur-md transition-all hover:border-red-500/40"
+                  className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 px-6 py-3.5 text-sm font-bold text-slate-800 shadow-xs transition-all hover:border-[#0a3764]/50"
                 >
-                  <Droplet className="h-4 w-4 text-red-500" />
+                  <Droplet className="h-4 w-4 text-red-600" />
                   <span>Consoles HEMORA & Urgences</span>
                 </Link>
 
                 <Link
-                  href="/projects#scenario"
-                  className="inline-flex items-center justify-center gap-2 rounded-2xl bg-foreground/5 hover:bg-foreground/10 px-5 py-3.5 text-xs font-semibold text-foreground/80 transition-colors"
+                  href="/projects?module=scenario"
+                  className="inline-flex items-center justify-center gap-2 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 px-5 py-3.5 text-xs font-bold text-amber-900 transition-colors"
                 >
-                  <Compass className="h-4 w-4 text-amber-500" />
-                  <span>Parcours Bio à Kalalé</span>
+                  <Compass className="h-4 w-4 text-amber-700" />
+                  <span>Scénario Bio à Kalalé</span>
                 </Link>
               </div>
 
-              {/* Badges de Confiance Institutionnelle */}
-              <div className="pt-4 border-t border-foreground/10 flex flex-wrap items-center gap-6 text-xs text-foreground/60">
-                <span className="flex items-center gap-1.5 font-medium">
-                  <CheckCircle className="h-4 w-4 text-emerald-500" /> Ministère de la Santé
+              {/* Références Réglementaires Officielles */}
+              <div className="pt-4 border-t border-slate-200/90 flex flex-wrap items-center gap-6 text-xs text-slate-600">
+                <span className="flex items-center gap-1.5 font-bold text-slate-800">
+                  <CheckCircle className="h-4 w-4 text-[#008751]" /> Loi n° 2017-20 APDP
                 </span>
-                <span className="flex items-center gap-1.5 font-medium">
-                  <CheckCircle className="h-4 w-4 text-amber-500" /> Régulation ARS
+                <span className="flex items-center gap-1.5 font-bold text-slate-800">
+                  <CheckCircle className="h-4 w-4 text-[#ffbe00]" /> Régulation Sanitaire ARS
                 </span>
-                <span className="flex items-center gap-1.5 font-medium">
-                  <CheckCircle className="h-4 w-4 text-purple-500" /> Conformité APDP
+                <span className="flex items-center gap-1.5 font-bold text-slate-800">
+                  <CheckCircle className="h-4 w-4 text-[#0a3764]" /> Référentiel NPI ANIP
+                </span>
+                <span className="flex items-center gap-1.5 font-bold text-slate-800">
+                  <CheckCircle className="h-4 w-4 text-[#eb0000]" /> Ligne d&apos;Urgence 136
                 </span>
               </div>
             </FadeIn>
 
-            {/* Radar Télémétrique Droite */}
+            {/* Console Télémétrique Droite */}
             <ScaleUnblur className="lg:col-span-5 flex justify-center">
-              <div className="relative aspect-square w-full max-w-[420px] rounded-4xl border border-foreground/10 bg-background/60 p-4 shadow-2xl backdrop-blur-xl">
+              <div className="relative aspect-square w-full max-w-[440px] rounded-3xl border border-slate-200/90 bg-white p-3.5 shadow-xl">
                 <BmmTelemetryRadar />
               </div>
             </ScaleUnblur>
@@ -187,79 +341,218 @@ export default function HomePage(): ReactNode {
         </div>
       </section>
 
-      {/* 2. BARRE D'INDICATEURS NATIONAUX EN DIRECT */}
-      <section className="w-full border-y border-foreground/10 bg-foreground/2 py-8 px-4 sm:px-8">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div className="flex flex-col">
-            <span className="text-3xl sm:text-4xl font-black text-foreground tracking-tight">77</span>
-            <span className="text-xs uppercase font-bold text-emerald-500 mt-1">Communes Interconnectées</span>
-            <span className="text-[11px] text-foreground/50">Cartographie sanitaire IASO</span>
+      {/* Ligne Tricolore Républicaine */}
+      <div className="flex h-1.5 w-full">
+        <div className="w-1/3 bg-[#008751]" />
+        <div className="w-1/3 bg-[#ffbe00]" />
+        <div className="w-1/3 bg-[#eb0000]" />
+      </div>
+
+      {/* 2. SECTION EXACTE INSPIRÉE DE L'ARCHITECTURE ANIP : "Nos services en ligne" */}
+      <section className="w-full py-16 sm:py-24 px-6 sm:px-10 lg:px-12 bg-[#f6f8fb]">
+        <div className="max-w-7xl mx-auto">
+          <FadeIn className="text-center max-w-3xl mx-auto mb-12">
+            <div className="inline-flex items-center gap-2 rounded-full bg-[#0a3764]/10 px-4 py-1 text-xs font-bold text-[#0a3764] mb-3 border border-[#0a3764]/20">
+              Guichet Unique de la Santé Publique
+            </div>
+            <h2 className="text-2xl sm:text-4xl font-black text-[#0a3764] tracking-tight">
+              Nos services en ligne
+            </h2>
+            <p className="mt-2 text-sm sm:text-base text-slate-600 font-medium">
+              Accédez directement aux actes cliniques dématérialisés, à la traçabilité transfusionnelle et aux droits de couverture garantis par l&apos;État béninois.
+            </p>
+          </FadeIn>
+
+          {/* Grille de Cartes ANIP Élargie (3 Colonnes) */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+            {SERVICES_EN_LIGNE.map((srv) => {
+              const Icon = srv.icon;
+              return (
+                <Link
+                  key={srv.id}
+                  href={srv.link}
+                  className="group flex flex-col justify-between p-6 rounded-2xl bg-white border border-slate-200/90 shadow-xs hover:shadow-lg hover:border-[#0a3764]/50 transition-all duration-200 hover:-translate-y-0.5"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-3 mb-4">
+                      <div className="h-12 w-12 rounded-xl bg-[#eaf2f9] text-[#0a3764] flex items-center justify-center shrink-0 group-hover:bg-[#0a3764] group-hover:text-white transition-colors duration-200 shadow-xs">
+                        <Icon className="h-6 w-6" />
+                      </div>
+                      <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200/80">
+                        {srv.category}
+                      </span>
+                    </div>
+
+                    <h3 className="text-base sm:text-lg font-bold text-slate-900 group-hover:text-[#0a3764] transition-colors leading-snug">
+                      {srv.title}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-600 font-normal mt-2 leading-relaxed">
+                      {srv.subtitle}
+                    </p>
+                  </div>
+
+                  <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+                    <div>
+                      <span className="block font-bold text-slate-900 font-mono text-[11px]">
+                        {srv.tarif}
+                      </span>
+                      <span className="block text-[10px] text-slate-500 font-medium">
+                        Délai : {srv.delai}
+                      </span>
+                    </div>
+
+                    <span className="inline-flex items-center gap-1 font-bold text-[#0a3764] group-hover:translate-x-1 transition-transform">
+                      <span>Accéder</span>
+                      <ChevronRight className="h-4 w-4" />
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
 
-          <div className="flex flex-col">
-            <span className="text-3xl sm:text-4xl font-black text-foreground tracking-tight">16 000</span>
-            <span className="text-xs uppercase font-bold text-blue-500 mt-1">ASC Équipés en PWA</span>
-            <span className="text-[11px] text-foreground/50">Santé communautaire hors-ligne</span>
-          </div>
-
-          <div className="flex flex-col">
-            <span className="text-3xl sm:text-4xl font-black text-foreground tracking-tight">0 FCFA</span>
-            <span className="text-xs uppercase font-bold text-red-500 mt-1">Caution en Urgence Vitale</span>
-            <span className="text-[11px] text-foreground/50">Zéro refus d&apos;admission garanti</span>
-          </div>
-
-          <div className="flex flex-col">
-            <span className="text-3xl sm:text-4xl font-black text-foreground tracking-tight">&lt; 45 km</span>
-            <span className="text-xs uppercase font-bold text-amber-500 mt-1">Matching HEMORA</span>
-            <span className="text-[11px] text-foreground/50">Calcul géodésique Haversine</span>
+          {/* Bouton "Tout voir" (Style ANIP Ambré/Ocre Authentique) */}
+          <div className="mt-12 flex flex-col items-center justify-center gap-2">
+            <Link
+              href="/projects"
+              className="inline-flex items-center gap-2 rounded-lg bg-[#f0a945] hover:bg-[#e09833] px-9 py-3.5 text-xs font-bold uppercase tracking-wider text-white shadow-md shadow-[#f0a945]/20 transition-all duration-200 active:scale-95"
+            >
+              <span>Tout voir</span>
+              <ChevronRight className="h-4 w-4" />
+            </Link>
+            <span className="text-[11px] text-slate-500 font-medium">
+              Consultez l&apos;ensemble des consoles d&apos;urgence, modules régionaux et passerelles GSM
+            </span>
           </div>
         </div>
       </section>
 
-      {/* 3. SECTION LES 5 PILIERS NATIONAUX */}
-      <section id="piliers" className="w-full py-24 px-4 sm:px-8 max-w-7xl mx-auto">
-        <FadeIn className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3.5 py-1 text-xs font-bold text-emerald-500 mb-3 border border-emerald-500/20">
-            Programme d&apos;Action National 2026-2031
+      {/* 3. BARRE D'INDICATEURS NATIONAUX EN DIRECT (Large, aérée et haute visibilité) */}
+      <section className="w-full border-y border-slate-200 bg-white py-12 px-6 sm:px-10 lg:px-12">
+        <div className="max-w-7xl mx-auto">
+          {/* Header de la télémétrie */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-8 pb-4 border-b border-slate-100">
+            <div className="flex items-center gap-2.5">
+              <span className="relative flex h-3 w-3">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-3 w-3 bg-[#008751]"></span>
+              </span>
+              <span className="text-xs uppercase tracking-wider font-bold text-slate-800">
+                Télémétrie Opérationnelle Nationale • Surveillance Sanitaire en Temps Réel
+              </span>
+            </div>
+            <span className="text-[11px] text-slate-500 font-mono">
+              Source : CNTS • ANIP • Ministère de la Santé (Actualisé en continu)
+            </span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
+
+          {/* 4 Métriques Clés Spacieuses */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+            <div className="flex flex-col p-5 rounded-2xl bg-[#f6f8fb] border border-slate-200/90">
+              <span className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#0a3764] tracking-tight font-mono">
+                77
+              </span>
+              <span className="text-xs uppercase font-bold text-slate-900 mt-2">
+                Communes Interconnectées
+              </span>
+              <span className="text-xs text-slate-600 mt-1">
+                12 départements maillés via le référentiel sanitaire IASO.
+              </span>
+            </div>
+
+            <div className="flex flex-col p-5 rounded-2xl bg-[#f6f8fb] border border-slate-200/90">
+              <span className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#008751] tracking-tight font-mono">
+                16 000
+              </span>
+              <span className="text-xs uppercase font-bold text-slate-900 mt-2">
+                ASC Équipés en PWA
+              </span>
+              <span className="text-xs text-slate-600 mt-1">
+                Agents communautaires habilités en mode hors-ligne.
+              </span>
+            </div>
+
+            <div className="flex flex-col p-5 rounded-2xl bg-[#f6f8fb] border border-slate-200/90">
+              <span className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#eb0000] tracking-tight font-mono">
+                0 FCFA
+              </span>
+              <span className="text-xs uppercase font-bold text-slate-900 mt-2">
+                Caution en Urgence Vitale
+              </span>
+              <span className="text-xs text-slate-600 mt-1">
+                Décret d&apos;État : Zéro refus d&apos;admission hospitalière.
+              </span>
+            </div>
+
+            <div className="flex flex-col p-5 rounded-2xl bg-[#f6f8fb] border border-slate-200/90">
+              <span className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#f0a945] tracking-tight font-mono">
+                &lt; 45 km
+              </span>
+              <span className="text-xs uppercase font-bold text-slate-900 mt-2">
+                Matching Géodésique
+              </span>
+              <span className="text-xs text-slate-600 mt-1">
+                Calcul Haversine SF-3 & acheminement Zémidjan garanti.
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. SECTION LES 5 PILIERS STRATÉGIQUES NATIONAUX (Wide & High Contrast) */}
+      <section id="piliers" className="w-full py-20 sm:py-24 px-6 sm:px-10 lg:px-12 max-w-7xl mx-auto">
+        <FadeIn className="text-center max-w-3xl mx-auto mb-14">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-[#0a3764]/10 px-4 py-1.5 text-xs font-bold text-[#0a3764] mb-3 border border-[#0a3764]/20">
+            Cadre de Souveraineté Sanitaire 2026-2030
+          </div>
+          <h2 className="text-2xl sm:text-4xl font-bold text-slate-900 tracking-tight">
             Les 5 Piliers Stratégiques de la Plateforme
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-foreground/70">
-            Une architecture unifiée répondant concrètement aux défis d&apos;équité, de rapidité et de souveraineté sanitaire.
+          <p className="mt-3 text-sm sm:text-base text-slate-600 leading-relaxed">
+            Une infrastructure régalienne conçue pour répondre aux réalités du terrain béninois, de l&apos;hôpital universitaire de Cotonou aux hameaux ruraux de Kalalé.
           </p>
         </FadeIn>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
           {PILLIERS.map((pil) => {
             const Icon = pil.icon;
             return (
               <div
                 key={pil.id}
-                className="group relative flex flex-col justify-between rounded-3xl border border-foreground/10 bg-background/80 hover:border-emerald-500/40 p-6 shadow-sm hover:shadow-xl transition-all duration-300 backdrop-blur-md"
+                className="group relative flex flex-col justify-between rounded-2xl border border-slate-200/90 bg-white hover:border-[#0a3764]/40 p-7 shadow-xs hover:shadow-lg transition-all duration-200"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
-                    <div className="h-12 w-12 rounded-2xl bg-foreground/5 border border-foreground/10 flex items-center justify-center group-hover:scale-105 transition-transform">
+                    <div className="h-12 w-12 rounded-xl bg-[#eaf2f9] border border-slate-100 flex items-center justify-center group-hover:scale-105 transition-transform shadow-xs">
                       <Icon className={`h-6 w-6 ${pil.accent}`} />
                     </div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-foreground/5 text-foreground/70">
+                    <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200/80">
                       {pil.badge}
                     </span>
                   </div>
 
-                  <h3 className="text-lg font-bold text-foreground group-hover:text-emerald-500 transition-colors">
+                  <span className="text-[11px] font-semibold text-slate-500 block mb-1">
+                    {pil.referenceLegale}
+                  </span>
+
+                  <h3 className="text-lg font-bold text-slate-900 group-hover:text-[#0a3764] transition-colors leading-snug">
                     {pil.title}
                   </h3>
-                  <p className="text-xs text-foreground/65 mt-2 leading-relaxed">
+
+                  <p className="text-xs sm:text-sm text-slate-600 mt-2.5 leading-relaxed">
                     {pil.description}
                   </p>
+
+                  <div className="mt-4 pt-3 border-t border-slate-100 text-[11px] text-slate-500 flex items-center gap-1.5">
+                    <MapPin className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                    <span className="truncate">{pil.facility}</span>
+                  </div>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-foreground/5 flex items-center justify-between text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                  <Link href={pil.link} className="flex items-center gap-1 group-hover:translate-x-0.5 transition-transform">
-                    <span>Explorer le module</span>
-                    <ChevronRight className="h-3.5 w-3.5" />
+                <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-[#0a3764]">
+                  <Link href={pil.link} className="flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                    <span>Explorer le dispositif</span>
+                    <ChevronRight className="h-4 w-4" />
                   </Link>
                 </div>
               </div>
@@ -268,36 +561,39 @@ export default function HomePage(): ReactNode {
         </div>
       </section>
 
-      {/* 4. ACCÈS DIRECT PAR ACTEUR (DEMO FLOW SHORTCUTS) */}
-      <section className="w-full py-20 px-4 sm:px-8 bg-foreground/2 border-t border-foreground/10">
+      {/* 5. ACCÈS DIRECT PAR ACTEUR (Grille Spacieuse 7 Colonnes) */}
+      <section className="w-full py-18 sm:py-20 px-6 sm:px-10 lg:px-12 bg-white border-t border-slate-200">
         <div className="max-w-7xl mx-auto">
-          <FadeIn className="text-center max-w-2xl mx-auto mb-12">
-            <h2 className="text-2xl sm:text-3xl font-bold text-foreground">
-              Accès Dédié par Profil Métier
+          <FadeIn className="text-center max-w-2xl mx-auto mb-10">
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">
+              Accès Dédié par Profil Métier Habilité
             </h2>
-            <p className="mt-2 text-xs sm:text-sm text-foreground/60">
-              Chaque acteur dispose d&apos;un flux de travail sur-mesure conforme à ses habilitations légales.
+            <p className="mt-2 text-xs sm:text-sm text-slate-600">
+              Sélectionnez votre espace d&apos;exercice pour ouvrir votre session selon vos prérogatives institutionnelles.
             </p>
           </FadeIn>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-7 gap-4">
             {ACTORS_SHORTCUTS.map((act) => {
               const Icon = act.icon;
               return (
                 <button
                   key={act.role}
                   onClick={() => loginAs(act.role)}
-                  className="p-4 rounded-2xl border border-foreground/10 bg-background/80 hover:border-emerald-500/50 hover:bg-background text-left transition-all duration-200 flex flex-col justify-between gap-3 group backdrop-blur-md"
+                  className="p-4 sm:p-5 rounded-2xl border border-slate-200/90 bg-[#f6f8fb] hover:border-[#0a3764]/50 hover:bg-white text-left transition-all duration-200 flex flex-col justify-between gap-4 group shadow-xs hover:shadow-md cursor-pointer"
                 >
-                  <div className="h-9 w-9 rounded-xl bg-foreground/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <div className={`h-11 w-11 rounded-xl ${act.bg} flex items-center justify-center group-hover:scale-105 transition-transform`}>
                     <Icon className={`h-5 w-5 ${act.color}`} />
                   </div>
                   <div>
-                    <span className="text-xs font-bold text-foreground block group-hover:text-emerald-500 transition-colors">
+                    <span className="text-xs font-bold text-slate-900 block group-hover:text-[#0a3764] transition-colors leading-snug">
                       {act.name}
                     </span>
-                    <span className="text-[10px] text-foreground/50 block mt-0.5">
+                    <span className="text-[10px] font-semibold text-slate-600 block mt-1">
                       {act.roleLabel}
+                    </span>
+                    <span className="text-[9px] text-slate-400 block mt-0.5 truncate">
+                      {act.subtext}
                     </span>
                   </div>
                 </button>
@@ -307,25 +603,86 @@ export default function HomePage(): ReactNode {
         </div>
       </section>
 
-      {/* 5. FOOTER OFFICIEL */}
-      <footer className="w-full py-12 px-4 sm:px-8 border-t border-foreground/10 bg-background">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-foreground/60">
-          <div className="flex items-center gap-3">
-            <span className="font-bold text-foreground text-sm">Gbɛ (BENINVIE)</span>
-            <span>•</span>
-            <span>Système d&apos;Information Sanitaire Intégré de la République du Bénin</span>
+      {/* 6. FOOTER OFFICIEL CALQUÉ SUR LE MODÈLE ANIP & GOUVERNEMENTAL */}
+      <footer className="w-full bg-[#1b232d] text-white py-14 px-6 sm:px-10 lg:px-12 border-t border-slate-800">
+        <div className="max-w-7xl mx-auto flex flex-col gap-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 items-start justify-between gap-8 pb-10 border-b border-white/10">
+            {/* Colonne Gauche : Eservices & Ligne Verte */}
+            <div className="flex flex-col gap-3">
+              <span className="text-sm font-bold text-white uppercase tracking-wider">
+                Services Sanitaires Nationaux
+              </span>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Plateforme opérée sous l&apos;égide conjointe du Ministère de la Santé, de l&apos;ANIP et de l&apos;Autorité de Régulation du Secteur de la Santé (ARS).
+              </p>
+              <div className="mt-2 flex items-center gap-2">
+                <span className="inline-flex items-center gap-2 rounded-full bg-red-600 px-3.5 py-1.5 text-xs font-bold text-white shadow-xs">
+                  <PhoneCall className="h-3.5 w-3.5" />
+                  <span>Ligne d&apos;Urgence 136 (Appel gratuit 24h/24)</span>
+                </span>
+              </div>
+            </div>
+
+            {/* Centre : Identité Républicaine */}
+            <div className="flex flex-col items-start md:items-center text-left md:text-center">
+              <span className="text-sm font-bold text-white tracking-wide">
+                BENINVIE — République du Bénin
+              </span>
+              <span className="text-xs text-slate-300 mt-1">
+                Direction des Systèmes d&apos;Information Sanitaire (DSIS)
+              </span>
+              <div className="mt-3 flex h-[4px] w-32 rounded-full overflow-hidden">
+                <div className="w-1/3 bg-[#008751]" />
+                <div className="w-1/3 bg-[#ffbe00]" />
+                <div className="w-1/3 bg-[#eb0000]" />
+              </div>
+              <span className="text-[11px] text-slate-400 mt-2">
+                Fraternité • Justice • Travail
+              </span>
+            </div>
+
+            {/* Colonne Droite : Liens Rapides & Support */}
+            <div className="flex flex-col items-start md:items-end gap-3">
+              <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                Réseaux & Signalement
+              </span>
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/projects?module=matching"
+                  className="rounded-lg bg-white/10 hover:bg-white/20 px-3 py-1.5 text-xs text-slate-200 transition-colors font-medium"
+                >
+                  Matching HEMORA
+                </Link>
+                <Link
+                  href="/dashboard/apdp"
+                  className="rounded-lg bg-white/10 hover:bg-white/20 px-3 py-1.5 text-xs text-slate-200 transition-colors font-medium"
+                >
+                  Registre APDP
+                </Link>
+              </div>
+              <p className="text-[11px] text-slate-400 text-left md:text-right">
+                Assistance technique et médicale : support.sante@gouv.bj
+              </p>
+            </div>
           </div>
 
-          <div className="flex items-center gap-6">
-            <Link href="/login" className="hover:text-foreground transition-colors font-medium">
-              Espace Connexion
-            </Link>
-            <Link href="/projects" className="hover:text-foreground transition-colors font-medium">
-              Consoles HEMORA
-            </Link>
-            <a href="tel:136" className="text-red-500 font-bold hover:underline">
-              Ligne Verte 136 (Gratuit)
-            </a>
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
+            <p>
+              © 2026 Système d&apos;Information Sanitaire Intégré du Bénin — Tous droits réservés.
+            </p>
+            <div className="flex items-center gap-5">
+              <Link href="/login" className="hover:text-white transition-colors">
+                Protection des Données (Loi 2017-20)
+              </Link>
+              <span>•</span>
+              <Link href="/projects" className="hover:text-white transition-colors">
+                Banques de Sang CNTS
+              </Link>
+              <span>•</span>
+              <Link href="/dashboard/ars" className="hover:text-white transition-colors">
+                Pharmacopée MTA
+              </Link>
+            </div>
           </div>
         </div>
       </footer>

@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Gbɛ (BENINVIE) • Système d'Information Sanitaire & HEMORA",
-    short_name: "Gbɛ Santé",
+    name: "BENINVIE • Système d'Information Sanitaire & HEMORA",
+    short_name: "BENINVIE",
     description:
       "Plateforme nationale de santé numérique, régulation transfusionnelle et gestion des urgences vitales en République du Bénin.",
     start_url: "/",

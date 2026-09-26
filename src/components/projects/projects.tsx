@@ -12,6 +12,10 @@ import {
   Sparkles,
   TrendingUp,
   Users,
+  Droplet,
+  Radio,
+  FileCheck2,
+  CheckCircle2,
 } from "lucide-react";
 import { useState, useEffect, type ComponentType, type ReactNode } from "react";
 import { usePortfolio } from "@/lib/portfolio-context";
@@ -24,8 +28,8 @@ import { FadeIn } from "@/components/ui/motion-primitives";
 const InfiniteMenu = dynamic(() => import("@/components/ui/InfiniteMenu"), {
   ssr: false,
   loading: () => (
-    <div className="flex h-[600px] w-full items-center justify-center rounded-4xl border border-foreground/8 bg-foreground/2 text-sm text-foreground/50">
-      Chargement du menu 3D...
+    <div className="flex h-[600px] w-full items-center justify-center rounded-3xl border border-slate-200 bg-white text-sm text-slate-500">
+      Chargement du menu de navigation interactive...
     </div>
   ),
 });
@@ -52,10 +56,10 @@ const PROJECTS: Project[] = [
     id: "bris-de-glace",
     icon: ShieldCheck,
     iconLabel: "URGENCES VITALES",
-    title: "Dispositif Bris de Glace & Prise en Charge Différée",
+    title: "Dispositif Bris de Glace & Prise en Charge Immédiate",
     description:
-      "Garantie souveraine de zéro refus d'urgence transfusionnelle. Délivrance immédiate des poches sous garantie de l'État sans caution.",
-    meta: "Protocole d'État • Zéro Refus • Décret Sanitaire",
+      "Garantie souveraine de zéro refus d'urgence vitale. Délivrance sans avance financière des poches de sang et déverrouillage médical d'urgence sous caution de l'État.",
+    meta: "Décret d'Urgence Vitale • Zéro Caution • Audit APDP",
     imageRatio: 1024 / 680,
     image:
       "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=1024&auto=format&fit=crop",
@@ -67,8 +71,8 @@ const PROJECTS: Project[] = [
     iconLabel: "MOTEUR GÉODÉSIQUE",
     title: "Dispatch & Matching d'Urgence Haversine (< 45 km)",
     description:
-      "Algorithme WGS84 interconnectant les hôpitaux en détresse avec les donneurs compatibles et les banques de sang les plus proches.",
-    meta: "Calcul WGS84 • Dispatch < 15 min • Alertes SMS",
+      "Calcul géodésique WGS84 interconnectant les hôpitaux en détresse avec les donneurs compatibles ABO/Rh et les banques de dépôts les plus proches.",
+    meta: "Calcul WGS84 SF-3 • Alerte SMS < 15 min • Réseau CNTS",
     imageRatio: 1024 / 680,
     image:
       "https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?q=80&w=1024&auto=format&fit=crop",
@@ -80,8 +84,8 @@ const PROJECTS: Project[] = [
     iconLabel: "TÉLÉMÉTRIE NATIONALE",
     title: "Supervision des Stocks de Sang dans les 77 Communes",
     description:
-      "Supervision continue des réserves CGR (O-, O+, A+, B+) à Cotonou, Porto-Novo, Parakou et dans chaque Hôpital de Zone du Bénin.",
-    meta: "77 Communes • Alertes Tensions • Chaîne du Froid IoT",
+      "Supervision continue des réserves CGR (O-, O+, A+, B+) à Cotonou, Porto-Novo, Parakou et dans chaque Hôpital de Zone de la République du Bénin.",
+    meta: "77 Communes • Alertes Rupture • Chaîne du Froid IoT",
     imageRatio: 1024 / 680,
     image:
       "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?q=80&w=1024&auto=format&fit=crop",
@@ -93,8 +97,8 @@ const PROJECTS: Project[] = [
     iconLabel: "INCENTIVE CIVIQUE",
     title: "Passeport Donneur Numérique & Défraiement MoMo 2 000 F",
     description:
-      "Carte QR conforme APDP avec hachage salé SHA-256, contrôle du délai d'éligibilité médicale de 60 jours et versement forfaitaire MTN/Moov.",
-    meta: "Conforme APDP • 2 000 FCFA MoMo • OpenTimestamps",
+      "Carte QR chiffrée conforme Loi 2017-20 APDP, contrôle automatisé de la fenêtre médicale de 60 jours et versement forfaitaire instantané MTN/Moov.",
+    meta: "Conformité APDP • 2 000 FCFA MoMo • Donneur Répertorié",
     imageRatio: 1024 / 680,
     image:
       "https://images.unsplash.com/photo-1615461066841-6116e61058f4?q=80&w=1024&auto=format&fit=crop",
@@ -104,10 +108,10 @@ const PROJECTS: Project[] = [
     id: "passerelle-gsm",
     icon: Rocket,
     iconLabel: "INCLUSION RURALE",
-    title: "Passerelle GSM Rurale (SMS, USSD & Serveur Vocal IVR)",
+    title: "Passerelle GSM Rurale (SMS, USSD *136# & Serveur Vocal)",
     description:
-      "Signalement d'urgence vitale sans smartphone ni connexion internet via USSD interactif et serveur vocal automatisé en langues nationales.",
-    meta: "GSM 2G • USSD Rapide *136# • Serveur Vocal",
+      "Signalement d'urgence vitale sans smartphone ni connexion internet via USSD interactif et serveur vocal automatisé en langues Bariba, Fon, Dendi et Yoruba.",
+    meta: "GSM 2G • USSD Rapide *136# • 4 Langues Nationales",
     imageRatio: 1024 / 680,
     image:
       "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1024&auto=format&fit=crop",
@@ -117,10 +121,10 @@ const PROJECTS: Project[] = [
     id: "audit-blockchain",
     icon: ShieldCheck,
     iconLabel: "SÉCURITÉ & AUDIT",
-    title: "Registre Cryptographique & Traçabilité OpenTimestamps",
+    title: "Registre Inaltérable & Traçabilité OpenTimestamps APDP",
     description:
-      "Scellage immuable de chaque don, cession et transfusion pour une transparence absolue et une conformité réglementaire totale.",
-    meta: "Audit Immuable • Hachage SHA-256 • OpenTimestamps",
+      "Scellage immuable de chaque don, cession et transfusion pour une transparence absolue et une conformité réglementaire stricte devant l'APDP.",
+    meta: "Audit Immuable • Hachage SHA-256 • Loi n° 2017-20",
     imageRatio: 1024 / 680,
     image:
       "https://images.unsplash.com/photo-1507679799987-c73779587ccf?q=80&w=1024&auto=format&fit=crop",
@@ -139,28 +143,28 @@ const INFINITE_MENU_ITEMS = [
   {
     image:
       "https://images.unsplash.com/photo-1526256262350-7da7584cf5eb?q=80&w=600&h=600&fit=crop&auto=format",
-    link: "/projects",
+    link: "/projects?module=matching",
     title: "Matching Haversine",
     description: "Calcul Géodésique 0-45 km WGS84",
   },
   {
     image:
       "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?q=80&w=600&h=600&fit=crop&auto=format",
-    link: "/projects#stocks",
+    link: "/projects?module=stocks",
     title: "Stocks 77 Communes",
     description: "Télémétrie CNTS & Chaîne du Froid",
   },
   {
     image:
       "https://images.unsplash.com/photo-1615461066841-6116e61058f4?q=80&w=600&h=600&fit=crop&auto=format",
-    link: "/projects",
+    link: "/projects?module=passport",
     title: "Passeport Donneur",
     description: "2 000 F MoMo & Conforme APDP",
   },
   {
     image:
       "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=600&h=600&fit=crop&auto=format",
-    link: "/projects",
+    link: "/projects?module=scenario",
     title: "Passerelle GSM Rurale",
     description: "USSD *136# & Serveur Vocal IVR",
   },
@@ -240,7 +244,7 @@ export function Projects({
           return {
             id: p.id || `proj-${idx}`,
             icon,
-            iconLabel: p.category ? p.category.toUpperCase() : "WEB3 PROJECT",
+            iconLabel: p.category ? p.category.toUpperCase() : "MODULE NATIONAL",
             title: p.title,
             description: p.description,
             meta: p.meta,
@@ -256,27 +260,27 @@ export function Projects({
       {/* Element de transition en haut (Progression depuis Hero) */}
       {viewMoreVisible ? (
         <div className="flex flex-col items-center justify-center pt-2 pb-6">
-          <div className="h-16 w-[1px] bg-gradient-to-b from-transparent via-foreground/20 to-foreground/50" />
-          <div className="my-2.5 flex items-center rounded-full border border-foreground/10 bg-background/80 px-3.5 py-1 text-[11px] font-mono uppercase tracking-[0.2em] text-foreground/70 backdrop-blur-md shadow-xs">
+          <div className="h-16 w-[1px] bg-gradient-to-b from-transparent via-slate-300 to-slate-400" />
+          <div className="my-2.5 flex items-center rounded-full border border-slate-200 bg-white px-4 py-1 text-[11px] font-mono uppercase tracking-[0.2em] text-slate-700 shadow-xs">
             <span>02 • Consoles & Modules Opérationnels</span>
           </div>
-          <div className="h-8 w-[1px] bg-gradient-to-b from-foreground/50 to-foreground/20" />
+          <div className="h-8 w-[1px] bg-gradient-to-b from-slate-400 to-slate-200" />
         </div>
       ) : null}
 
       {withHeadline ? (
-        <div className="mx-auto w-full max-w-275 px-6 sm:px-10">
-          <FadeIn className="flex flex-col items-center gap-4 text-center pb-4 sm:pb-6">
-            <h2 className="font-serif text-[2.5rem] font-medium leading-[1.05] tracking-tight text-foreground md:text-[3rem] lg:text-[3.5rem]">
+        <div className="mx-auto w-full max-w-7xl px-6 sm:px-10 lg:px-12">
+          <FadeIn className="flex flex-col items-center gap-4 text-center pb-6 sm:pb-8">
+            <h2 className="text-2xl sm:text-4xl font-bold tracking-tight text-slate-900">
               Modules Opérationnels & Consoles d&apos;Urgence
             </h2>
-            <p className="max-w-[42ch] text-[18px] leading-[1.45] tracking-tight text-foreground/65 sm:text-[20px]">
-              Les six piliers technologiques du réseau national HEMORA pour garantir zéro rupture et zéro refus au Bénin.
+            <p className="max-w-[48ch] text-base sm:text-lg leading-relaxed text-slate-600">
+              Les six piliers techniques du réseau national HEMORA pour garantir zéro rupture et zéro refus au Bénin.
             </p>
             {viewMoreVisible ? (
-              <div className="mt-2 flex items-center justify-center gap-2 text-xs font-medium uppercase tracking-wider text-foreground/50">
-                <Sparkles className="h-3.5 w-3.5 text-foreground/60" />
-                <span>Faites glisser librement la sphère 3D pour explorer les modules</span>
+              <div className="mt-2 flex items-center justify-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+                <span>Explorez les modules via la sphère interactive</span>
               </div>
             ) : null}
           </FadeIn>
@@ -285,14 +289,13 @@ export function Projects({
 
       {viewMoreVisible ? (
         <div className="relative w-full overflow-hidden">
-          {/* Masques de dégradé progressifs haut et bas pour un fondu fluide */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 top-0 z-10 h-28 bg-gradient-to-b from-background via-background/60 to-transparent"
+            className="pointer-events-none absolute inset-x-0 top-0 z-10 h-28 bg-gradient-to-b from-[#f6f8fb] via-[#f6f8fb]/60 to-transparent"
           />
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-28 bg-gradient-to-t from-background via-background/60 to-transparent"
+            className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-28 bg-gradient-to-t from-[#f6f8fb] via-[#f6f8fb]/60 to-transparent"
           />
 
           <div className="relative h-[650px] md:h-[750px] w-full">
@@ -300,8 +303,8 @@ export function Projects({
           </div>
         </div>
       ) : (
-        <div className="mx-auto w-full max-w-275 px-6 sm:px-10">
-          <div className="columns-1 gap-6 md:columns-2 md:gap-7">
+        <div className="mx-auto w-full max-w-7xl px-6 sm:px-10 lg:px-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7">
             {dynamicProjectsList.map((project, index) => (
               <ProjectCard key={project.id} project={project} index={index} />
             ))}
@@ -309,42 +312,81 @@ export function Projects({
         </div>
       )}
 
-      {/* Live Interactive Consoles with Dedicated Select Switcher */}
-      <div className="mx-auto w-full max-w-275 px-6 sm:px-10 mt-12">
+      {/* Live Interactive Consoles with Clinical-Grade Tab Switcher */}
+      <div className="mx-auto w-full max-w-7xl px-6 sm:px-10 lg:px-12 mt-12 sm:mt-16">
         {/* Module Switcher Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-3xl border border-foreground/10 bg-background/80 backdrop-blur-md shadow-sm mb-8">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-2xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 p-5 sm:p-6 rounded-2xl border border-slate-200/90 bg-white shadow-xs mb-8 sm:mb-10">
+          <div className="flex items-center gap-3.5">
+            <div className="h-11 w-11 rounded-xl bg-[#0a3764]/10 text-[#0a3764] flex items-center justify-center shrink-0">
               <SlidersHorizontal className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-foreground">
-                Sélecteur de Module Opérationnel
+              <h3 className="text-base font-bold text-slate-900">
+                Sélecteur de Console Clinique & Opérationnelle
               </h3>
-              <p className="text-[11px] text-foreground/60">
-                Affichez un module spécifique ou l&apos;intégralité des consoles en direct
+              <p className="text-xs text-slate-600 mt-0.5">
+                Basculez entre le scénario national à Kalalé, le moteur Haversine, les stocks et le passeport donneur
               </p>
             </div>
           </div>
 
-          {/* Select Dropdown (Mobile & Quick Choice) */}
-          <div className="flex items-center gap-2">
-            <select
-              value={activeModule}
-              onChange={(e) => setActiveModule(e.target.value as any)}
-              className="w-full sm:w-auto rounded-2xl border border-foreground/15 bg-background px-4 py-2 text-xs font-semibold text-foreground focus:border-emerald-500 focus:outline-none transition-colors cursor-pointer"
+          {/* Quick Pill Buttons (Desktop) + Select (Mobile) */}
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => setActiveModule("all")}
+              className={`rounded-lg px-3.5 py-2 text-xs font-bold transition-all cursor-pointer ${
+                activeModule === "all"
+                  ? "bg-[#0a3764] text-white shadow-xs"
+                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+              }`}
             >
-              <option value="all">Afficher tous les modules</option>
-              <option value="scenario">1. Démo Scénario Kalalé (7 étapes)</option>
-              <option value="matching">2. Matching Haversine (&lt; 45 km)</option>
-              <option value="stocks">3. Stocks de Sang (77 Communes)</option>
-              <option value="passport">4. Passeport Donneur & MoMo</option>
-            </select>
+              Tous les modules
+            </button>
+            <button
+              onClick={() => setActiveModule("scenario")}
+              className={`rounded-lg px-3.5 py-2 text-xs font-bold transition-all cursor-pointer ${
+                activeModule === "scenario"
+                  ? "bg-amber-600 text-white shadow-xs"
+                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+              }`}
+            >
+              1. Scénario Kalalé (7 étapes)
+            </button>
+            <button
+              onClick={() => setActiveModule("matching")}
+              className={`rounded-lg px-3.5 py-2 text-xs font-bold transition-all cursor-pointer ${
+                activeModule === "matching"
+                  ? "bg-red-600 text-white shadow-xs"
+                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+              }`}
+            >
+              2. Matching Haversine (&lt; 45 km)
+            </button>
+            <button
+              onClick={() => setActiveModule("stocks")}
+              className={`rounded-lg px-3.5 py-2 text-xs font-bold transition-all cursor-pointer ${
+                activeModule === "stocks"
+                  ? "bg-emerald-700 text-white shadow-xs"
+                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+              }`}
+            >
+              3. Stocks 77 Communes
+            </button>
+            <button
+              onClick={() => setActiveModule("passport")}
+              className={`rounded-lg px-3.5 py-2 text-xs font-bold transition-all cursor-pointer ${
+                activeModule === "passport"
+                  ? "bg-indigo-600 text-white shadow-xs"
+                  : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+              }`}
+            >
+              4. Passeport Donneur MoMo
+            </button>
           </div>
         </div>
 
-        {/* Modular Consoles Display */}
-        <div className="space-y-10">
+        {/* Modular Consoles Display (Spacious, Wide max-w-7xl) */}
+        <div className="space-y-12">
           {(activeModule === "all" || activeModule === "scenario") && (
             <div id="scenario" className="scroll-mt-28">
               <InteractiveScenarioKalale />
@@ -372,28 +414,25 @@ export function Projects({
       </div>
 
       {viewMoreVisible ? (
-        <div className="mx-auto w-full max-w-275 px-6 sm:px-10">
-          <div className="mt-8 flex justify-center sm:mt-12">
+        <div className="mx-auto w-full max-w-7xl px-6 sm:px-10 lg:px-12">
+          <div className="mt-10 flex justify-center sm:mt-14">
             <Link
               href="/projects"
-              className="border border-foreground/8 focus-ring group inline-flex cursor-pointer items-center gap-2 rounded-xl bg-background px-5 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-foreground/5 shadow-sm"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-[#0a3764] hover:bg-[#082a4d] px-6 py-3 text-sm font-bold text-white shadow-md shadow-[#0a3764]/20 transition-all active:scale-95"
             >
-              Accéder à toutes les consoles & passeport donneur
-              <ArrowRight
-                className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5"
-                aria-hidden="true"
-              />
+              <span>Accéder à toutes les consoles & passeport donneur</span>
+              <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
 
           {/* Element de transition en bas (Progression vers Contact) */}
-          <div className="mt-12 flex flex-col items-center justify-center">
-            <div className="h-10 w-[1px] bg-gradient-to-b from-foreground/30 to-foreground/15" />
-            <div className="my-2.5 flex items-center gap-2 rounded-full border border-foreground/10 bg-background/80 px-3.5 py-1.5 text-[11px] font-mono uppercase tracking-[0.2em] text-foreground/70 backdrop-blur-md shadow-xs">
-              <span>03 • Régulation & Hotline d&apos;Urgence</span>
-              <ArrowDown className="h-3 w-3 animate-bounce text-foreground/60" />
+          <div className="mt-14 flex flex-col items-center justify-center">
+            <div className="h-10 w-[1px] bg-gradient-to-b from-slate-400 to-slate-200" />
+            <div className="my-2.5 flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-1.5 text-[11px] font-mono uppercase tracking-[0.2em] text-slate-700 shadow-xs">
+              <span>03 • Régulation Sanitaire & Hotline d&apos;Urgence</span>
+              <ArrowDown className="h-3 w-3 animate-bounce text-slate-500" />
             </div>
-            <div className="h-16 w-[1px] bg-gradient-to-b from-foreground/20 via-foreground/10 to-transparent" />
+            <div className="h-16 w-[1px] bg-gradient-to-b from-slate-200 via-slate-100 to-transparent" />
           </div>
         </div>
       ) : null}
@@ -430,24 +469,27 @@ function ProjectCard({
 
   return (
     <FadeIn
-      delay={Math.min(index * 0.06, 0.3)}
-      className="mb-6 break-inside-avoid md:mb-7"
+      delay={Math.min(index * 0.05, 0.25)}
+      className="flex flex-col"
     >
-      <article className="project-card flex cursor-pointer flex-col gap-4 rounded-3xl border border-foreground/8 bg-background p-3 sm:p-3.5">
-        <header className="flex items-center gap-2.5 px-1 pt-2">
-          <span className="border-foreground/10 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border bg-background">
-            <Icon className="h-3.5 w-3.5 text-foreground" aria-hidden="true" />
-          </span>
-          <span className="text-sm font-medium tracking-tight text-foreground">
-            {project.iconLabel}
-          </span>
-        </header>
+      <article className="flex h-full flex-col justify-between rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 shadow-xs hover:shadow-md hover:border-[#0a3764]/40 transition-all duration-200">
+        <div>
+          <header className="flex items-center justify-between gap-2 pb-3">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#0a3764]/10 text-[#0a3764]">
+                <Icon className="h-4 w-4" aria-hidden="true" />
+              </span>
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
+                {project.iconLabel}
+              </span>
+            </div>
+            <span className="h-2 w-2 rounded-full bg-[#008751]" />
+          </header>
 
-        <div
-          className="project-card__image ring-foreground/5 relative w-full overflow-hidden rounded-2xl bg-foreground/5 ring-1"
-          style={{ aspectRatio: project.imageRatio }}
-        >
-          <div className="project-card__image-inner">
+          <div
+            className="relative w-full overflow-hidden rounded-xl bg-slate-100 mb-4 border border-slate-100"
+            style={{ aspectRatio: project.imageRatio }}
+          >
             <Image
               src={imgSrc}
               alt={project.imageAlt}
@@ -458,25 +500,26 @@ function ProjectCard({
                   setImgSrc(fallback);
                 }
               }}
-              sizes="(min-width: 1024px) 540px, (min-width: 768px) 45vw, 100vw"
-              className="object-cover"
-              priority={index < 2}
+              sizes="(min-width: 1024px) 380px, (min-width: 768px) 45vw, 100vw"
+              className="object-cover transition-transform duration-300 hover:scale-105"
+              priority={index < 3}
             />
           </div>
-        </div>
 
-        <div className="flex flex-col gap-2.5 px-1 pb-1">
-          <h3 className="text-[20px] font-medium leading-[1.2] tracking-tight text-foreground sm:text-[22px]">
+          <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug">
             {project.title}
           </h3>
-          <p className="text-[14px] leading-normal tracking-tight text-foreground/65 sm:text-[15px]">
+
+          <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
             {project.description}
           </p>
         </div>
 
-        <p className="px-1 pb-2 text-[12px] tracking-tight text-foreground/50">
-          {project.meta}
-        </p>
+        <div className="mt-4 pt-3 border-t border-slate-100">
+          <p className="text-[11px] font-medium text-slate-500">
+            {project.meta}
+          </p>
+        </div>
       </article>
     </FadeIn>
   );

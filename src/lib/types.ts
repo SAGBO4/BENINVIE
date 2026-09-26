@@ -174,3 +174,66 @@ export interface AuditLog {
   details: Record<string, any>;
   timestamp: string;
 }
+
+// ==========================================
+// Types issus de la refonte intégrale de BMM
+// ==========================================
+
+export interface CampagneDon {
+  id: string;
+  codeCampagne: string;
+  titre: string;
+  description: string;
+  etablissementOrganisateur: string;
+  commune: string;
+  departement: string;
+  lieuCollecte: string;
+  lat: number;
+  lng: number;
+  dateDebut: string;
+  dateFin: string;
+  objectifPoches: number;
+  pochesCollectees: number;
+  statut: "PLANIFIEE" | "EN_COURS" | "TERMINEE";
+}
+
+export interface TransfertSang {
+  id: string;
+  codeTransfert: string;
+  sourceHopital: string;
+  destinationHopital: string;
+  groupeSanguin: string;
+  quantitePoches: number;
+  urgenceLevel: "STANDARD" | "VITALE";
+  statut: "EN_TRANSIT" | "RECEPTIONNE" | "ANNULE";
+  dateEnvoi: string;
+  dateReception?: string;
+}
+
+export interface DemandeCarte {
+  id: string;
+  donneurNpi: string;
+  donneurNom: string;
+  groupeSanguin: string;
+  communeLivraison: string;
+  statut: "EN_ATTENTE" | "IMPRIMEE" | "EXPEDIEE" | "REMISE";
+  qrCodeData: string;
+  hashVerification: string;
+  otsProof?: string;
+  dateDemande: string;
+}
+
+export interface DonHistorique {
+  id: string;
+  codeDon: string;
+  donneurNpi: string;
+  etablissementNom: string;
+  groupeSanguin: string;
+  dateDon: string;
+  pointsFidelite: number;
+  statutMedical: "VALIDE" | "AJOURNE_TEMPORAIRE";
+  defraiementMontantFcfa: number;
+  defraiementCanal: "MOBILE_MONEY" | "LIGHTNING";
+  defraiementRef: string;
+  otsTimestampHash: string;
+}

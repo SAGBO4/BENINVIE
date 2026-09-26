@@ -1,0 +1,58 @@
+{
+  "name": "Gbɛ (BENINVIE) — Plateforme Nationale de Santé du Bénin",
+  "short_name": "Gbɛ Santé",
+  "description": "Système d'Information Hospitalier National (SANTÉ+) et Réseau d'Urgence Transfusionnelle (HEMORA) — République du Bénin",
+  "start_url": "/",
+  "id": "/",
+  "display": "standalone",
+  "background_color": "#09101d",
+  "theme_color": "#008751",
+  "orientation": "portrait",
+  "lang": "fr-BJ",
+  "dir": "ltr",
+  "scope": "/",
+  "categories": ["medical", "health", "government"],
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Admission Urgence Vitale",
+      "short_name": "Urgence",
+      "description": "Admission immédiate sans avance financière",
+      "url": "/?tab=urgences",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Recherche Don de Sang HEMORA",
+      "short_name": "HEMORA Sang",
+      "description": "Mobilisation d'urgence de poches de sang compatibles",
+      "url": "/?tab=hemora",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Espace ASC Hors-Ligne",
+      "short_name": "ASC Santé",
+      "description": "Mode hors-ligne pour les agents de santé communautaire",
+      "url": "/?tab=asc",
+      "icons": [{ "src": "/icons/icon-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}

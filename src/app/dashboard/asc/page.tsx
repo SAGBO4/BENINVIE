@@ -97,7 +97,7 @@ export default function AscDashboardPage(): ReactNode {
               <span className="text-[11px] text-foreground/50">Santé Communautaire</span>
             </div>
             <h1 className="text-2xl font-bold text-foreground mt-1">
-              Console Terrain ASC & Triage IA Multilingue
+              Console Terrain ASC & Orientation Clinique Multilingue
             </h1>
             <p className="text-xs text-foreground/60">
               Agent de Santé : <strong className="text-foreground">{user?.prenom} {user?.nom}</strong> — {user?.etablissementNom}
@@ -114,7 +114,7 @@ export default function AscDashboardPage(): ReactNode {
       </FadeIn>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Colonne Gauche : Triage Médical IA Multilingue */}
+        {/* Colonne Gauche : Triage Médical & Orientation Multilingue */}
         <div className="lg:col-span-7 flex flex-col gap-6">
           <form
             onSubmit={handleTriage}
@@ -123,11 +123,11 @@ export default function AscDashboardPage(): ReactNode {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <div className="h-9 w-9 rounded-xl bg-emerald-500/20 text-emerald-500 flex items-center justify-center">
-                  <Sparkles className="h-5 w-5" />
+                  <Activity className="h-5 w-5" />
                 </div>
                 <div>
-                  <h2 className="text-base font-bold text-foreground">Triage Clinique IA (Gemini)</h2>
-                  <p className="text-xs text-foreground/60">Assistance au diagnostic précoce en langues nationales</p>
+                  <h2 className="text-base font-bold text-foreground">Aide à l&apos;Orientation Clinique & Triage</h2>
+                  <p className="text-xs text-foreground/60">Protocoles de santé communautaire en langues nationales</p>
                 </div>
               </div>
 
@@ -161,11 +161,11 @@ export default function AscDashboardPage(): ReactNode {
               disabled={loadingTriage}
               className="py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2"
             >
-              <Sparkles className="h-4 w-4" />
+              <Activity className="h-4 w-4" />
               <span>{loadingTriage ? "Évaluation clinique en cours..." : "Analyser la gravité clinique"}</span>
             </button>
 
-            {/* Résultat Triage IA */}
+            {/* Protocole d'Orientation Clinique */}
             {triageResult?.success && (
               <ScaleUnblur className="mt-2 p-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 flex flex-col gap-3">
                 <div className="flex items-center justify-between">

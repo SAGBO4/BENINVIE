@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import React, { useEffect, useState, type ReactNode } from "react";
 import { useAuth } from "@/lib/auth-context";
 import {
   Building2,
@@ -16,10 +16,60 @@ import {
   Layers,
   Map as MapIcon,
   Table as TableIcon,
+  ShieldCheck,
+  Landmark,
+  TrendingUp,
+  Lock,
+  ChevronRight,
+  ExternalLink,
+  Shield,
+  FileCheck2,
+  Ban,
+  UserCheck,
+  Stethoscope,
+  Pill,
 } from "lucide-react";
-import { FadeIn, ScaleUnblur } from "@/components/ui/motion-primitives";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+} from "@/components/ui/table";
 import { OpenStreetMapTerritoire } from "@/components/map/OpenStreetMapTerritoire";
 import { POLES_DEVELOPPEMENT_BENIN } from "@/data/communes";
+import Link from "next/link";
+
+interface DepartementSanitaireStat {
+  nom: string;
+  chefLieu: string;
+  etablissements: number;
+  litsDisponibles: number;
+  stocksSang: number;
+  tauxCouvertureArch: string;
+  conformiteArs: string;
+  urgencesVitalesActives: number;
+}
+
+const DEPARTEMENTS_STATS: DepartementSanitaireStat[] = [
+  { nom: "Littoral", chefLieu: "Cotonou", etablissements: 142, litsDisponibles: 1250, stocksSang: 480, tauxCouvertureArch: "96.4%", conformiteArs: "99.8%", urgencesVitalesActives: 12 },
+  { nom: "Atlantique", chefLieu: "Allada", etablissements: 98, litsDisponibles: 840, stocksSang: 310, tauxCouvertureArch: "94.2%", conformiteArs: "99.1%", urgencesVitalesActives: 8 },
+  { nom: "Ouémé", chefLieu: "Porto-Novo", etablissements: 76, litsDisponibles: 620, stocksSang: 220, tauxCouvertureArch: "92.8%", conformiteArs: "98.9%", urgencesVitalesActives: 5 },
+  { nom: "Borgou", chefLieu: "Parakou", etablissements: 88, litsDisponibles: 710, stocksSang: 290, tauxCouvertureArch: "91.5%", conformiteArs: "99.0%", urgencesVitalesActives: 7 },
+  { nom: "Alibori", chefLieu: "Kandi", etablissements: 45, litsDisponibles: 380, stocksSang: 140, tauxCouvertureArch: "89.2%", conformiteArs: "98.2%", urgencesVitalesActives: 4 },
+  { nom: "Atacora", chefLieu: "Natitingou", etablissements: 52, litsDisponibles: 420, stocksSang: 160, tauxCouvertureArch: "88.7%", conformiteArs: "98.5%", urgencesVitalesActives: 3 },
+  { nom: "Donga", chefLieu: "Djougou", etablissements: 38, litsDisponibles: 310, stocksSang: 110, tauxCouvertureArch: "90.1%", conformiteArs: "98.7%", urgencesVitalesActives: 3 },
+  { nom: "Zou", chefLieu: "Abomey", etablissements: 64, litsDisponibles: 520, stocksSang: 190, tauxCouvertureArch: "93.4%", conformiteArs: "98.8%", urgencesVitalesActives: 4 },
+  { nom: "Collines", chefLieu: "Dassa-Zoumè", etablissements: 48, litsDisponibles: 390, stocksSang: 130, tauxCouvertureArch: "89.9%", conformiteArs: "98.4%", urgencesVitalesActives: 3 },
+  { nom: "Mono", chefLieu: "Lokossa", etablissements: 36, litsDisponibles: 280, stocksSang: 95, tauxCouvertureArch: "91.0%", conformiteArs: "99.2%", urgencesVitalesActives: 2 },
+  { nom: "Couffo", chefLieu: "Aplahoué", etablissements: 32, litsDisponibles: 240, stocksSang: 85, tauxCouvertureArch: "87.8%", conformiteArs: "98.1%", urgencesVitalesActives: 2 },
+  { nom: "Plateau", chefLieu: "Pobè", etablissements: 34, litsDisponibles: 260, stocksSang: 90, tauxCouvertureArch: "90.5%", conformiteArs: "98.6%", urgencesVitalesActives: 2 },
+];
 
 export default function MinistereDashboardPage(): ReactNode {
   const { user } = useAuth();
@@ -27,11 +77,13 @@ export default function MinistereDashboardPage(): ReactNode {
   const [facilities, setFacilities] = useState<any[]>([]);
   const [auditLogs, setAuditLogs] = useState<any[]>([]);
   const [signalements, setSignalements] = useState<any[]>([]);
-  const [selectedDept, setSelectedDept] = useState<string>("ALL");
+  const [selectedDept, setSelectedDept] = useState<string>("Borgou");
+  const [deptSearch, setDeptSearch] = useState("");
   const [selectedPole, setSelectedPole] = useState<string>("ALL");
   const [vueMode, setVueMode] = useState<"map" | "table">("map");
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
+  const [inspectionMsg, setInspectionMsg] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadData() {
@@ -61,6 +113,13 @@ export default function MinistereDashboardPage(): ReactNode {
     loadData();
   }, []);
 
+  const handleTriggerInspection = () => {
+    setInspectionMsg("Arrêté ministériel d'inspection inopinée émis avec réquisition des registres APDP et contrôle physique sous 24h.");
+    setTimeout(() => {
+      setInspectionMsg(null);
+    }, 6000);
+  };
+
   const filteredFacilities = facilities.filter((f) => {
     const matchDept = selectedDept === "ALL" || f.departement === selectedDept;
     const matchPole =
@@ -76,375 +135,630 @@ export default function MinistereDashboardPage(): ReactNode {
     return matchDept && matchPole && matchSearch;
   });
 
+  const filteredDepartements = DEPARTEMENTS_STATS.filter(
+    (d) =>
+      d.nom.toLowerCase().includes(deptSearch.toLowerCase()) ||
+      d.chefLieu.toLowerCase().includes(deptSearch.toLowerCase())
+  );
+
+  const selectedDeptData = DEPARTEMENTS_STATS.find((d) => d.nom === selectedDept) || DEPARTEMENTS_STATS[0];
   const criticalStocks = stocks.filter((s) => s.quantitePoches <= s.seuilAlerte);
 
   return (
-    <main className="min-h-screen pt-28 pb-20 px-4 sm:px-8 max-w-7xl mx-auto flex flex-col gap-8">
-      {/* Bannière de Bienvenue */}
-      <FadeIn className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-3xl border border-blue-500/20 bg-gradient-to-r from-blue-950/40 via-background to-background backdrop-blur-md">
-        <div className="flex items-center gap-4">
-          <div className="h-14 w-14 rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-lg shadow-blue-600/30">
-            <Building2 className="h-7 w-7" />
-          </div>
-          <div>
+    <div className="flex-1 flex flex-col bg-slate-50 min-h-screen">
+      <main className="max-w-[1536px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 sm:space-y-8">
+        {/* BANNIÈRE RÉGALIENNE : MINISTÈRE DE LA SANTÉ */}
+        <Card className="border-blue-900/20 shadow-xl bg-white">
+          <CardHeader className="p-5 sm:p-6 pb-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 rounded-2xl bg-[#0a3764]/10 border border-[#0a3764]/20 flex items-center justify-center shrink-0 text-[#0a3764]">
+                  <Building2 className="w-7 h-7" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <CardTitle className="text-xl sm:text-2xl font-black tracking-tight text-slate-900">
+                      Ministère de la Santé &bull; Direction Générale des Établissements de Soins
+                    </CardTitle>
+                    <Badge variant="default" className="text-[10px] uppercase font-bold px-2.5 bg-[#0a3764]">
+                      Supervision Nationale Régalienne
+                    </Badge>
+                  </div>
+                  <CardDescription className="text-xs sm:text-sm text-slate-500 mt-1">
+                    République du Bénin &bull; Veille Épidémiologique, Urgences Vitales (0 FCFA) &bull; Régulation Transfusionnelle CNTS
+                  </CardDescription>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 text-xs bg-slate-50 p-3 rounded-xl border border-slate-200 shrink-0">
+                <Activity className="w-4 h-4 text-emerald-600 shrink-0" />
+                <div>
+                  <span className="text-[10px] text-slate-500 block font-medium">Session Ministérielle Active</span>
+                  <strong className="text-slate-900">{user?.prenom} {user?.nom}</strong>
+                  <span className="text-slate-500 block text-[10px]">{user?.titre}</span>
+                </div>
+              </div>
+            </div>
+          </CardHeader>
+        </Card>
+
+        {/* NOTIFICATION D'ACTION RÉGALIENNE */}
+        {inspectionMsg && (
+          <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs flex items-center justify-between shadow-sm animate-in fade-in duration-200">
             <div className="flex items-center gap-2">
-              <span className="text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20">
-                Supervision Nationale
-              </span>
-              <span className="text-[11px] text-foreground/50">République du Bénin</span>
+              <CheckCircle className="h-4 w-4 text-emerald-600 shrink-0" />
+              <span className="font-semibold">{inspectionMsg}</span>
             </div>
-            <h1 className="text-2xl font-bold text-foreground mt-1">
-              Tableau de Bord Ministériel & Veille Sanitaire
-            </h1>
-            <p className="text-xs text-foreground/60">
-              Session active : <strong className="text-foreground">{user?.prenom} {user?.nom}</strong> — {user?.titre}
-            </p>
+            <Button size="sm" variant="ghost" onClick={() => setInspectionMsg(null)} className="h-7 text-xs">
+              Fermer
+            </Button>
           </div>
-        </div>
+        )}
 
-        <div className="flex items-center gap-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-background border border-foreground/10 text-xs text-foreground/75">
-            <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-            <span>06 Pôles Territoriaux • 77 Communes Interconnectées</span>
+        {/* MACRO-INDICATEURS NATIONAUX (SHADCN CARDS) */}
+        <section className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
+              <Activity className="w-4 h-4 text-[#0a3764]" />
+              <span>Indicateurs de Pilotage Sanitaire National</span>
+            </h2>
+            <Badge variant="outline" className="text-[10px] text-emerald-700 border-emerald-300 bg-emerald-50">
+              06 Pôles Territoriaux &bull; 77 Communes Interconnectées
+            </Badge>
           </div>
-        </div>
-      </FadeIn>
 
-      {/* Cartes d'indicateurs macro */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-        <div className="p-5 rounded-2xl border border-foreground/10 bg-background/80 shadow-sm backdrop-blur-md">
-          <div className="flex items-center justify-between text-foreground/50 mb-2">
-            <span className="text-xs uppercase font-semibold">Formations Sanitaires</span>
-            <MapPin className="h-4 w-4 text-blue-500" />
-          </div>
-          <div className="text-3xl font-bold text-foreground">{facilities.length || "77+"}</div>
-          <p className="text-[11px] text-emerald-500 mt-1 flex items-center gap-1">
-            <CheckCircle className="h-3 w-3" /> CHIC, CNHU, CHD & 600 Centres
-          </p>
-        </div>
-
-        <div className="p-5 rounded-2xl border border-foreground/10 bg-background/80 shadow-sm backdrop-blur-md">
-          <div className="flex items-center justify-between text-foreground/50 mb-2">
-            <span className="text-xs uppercase font-semibold">Stocks CGR</span>
-            <Heart className="h-4 w-4 text-red-500" />
-          </div>
-          <div className="text-3xl font-bold text-foreground">
-            {stocks.reduce((acc, s) => acc + (s.quantitePoches || 0), 0)}
-          </div>
-          <p className="text-[11px] text-foreground/60 mt-1">
-            Poches dans les 12 départements
-          </p>
-        </div>
-
-        <div className="p-5 rounded-2xl border border-foreground/10 bg-background/80 shadow-sm backdrop-blur-md">
-          <div className="flex items-center justify-between text-foreground/50 mb-2">
-            <span className="text-xs uppercase font-semibold">Alertes Ruptures</span>
-            <ShieldAlert className="h-4 w-4 text-amber-500" />
-          </div>
-          <div className="text-3xl font-bold text-amber-500">{criticalStocks.length}</div>
-          <p className="text-[11px] text-amber-500/80 mt-1">
-            Dépôts sous le seuil critique
-          </p>
-        </div>
-
-        <div className="p-5 rounded-2xl border border-foreground/10 bg-background/80 shadow-sm backdrop-blur-md">
-          <div className="flex items-center justify-between text-foreground/50 mb-2">
-            <span className="text-xs uppercase font-semibold">Garantie Urgences</span>
-            <Activity className="h-4 w-4 text-emerald-500" />
-          </div>
-          <div className="text-3xl font-bold text-emerald-500">100%</div>
-          <p className="text-[11px] text-emerald-500 mt-1">
-            Zéro refus financier
-          </p>
-        </div>
-
-        <div className="p-5 rounded-2xl border border-red-500/20 bg-red-500/5 shadow-sm backdrop-blur-md">
-          <div className="flex items-center justify-between text-red-400 mb-2">
-            <span className="text-xs uppercase font-semibold">Plaintes Citoyennes</span>
-            <AlertTriangle className="h-4 w-4 text-red-500" />
-          </div>
-          <div className="text-3xl font-bold text-red-500">{signalements.length}</div>
-          <p className="text-[11px] text-red-400/80 mt-1">
-            Inspection Générale saisie
-          </p>
-        </div>
-      </div>
-
-      {/* Section 1 : Carte Sanitaire IASO & Établissements (06 Pôles Territoriaux) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <div className="lg:col-span-8 flex flex-col gap-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl border border-foreground/10 bg-background/60">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                  Réforme Territoriale 229 DEGRÉ
-                </span>
-                <span className="text-xs text-foreground/50">SIG National</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <Card className="p-5 space-y-2 border-slate-200 bg-white shadow-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-slate-500 font-medium">Plateaux Techniques Homologués</span>
+                <Building2 className="w-4 h-4 text-[#0a3764]" />
               </div>
-              <h2 className="text-base font-bold text-foreground mt-1">
-                Carte Sanitaire & Répertoire des 06 Pôles (IASO)
-              </h2>
-              <p className="text-xs text-foreground/60">
-                Supervision géodésique OpenStreetMap et capacités hospitalières des 77 communes
+              <div className="text-2xl font-black text-slate-900 font-mono">
+                {facilities.length || "77+"}
+              </div>
+              <p className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">
+                <CheckCircle className="h-3 w-3" /> CHIC, CNHU, CHD & 600 Centres
               </p>
-            </div>
+            </Card>
 
-            <div className="flex flex-wrap items-center gap-2">
-              {/* Bascule de Vue Carte / Tableau */}
-              <div className="flex items-center p-1 rounded-xl bg-foreground/5 border border-foreground/10">
-                <button
-                  onClick={() => setVueMode("map")}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
-                    vueMode === "map"
-                      ? "bg-blue-600 text-white shadow-sm"
-                      : "text-foreground/60 hover:text-foreground"
-                  }`}
-                >
-                  <MapIcon className="h-3.5 w-3.5" />
-                  <span>Carte OSM</span>
-                </button>
-                <button
-                  onClick={() => setVueMode("table")}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all ${
-                    vueMode === "table"
-                      ? "bg-blue-600 text-white shadow-sm"
-                      : "text-foreground/60 hover:text-foreground"
-                  }`}
-                >
-                  <TableIcon className="h-3.5 w-3.5" />
-                  <span>Tableau</span>
-                </button>
+            <Card className="p-5 space-y-2 border-slate-200 bg-white shadow-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-slate-500 font-medium">Stocks Nationaux de Sang (CGR)</span>
+                <Heart className="w-4 h-4 text-red-600" />
+              </div>
+              <div className="text-2xl font-black text-slate-900 font-mono">
+                {stocks.reduce((acc, s) => acc + (s.quantitePoches || 0), 0) || 2200}
+              </div>
+              <p className="text-[10px] text-slate-500">
+                Poches réparties dans les 12 dépôts CNTS
+              </p>
+            </Card>
+
+            <Card className="p-5 space-y-2 border-slate-200 bg-white shadow-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-slate-500 font-medium">Alertes Ruptures Transfusionnelles</span>
+                <ShieldAlert className="w-4 h-4 text-amber-600" />
+              </div>
+              <div className="text-2xl font-black text-amber-700 font-mono">
+                {criticalStocks.length}
+              </div>
+              <p className="text-[10px] text-amber-700 font-medium">
+                Dépôts sous le seuil d&apos;alerte minimale
+              </p>
+            </Card>
+
+            <Card className="p-5 space-y-2 border-slate-200 bg-white shadow-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-slate-500 font-medium">Garantie Urgences Vitales (0 FCFA)</span>
+                <Stethoscope className="w-4 h-4 text-emerald-600" />
+              </div>
+              <div className="text-2xl font-black text-emerald-700 font-mono">
+                100%
+              </div>
+              <p className="text-[10px] text-emerald-700 font-semibold">
+                Admission immédiate sans caution préalable
+              </p>
+            </Card>
+
+            <Card className="p-5 space-y-2 border-red-200 bg-red-50/50 shadow-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-red-800 font-medium">Signalements Usagers Déposés</span>
+                <AlertTriangle className="w-4 h-4 text-red-600" />
+              </div>
+              <div className="text-2xl font-black text-red-700 font-mono">
+                {signalements.length}
+              </div>
+              <p className="text-[10px] text-red-800">
+                Inspection Générale de la Santé saisie
+              </p>
+            </Card>
+          </div>
+        </section>
+
+        {/* SECTION SUPERVISION & TUTELLE DES ORGANES DE RÉGULATION */}
+        <Card className="border-slate-200 bg-white shadow-md">
+          <CardHeader className="p-5 sm:p-6 pb-3 border-b border-slate-100 bg-slate-50/50">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#0a3764]/10 border border-[#0a3764]/20 flex items-center justify-center text-[#0a3764] shrink-0">
+                  <ShieldCheck className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <CardTitle className="text-base sm:text-lg font-bold text-slate-900">
+                      Tutelle &amp; Contrôle des Organes Régulateurs (ARS &bull; APDP &bull; CNTS)
+                    </CardTitle>
+                    <Badge variant="secondary" className="text-[10px] uppercase font-bold">
+                      Coordination Inter-Agences
+                    </Badge>
+                  </div>
+                  <CardDescription className="text-xs text-slate-500 mt-0.5">
+                    Le Ministère coordonne le contrôle des habilitations soignantes, l&apos;audit des accès médicaux et la régulation MTA.
+                  </CardDescription>
+                </div>
               </div>
 
-              {/* Filtre Pôle Territorial */}
-              <select
-                value={selectedPole}
-                onChange={(e) => setSelectedPole(e.target.value)}
-                className="rounded-xl border border-foreground/15 bg-background px-2.5 py-1.5 text-xs text-foreground focus:outline-none"
-              >
-                <option value="ALL">Tous les 06 Pôles</option>
-                {POLES_DEVELOPPEMENT_BENIN.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.nom} ({p.communes.length} com.)
-                  </option>
-                ))}
-              </select>
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="default"
+                  onClick={handleTriggerInspection}
+                  className="bg-red-700 hover:bg-red-800 text-white text-xs font-bold h-8 cursor-pointer flex items-center gap-1.5"
+                >
+                  <AlertTriangle className="w-3.5 h-3.5" />
+                  <span>Déclencher Audit Inopiné IGS</span>
+                </Button>
 
-              <div className="relative">
-                <Search className="h-3.5 w-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-foreground/40" />
-                <input
-                  type="text"
-                  placeholder="Rechercher..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="rounded-xl border border-foreground/15 bg-background pl-8 pr-3 py-1.5 text-xs text-foreground focus:outline-none focus:border-blue-500 w-32 sm:w-40"
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  asChild
+                  className="text-xs font-bold h-8 cursor-pointer"
+                >
+                  <Link href="/dashboard/ars" className="flex items-center gap-1">
+                    <span>Console ARS</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </Link>
+                </Button>
+
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  asChild
+                  className="text-xs font-bold h-8 cursor-pointer"
+                >
+                  <Link href="/dashboard/apdp" className="flex items-center gap-1">
+                    <span>Audit APDP</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </CardHeader>
+
+          <CardContent className="p-5 sm:p-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+              <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase">Autorité de Régulation (ARS)</span>
+                  <Badge variant="outline" className="text-[10px] text-emerald-700 border-emerald-300">Actif</Badge>
+                </div>
+                <div className="text-sm font-bold text-slate-900">Mme Carole KPOTIN</div>
+                <div className="font-mono text-[11px] text-[#0a3764]">NPI-ARS-2026-002</div>
+                <p className="text-[11px] text-slate-500 pt-1 border-t border-slate-200 mt-1">
+                  Homologation officielle de 28 spécialités MTA et contrôle de 600 centres de santé.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase">Protection des Données (APDP)</span>
+                  <Badge variant="outline" className="text-[10px] text-emerald-700 border-emerald-300">Journal Scellé</Badge>
+                </div>
+                <div className="text-sm font-bold text-slate-900">M. Séraphin TOSSOU</div>
+                <div className="font-mono text-[11px] text-[#0a3764]">NPI-APDP-2026-003</div>
+                <p className="text-[11px] text-slate-500 pt-1 border-t border-slate-200 mt-1">
+                  Surveillance inaltérable des accès &quot;Bris de Glace&quot; et conformité Loi 2017-20.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase">Programme Transfusionnel (CNTS)</span>
+                  <Badge variant="outline" className="text-[10px] text-blue-700 border-blue-300">Régulation 24/7</Badge>
+                </div>
+                <div className="text-sm font-bold text-slate-900">Banque Nationale du Sang</div>
+                <div className="font-mono text-[11px] text-[#0a3764]">CNTS-COTONOU-HZ-NIKKI</div>
+                <p className="text-[11px] text-slate-500 pt-1 border-t border-slate-200 mt-1">
+                  Régulation dynamique par algorithme géodésique (rayon 45 km) et dédommagement donneur.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* PANORAMA DES 12 DÉPARTEMENTS DU BÉNIN (TABLE SHADCN) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 text-xs">
+          <Card className="lg:col-span-8 border-slate-200 shadow-md bg-white">
+            <CardHeader className="p-5 pb-3">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div>
+                  <CardTitle className="text-base font-bold text-slate-900">
+                    Tableau National des 12 Départements &bull; Couverture Sanitaire & Urgences
+                  </CardTitle>
+                  <CardDescription className="text-xs text-slate-500">
+                    Suivi consolidé des formations sanitaires, capacités d&apos;accueil, stocks de sang et conformité ordinale.
+                  </CardDescription>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="relative w-36 sm:w-44">
+                    <Search className="w-3.5 h-3.5 absolute left-2.5 top-2.5 text-slate-400" />
+                    <Input
+                      type="text"
+                      placeholder="Filtrer département..."
+                      value={deptSearch}
+                      onChange={(e) => setDeptSearch(e.target.value)}
+                      className="h-8 pl-8 text-xs bg-slate-50 border-slate-300"
+                    />
+                  </div>
+                  <Badge variant="default" className="text-[10px] shrink-0 bg-[#0a3764]">
+                    12 Départements
+                  </Badge>
+                </div>
+              </div>
+            </CardHeader>
+
+            <CardContent className="p-5 pt-0 space-y-3">
+              <div className="rounded-xl border border-slate-200 overflow-hidden">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-slate-50">
+                      <TableHead>Département</TableHead>
+                      <TableHead>Chef-Lieu</TableHead>
+                      <TableHead className="text-center">Établissements</TableHead>
+                      <TableHead className="text-center">Lits Disponibles</TableHead>
+                      <TableHead className="text-center">Stocks Sang</TableHead>
+                      <TableHead className="text-center">Couverture ARCH</TableHead>
+                      <TableHead className="text-right">Action</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredDepartements.map((dep) => (
+                      <TableRow
+                        key={dep.nom}
+                        className={`cursor-pointer transition-colors ${
+                          selectedDept === dep.nom ? "bg-blue-50/70" : "hover:bg-slate-50"
+                        }`}
+                        onClick={() => setSelectedDept(dep.nom)}
+                      >
+                        <TableCell className="font-bold text-slate-900 flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-[#0a3764]" />
+                          <span>{dep.nom}</span>
+                        </TableCell>
+                        <TableCell className="text-slate-600 font-medium">
+                          {dep.chefLieu}
+                        </TableCell>
+                        <TableCell className="text-center font-mono text-slate-900">
+                          {dep.etablissements}
+                        </TableCell>
+                        <TableCell className="text-center font-mono font-bold text-slate-900">
+                          {dep.litsDisponibles}
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-800">
+                            {dep.stocksSang} poches
+                          </span>
+                        </TableCell>
+                        <TableCell className="text-center font-mono font-bold text-emerald-700">
+                          {dep.tauxCouvertureArch}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <ChevronRight className="w-3.5 h-3.5 ml-auto text-slate-400" />
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between text-xs flex-wrap gap-2">
+                <span className="text-slate-600">
+                  Département sélectionné : <strong className="text-slate-900">{selectedDeptData.nom}</strong> ({selectedDeptData.chefLieu}) &bull;{" "}
+                  <span className="font-mono text-[#0a3764] font-bold">{selectedDeptData.etablissements}</span> structures de soins
+                </span>
+                <span className="text-emerald-700 font-semibold flex items-center gap-1.5 text-[11px]">
+                  <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
+                  Conformité plateaux techniques : {selectedDeptData.conformiteArs}
+                </span>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* TÉLÉMÉTRIE HEMORA ET RUPTURES CRITIQUES (5 colonnes) */}
+          <Card className="lg:col-span-4 border-slate-200 shadow-md bg-white">
+            <CardHeader className="p-5 pb-3">
+              <CardTitle className="text-base font-bold text-slate-900 flex items-center gap-2">
+                <Heart className="w-4 h-4 text-red-600" />
+                <span>Régulation CNTS &amp; Alertes Transfusionnelles</span>
+              </CardTitle>
+              <CardDescription className="text-xs text-slate-500">
+                Surveillance continue des réserves départementales et réquisition automatique de donneurs.
+              </CardDescription>
+            </CardHeader>
+
+            <CardContent className="p-5 pt-0 space-y-3">
+              {criticalStocks.length > 0 ? (
+                criticalStocks.map((stock, i) => (
+                  <div
+                    key={i}
+                    className="p-3.5 rounded-xl border border-amber-200 bg-amber-50/50 flex items-center justify-between"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-xl bg-amber-100 text-amber-900 flex items-center justify-center font-bold text-xs border border-amber-300">
+                        {stock.groupe}
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-slate-900">{stock.hopitalNom}</p>
+                        <p className="text-[10px] text-slate-500">{stock.commune} ({stock.departement})</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-xs font-bold text-amber-800">{stock.quantitePoches} poches</span>
+                      <span className="block text-[10px] text-slate-500">Seuil min : {stock.seuilAlerte}</span>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="p-6 rounded-xl border border-slate-200 bg-slate-50 text-center text-xs text-slate-500">
+                  <CheckCircle className="w-6 h-6 text-emerald-600 mx-auto mb-2" />
+                  <span>Aucune alerte de rupture critique signalée. Stocks nationaux au-dessus du seuil réglementaire.</span>
+                </div>
+              )}
+
+              <div className="pt-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  asChild
+                  className="w-full text-xs font-bold h-8"
+                >
+                  <Link href="/dashboard/citoyen" className="flex items-center justify-center gap-1.5">
+                    <span>Voir le Passeport Citoyen &amp; Dons HEMORA</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* CARTE SIG INTERACTIVE OPENSTREETMAP (PLEINE LARGEUR) */}
+        <Card className="border-slate-200 shadow-md bg-white overflow-hidden">
+          <CardHeader className="p-5 pb-3 border-b border-slate-100">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200">
+                    Système d&apos;Information Géographique (SIG)
+                  </span>
+                  <span className="text-xs text-slate-500">IASO Bénin</span>
+                </div>
+                <CardTitle className="text-base font-bold text-slate-900 mt-1">
+                  Cartographie Sanitaire des 06 Pôles Territoriaux &amp; 77 Communes
+                </CardTitle>
+                <CardDescription className="text-xs text-slate-500">
+                  Supervision géodésique OpenStreetMap, capacités hospitalières et localisation des hôpitaux de zone.
+                </CardDescription>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="flex items-center p-1 rounded-xl bg-slate-100 border border-slate-200">
+                  <button
+                    onClick={() => setVueMode("map")}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+                      vueMode === "map"
+                        ? "bg-[#0a3764] text-white shadow-xs"
+                        : "text-slate-600 hover:text-slate-900"
+                    }`}
+                  >
+                    <MapIcon className="h-3.5 w-3.5" />
+                    <span>Carte OSM</span>
+                  </button>
+                  <button
+                    onClick={() => setVueMode("table")}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+                      vueMode === "table"
+                        ? "bg-[#0a3764] text-white shadow-xs"
+                        : "text-slate-600 hover:text-slate-900"
+                    }`}
+                  >
+                    <TableIcon className="h-3.5 w-3.5" />
+                    <span>Tableau IASO</span>
+                  </button>
+                </div>
+
+                <select
+                  value={selectedPole}
+                  onChange={(e) => setSelectedPole(e.target.value)}
+                  className="rounded-xl border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-800 focus:outline-none"
+                >
+                  <option value="ALL">Tous les 06 Pôles Territoriaux</option>
+                  {POLES_DEVELOPPEMENT_BENIN.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.nom} ({p.communes.length} com.)
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </CardHeader>
+
+          <CardContent className="p-0">
+            {vueMode === "map" ? (
+              <div className="p-4">
+                <OpenStreetMapTerritoire
+                  selectedPoleId={selectedPole}
+                  onPoleSelect={(pId) => setSelectedPole(pId)}
+                  showFilters={true}
                 />
               </div>
-            </div>
-          </div>
-
-          {/* Affichage conditionnel : Carte OpenStreetMap ou Tableau IASO */}
-          {vueMode === "map" ? (
-            <OpenStreetMapTerritoire
-              selectedPoleId={selectedPole}
-              onPoleSelect={(pId) => setSelectedPole(pId)}
-              showFilters={true}
-            />
-          ) : (
-            <div className="rounded-3xl border border-foreground/10 bg-background/80 overflow-hidden shadow-sm">
-              <div className="overflow-x-auto max-h-[540px]">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-foreground/5 text-foreground/60 uppercase sticky top-0 backdrop-blur-md">
-                    <tr>
-                      <th className="py-3 px-4">Code IASO</th>
-                      <th className="py-3 px-4">Établissement</th>
-                      <th className="py-3 px-4">Pôle Territorial</th>
-                      <th className="py-3 px-4">Commune</th>
-                      <th className="py-3 px-4 text-center">Capacité (Lits)</th>
-                      <th className="py-3 px-4 text-center">Statut ARS</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-foreground/5">
+            ) : (
+              <div className="overflow-x-auto max-h-[500px]">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="bg-slate-50">
+                      <TableHead>Code IASO</TableHead>
+                      <TableHead>Établissement</TableHead>
+                      <TableHead>Pôle Territorial</TableHead>
+                      <TableHead>Commune</TableHead>
+                      <TableHead className="text-center">Capacité (Lits)</TableHead>
+                      <TableHead className="text-center">Statut ARS</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
                     {filteredFacilities.map((fac) => (
-                      <tr key={fac.id || fac.codeIaso} className="hover:bg-foreground/2 transition-colors">
-                        <td className="py-3 px-4 font-mono font-bold text-blue-500">{fac.codeIaso}</td>
-                        <td className="py-3 px-4 font-semibold text-foreground">{fac.nom}</td>
-                        <td className="py-3 px-4 text-foreground/80">
-                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-500/10 text-blue-500 border border-blue-500/20">
+                      <TableRow key={fac.id || fac.codeIaso} className="hover:bg-slate-50">
+                        <TableCell className="font-mono font-bold text-[#0a3764]">{fac.codeIaso}</TableCell>
+                        <TableCell className="font-semibold text-slate-900">{fac.nom}</TableCell>
+                        <TableCell className="text-slate-700">
+                          <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-800 border border-blue-200">
                             {fac.poleNom || "Pôle Sanitaire"}
                           </span>
-                        </td>
-                        <td className="py-3 px-4 text-foreground/60">{fac.commune}</td>
-                        <td className="py-3 px-4 text-center font-bold text-foreground">
+                        </TableCell>
+                        <TableCell className="text-slate-600">{fac.commune}</TableCell>
+                        <TableCell className="text-center font-bold text-slate-900">
                           {fac.capaciteLits || 50}
-                        </td>
-                        <td className="py-3 px-4 text-center">
-                          <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 text-[10px] font-bold">
+                        </TableCell>
+                        <TableCell className="text-center">
+                          <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 text-[10px] font-bold">
                             Homologué
                           </span>
-                        </td>
-                      </tr>
+                        </TableCell>
+                      </TableRow>
                     ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Section 2 : Télémétrie HEMORA (Stocks critiques) */}
-        <div className="lg:col-span-4 flex flex-col gap-4">
-          <div className="p-4 rounded-2xl border border-foreground/10 bg-background/60">
-            <h2 className="text-base font-bold text-foreground">
-              Télémétrie HEMORA & Ruptures
-            </h2>
-            <p className="text-xs text-foreground/60">
-              Surveillance continue des réserves départementales
-            </p>
-          </div>
-
-          <div className="flex flex-col gap-3">
-            {criticalStocks.length > 0 ? (
-              criticalStocks.map((stock, i) => (
-                <div
-                  key={i}
-                  className="p-4 rounded-2xl border border-amber-500/30 bg-amber-500/5 flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center font-bold text-sm">
-                      {stock.groupe}
-                    </div>
-                    <div>
-                      <p className="text-xs font-bold text-foreground">{stock.hopitalNom}</p>
-                      <p className="text-[10px] text-foreground/60">{stock.commune} ({stock.departement})</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-sm font-bold text-amber-500">{stock.quantitePoches} poches</span>
-                    <span className="block text-[9px] text-foreground/50">Seuil min: {stock.seuilAlerte}</span>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="p-6 rounded-2xl border border-foreground/10 bg-background/40 text-center text-xs text-foreground/50">
-                Aucune alerte de rupture critique signalée.
+                  </TableBody>
+                </Table>
               </div>
             )}
-          </div>
-        </div>
-      </div>
+          </CardContent>
+        </Card>
 
-      {/* Section 3 : Cellule d'Inspection Ministérielle & Signalements Citoyens */}
-      <ScaleUnblur className="flex flex-col gap-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-5 rounded-3xl border border-red-500/20 bg-gradient-to-r from-red-950/30 to-background">
-          <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-2xl bg-red-600/20 text-red-500 flex items-center justify-center font-bold">
-              <AlertTriangle className="h-5 w-5" />
+        {/* SECTION CELLULE D'INSPECTION & SIGNALEMENTS CITOYENS (SHADCN TABLE) */}
+        <Card className="border-red-200 shadow-md bg-white">
+          <CardHeader className="p-5 pb-3 bg-red-50/50 border-b border-red-100">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-xl bg-red-100 text-red-700 flex items-center justify-center font-bold border border-red-200 shrink-0">
+                  <AlertTriangle className="h-5 w-5" />
+                </div>
+                <div>
+                  <CardTitle className="text-base font-bold text-slate-900">
+                    Inspection Générale de la Santé &bull; Signalements Citoyens Directs
+                  </CardTitle>
+                  <CardDescription className="text-xs text-slate-500">
+                    Plaintes déposées par les usagers (Refus d&apos;admission vitale, caution illégale, rançonnement)
+                  </CardDescription>
+                </div>
+              </div>
+
+              <Badge variant="destructive" className="text-xs font-bold font-mono">
+                {signalements.length} dossier(s) actif(s)
+              </Badge>
             </div>
-            <div>
-              <h2 className="text-base font-bold text-foreground">
-                Inspection Générale de la Santé • Signalements & Dénonciations Citoyennes
-              </h2>
-              <p className="text-xs text-foreground/60">
-                Plaintes directes déposées par les usagers (Refus d&apos;admission vitale, caution illégale, rançonnement)
-              </p>
-            </div>
-          </div>
+          </CardHeader>
 
-          <div className="flex items-center gap-2">
-            <span className="px-3 py-1 rounded-xl bg-red-500/10 text-red-400 border border-red-500/20 text-xs font-bold font-mono">
-              {signalements.length} alerte(s) active(s)
-            </span>
-          </div>
-        </div>
-
-        <div className="rounded-3xl border border-foreground/10 bg-background/80 overflow-hidden shadow-lg backdrop-blur-md">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-foreground/5 text-foreground/60 uppercase sticky top-0">
-                <tr>
-                  <th className="py-3 px-4">Dossier</th>
-                  <th className="py-3 px-4">Motif de Plainte</th>
-                  <th className="py-3 px-4">Établissement & Commune</th>
-                  <th className="py-3 px-4">Plaignant</th>
-                  <th className="py-3 px-4">Gravité</th>
-                  <th className="py-3 px-4 text-center">Statut d&apos;Instruction</th>
-                  <th className="py-3 px-4 text-center">Décision Ministérielle</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-foreground/5">
-                {signalements.map((sig) => (
-                  <tr key={sig.codeDossier || sig.id} className="hover:bg-foreground/2 transition-colors">
-                    <td className="py-3 px-4 font-mono font-bold text-red-400">
-                      {sig.codeDossier}
-                    </td>
-                    <td className="py-3 px-4">
-                      <span className="font-semibold text-foreground block">{sig.typeInfractionLabel}</span>
-                      <span className="text-[11px] text-foreground/60 block mt-0.5 line-clamp-1">
-                        {sig.description}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4">
-                      <div className="font-medium text-foreground">{sig.etablissementNom}</div>
-                      <div className="text-[10px] text-foreground/50">{sig.commune} ({sig.departement})</div>
-                    </td>
-                    <td className="py-3 px-4">
-                      {sig.anonyme ? (
-                        <span className="text-foreground/50 italic">Anonyme (Protégé)</span>
-                      ) : (
-                        <div>
-                          <span className="font-semibold text-foreground">{sig.declarantNom || "Bio GOUDA"}</span>
-                          <span className="block text-[10px] font-mono text-foreground/50">{sig.declarantNpi}</span>
+          <CardContent className="p-5 pt-0">
+            <div className="rounded-xl border border-slate-200 overflow-hidden mt-4">
+              <Table>
+                <TableHeader>
+                  <TableRow className="bg-slate-50">
+                    <TableHead>Dossier</TableHead>
+                    <TableHead>Motif de Plainte</TableHead>
+                    <TableHead>Établissement &amp; Commune</TableHead>
+                    <TableHead>Plaignant</TableHead>
+                    <TableHead>Gravité</TableHead>
+                    <TableHead className="text-center">Statut d&apos;Instruction</TableHead>
+                    <TableHead className="text-center">Décision Régalienne</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {signalements.map((sig) => (
+                    <TableRow key={sig.codeDossier || sig.id} className="hover:bg-slate-50">
+                      <TableCell className="font-mono font-bold text-red-600">
+                        {sig.codeDossier}
+                      </TableCell>
+                      <TableCell>
+                        <span className="font-semibold text-slate-900 block">{sig.typeInfractionLabel}</span>
+                        <span className="text-[11px] text-slate-500 block mt-0.5 line-clamp-1">
+                          {sig.description}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <div className="font-medium text-slate-900">{sig.etablissementNom}</div>
+                        <div className="text-[10px] text-slate-500">{sig.commune} ({sig.departement})</div>
+                      </TableCell>
+                      <TableCell>
+                        {sig.anonyme ? (
+                          <span className="text-slate-400 italic">Anonyme (Protégé)</span>
+                        ) : (
+                          <div>
+                            <span className="font-semibold text-slate-900">{sig.declarantNom || "Bio GOUDA"}</span>
+                            <span className="block text-[10px] font-mono text-slate-400">{sig.declarantNpi}</span>
+                          </div>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-100 text-red-800 border border-red-200">
+                          {sig.gravite}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800 border border-amber-200">
+                          {sig.statut === "INSPECTEUR_DEPECHE"
+                            ? "Inspecteur Dépêché"
+                            : sig.statut === "SANCTION_PRONONCEE"
+                            ? "Sanction Prononcée"
+                            : "En Instruction"}
+                        </span>
+                      </TableCell>
+                      <TableCell className="text-center">
+                        <div className="flex items-center justify-center gap-1.5">
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              sig.statut = "INSPECTEUR_DEPECHE";
+                              sig.reponseMinistere = "Mission d'inspection immédiate diligentée sur place par arrêté ministériel.";
+                              setSignalements([...signalements]);
+                            }}
+                            className="bg-red-700 hover:bg-red-800 text-white font-bold text-[10px] h-7 px-2.5"
+                          >
+                            Dépêcher
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              sig.statut = "SANCTION_PRONONCEE";
+                              sig.reponseMinistere = "Sanction administrative conservatoire prise : suspension à titre conservatoire.";
+                              setSignalements([...signalements]);
+                            }}
+                            className="font-bold text-[10px] h-7 px-2.5"
+                          >
+                            Sanctionner
+                          </Button>
                         </div>
-                      )}
-                    </td>
-                    <td className="py-3 px-4">
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-red-500/15 text-red-400 border border-red-500/25">
-                        {sig.gravite}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 text-center">
-                      <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                        {sig.statut === "INSPECTEUR_DEPECHE"
-                          ? "Inspecteur Dépêché"
-                          : sig.statut === "SANCTION_PRONONCEE"
-                          ? "Sanction Prononcée"
-                          : "En Instruction"}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 text-center">
-                      <div className="flex items-center justify-center gap-1.5">
-                        <button
-                          onClick={() => {
-                            sig.statut = "INSPECTEUR_DEPECHE";
-                            sig.reponseMinistere = "Mission d'inspection immédiate diligentée sur place par arrêté ministériel.";
-                            setSignalements([...signalements]);
-                          }}
-                          className="px-2.5 py-1 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold text-[10px] shadow-sm transition-colors"
-                          title="Dépêcher un inspecteur ministériel"
-                        >
-                          Dépêcher
-                        </button>
-                        <button
-                          onClick={() => {
-                            sig.statut = "SANCTION_PRONONCEE";
-                            sig.reponseMinistere = "Sanction administrative conservatoire prise : suspension à titre conservatoire de l'agent.";
-                            setSignalements([...signalements]);
-                          }}
-                          className="px-2.5 py-1 rounded-lg bg-foreground/10 hover:bg-foreground/15 text-foreground font-bold text-[10px] transition-colors"
-                          title="Prononcer sanction administrative"
-                        >
-                          Sanctionner
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </ScaleUnblur>
-    </main>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          </CardContent>
+        </Card>
+      </main>
+    </div>
   );
 }

@@ -19,6 +19,7 @@ import {
   CheckCircle,
   Activity,
   Maximize2,
+  X,
 } from "lucide-react";
 
 interface OpenStreetMapTerritoireProps {
@@ -187,9 +188,9 @@ export function OpenStreetMapTerritoire({
           border: 2px solid white;
           display: flex;
           align-items: center;
-          gap: 4px;
+          gap: 6px;
         ">
-          <span>📍</span>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
           <span>${pole.nom}</span>
         </div>
       `;
@@ -236,7 +237,9 @@ export function OpenStreetMapTerritoire({
     filtered.forEach((fac) => {
       const isChicOrCnhu = fac.type === "chic" || fac.type === "cnhu";
       const markerBg = isChicOrCnhu ? "#dc2626" : fac.poleCouleur || "#2563eb";
-      const iconSymbol = isChicOrCnhu ? "🏥" : "⚕️";
+      const iconSymbol = isChicOrCnhu
+        ? `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 6v12m-6-6h12"/></svg>`
+        : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m10 15 5-3-5-3v6Z"/></svg>`;
 
       const iconHtml = `
         <div style="
@@ -276,7 +279,7 @@ export function OpenStreetMapTerritoire({
             <span style="font-size: 10px; color: #64748b;">${fac.codeIaso || "IASO-BENIN"}</span>
           </div>
           <h4 style="font-size: 13px; font-weight: bold; margin: 4px 0; color: #0f172a;">${fac.nom}</h4>
-          <p style="font-size: 11px; color: #475569; margin: 0 0 6px 0;">📍 Commune de <strong>${fac.commune}</strong> (${fac.departement})</p>
+          <p style="font-size: 11px; color: #475569; margin: 0 0 6px 0;">Commune de <strong>${fac.commune}</strong> (${fac.departement})</p>
           <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px; font-size: 11px; margin-bottom: 8px;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 2px;">
               <span style="color: #64748b;">Capacité hospitalière :</span>
@@ -284,7 +287,7 @@ export function OpenStreetMapTerritoire({
             </div>
             <div style="display: flex; justify-content: space-between;">
               <span style="color: #64748b;">Accréditation ARS :</span>
-              <span style="color: #10b981; font-weight: bold;">✓ Conforme</span>
+              <span style="color: #10b981; font-weight: bold;">Homologué ARS</span>
             </div>
           </div>
           <div style="font-size: 10px; color: #2563eb; text-align: center; font-weight: 500;">
@@ -451,8 +454,9 @@ export function OpenStreetMapTerritoire({
               <button
                 onClick={() => setSelectedFacility(null)}
                 className="h-6 w-6 rounded-full bg-foreground/10 hover:bg-foreground/20 flex items-center justify-center text-xs text-foreground/60 hover:text-foreground"
+                aria-label="Fermer"
               >
-                ✕
+                <X className="h-3.5 w-3.5" />
               </button>
             </div>
 

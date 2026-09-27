@@ -18,10 +18,19 @@ export async function GET(req: NextRequest) {
     }, { status: 404 });
   }
 
+  const normalizedStatut = ord.statut.toLowerCase();
+  const ordonnanceObj = {
+    ...ord,
+    codeUnique: ord.code,
+    typePrescription: ord.typeOrdonnance === "pharmacopee_certifiee" ? "Pharmacopée Traditionnelle Certifiée MTA" : "Conventionnelle",
+    statut: normalizedStatut,
+  };
+
   return NextResponse.json({
     success: true,
     valide: ord.statut === "ACTIVE",
     statut: ord.statut,
     data: ord,
+    ordonnance: ordonnanceObj,
   });
 }

@@ -16,7 +16,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { code, pharmacieNom, pharmacieNpi } = body;
+    const code = body.code || body.codeUnique;
+    const pharmacieNom = body.pharmacieNom;
+    const pharmacieNpi = body.pharmacieNpi || "NPI-PHARM-2026-001";
 
     const ordonnance = await delivrerOrdonnanceSecurisee({
       code,

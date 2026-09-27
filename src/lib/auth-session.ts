@@ -8,6 +8,8 @@ export type UserRole =
   | "CITOYEN"
   | "PHARMACIE";
 
+export type AccountStatus = "VALIDE" | "EN_ATTENTE_VALIDATION" | "SUSPENDU" | "REJETE";
+
 export interface UserSession {
   npi: string;
   nom: string;
@@ -22,6 +24,11 @@ export interface UserSession {
   badge?: string;
   token?: string;
   password?: string;
+  statutValidation?: AccountStatus;
+  dateDemande?: string;
+  dateValidation?: string;
+  validePar?: string;
+  telephone?: string;
 }
 
 export const DEMO_USERS: Record<UserRole, UserSession> = {
@@ -146,6 +153,6 @@ export const ROLE_DASHBOARDS: Record<UserRole, string> = {
   MEDECIN: "/dashboard/medecin",
   ASC: "/dashboard/asc",
   PATIENT: "/dashboard/patient",
-  CITOYEN: "/dashboard/patient",
+  CITOYEN: "/dashboard/citoyen",
   PHARMACIE: "/dashboard/pharmacie",
 };

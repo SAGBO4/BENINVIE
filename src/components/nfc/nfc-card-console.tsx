@@ -374,7 +374,7 @@ export function NfcCardConsole({
             {/* Écran d'état LED du terminal */}
             <div className="bg-slate-950 rounded-xl p-3 border border-slate-800 font-mono text-xs mb-4">
               <div className="text-emerald-400 flex items-center gap-2">
-                <span className="animate-pulse">▶</span>
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse inline-block" />
                 <span>{statusMessage}</span>
               </div>
             </div>

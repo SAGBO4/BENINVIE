@@ -1,4 +1,4 @@
-# 🇧🇯 BENINVIE (Gbɛ) — Plateforme Nationale de Santé Numérique de la République du Bénin
+# 🇧🇯 BENINVIE — Plateforme Nationale de Santé Numérique de la République du Bénin
 ### *Système d'Information Hospitalier (SIH) Généralisé, Urgences Vitales à Paiement Différé, Réseau Transfusionnel HEMORA & Pharmacopée Traditionnelle Certifiée*
 
 > **Gbɛ** (« *La Vie* » en langues nationales du Bénin) constitue l'infrastructure logicielle d'État de référence, souveraine et hautement disponible, conçue pour matérialiser les réformes structurelles du **Programme d'Action Gouvernemental (Wadagni - Talata 2026)** : carnet de santé digital universel adossé au SIH national, **règle d'or « Zéro refus d'admission aux urgences pour motif financier »** via paiement différé garanti par l'État, interconnexion géospatiale des **06 Pôles Territoriaux de Développement** (77 communes), pilotage transfusionnel **HEMORA**, valorisation de la **pharmacopée traditionnelle (MTA)** sous régulation **ARS** et extension de la couverture sociale **ARCH / Gbêssôkê**.

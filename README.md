@@ -1,11 +1,11 @@
-# 🇧🇯 BENINVIE (Gbɛ) — Plateforme Nationale de Santé Numérique de la République du Bénin
+# BENINVIE (Gbɛ) — Plateforme Nationale de Santé Numérique de la République du Bénin
 ### *Système d'Information Hospitalier (SIH) Généralisé, Urgences Vitales à Paiement Différé, Réseau Transfusionnel HEMORA & Pharmacopée Traditionnelle Certifiée*
 
 > **Gbɛ** (« *La Vie* » en langues nationales du Bénin) constitue l'infrastructure logicielle d'État de référence, souveraine et hautement disponible, conçue pour matérialiser les réformes structurelles du **Programme d'Action Gouvernemental (Wadagni - Talata 2026)** : carnet de santé digital universel adossé au SIH national, **règle d'or « Zéro refus d'admission aux urgences pour motif financier »** via paiement différé garanti par l'État, interconnexion géospatiale des **06 Pôles Territoriaux de Développement** (77 communes), pilotage transfusionnel **HEMORA**, valorisation de la **pharmacopée traditionnelle (MTA)** sous régulation **ARS** et extension de la couverture sociale **ARCH / Gbêssôkê**.
 
 ---
 
-## 🌟 Badges & Certifications Officielles
+## Badges & Certifications Officielles
 
 [![Next.js 16](https://img.shields.io/badge/Next.js-16%20(App%20Router)-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
 [![React 19](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
@@ -22,7 +22,7 @@
 
 ---
 
-## 📑 Sommaire Exécutif
+## Sommaire Exécutif
 
 1. [Contexte Stratégique & Référence d'État](#1-contexte-stratégique--référence-détat)
 2. [Organisation Territoriale en 06 Pôles de Développement (Réforme 229 DEGRÉ)](#2-organisation-territoriale-en-06-pôles-de-développement-réforme-229-degré)
@@ -64,7 +64,7 @@ La plateforme **BENINVIE** fédère l'ensemble des systèmes de santé publique 
 └──────────────────┘           └──────────────────┘        └──────────────────┘           └──────────────────┘
 ```
 
-### ⚖️ La Règle d'Or : « Zéro refus d'admission aux urgences pour motif financier »
+### La Règle d'Or : « Zéro refus d'admission aux urgences pour motif financier »
 Dans toute formation sanitaire de la République du Bénin (publique ou conventionnée), **aucun citoyen en détresse vitale ne peut se voir refuser des soins ou exiger un paiement préalable / caution**. 
 - L'admission d'urgence déclenche le protocole **Bris-de-Glace**, créant un `Encounter` médicalisé d'urgence et ouvrant automatiquement un **Dossier de Paiement Différé** (`dossiers_paiement_differe`).
 - La prise en charge thérapeutique est garantie financièrement par l'État béninois, avec apurement différé après stabilisation (via la couverture universelle **ARCH Gbêssôkê**, mutuelle ou facilitation échelonnée Mobile Money).
@@ -101,7 +101,7 @@ Conformément à la réforme territoriale nationale (**Schéma National d'Aména
                                   ▼ SUD (Océan Atlantique)
 ```
 
-### 📊 Tableau Référentiel des 06 Pôles et Formations Sanitaires Majeures
+### Tableau Référentiel des 06 Pôles et Formations Sanitaires Majeures
 
 | Pôle Territorial | Code ID | Nb Com. | Chef-lieu Officiel | Communes Couvertes (Intégralité des 77 Communes) | Établissements Hospitaliers de Référence |
 |---|---|:---:|---|---|---|
@@ -123,16 +123,16 @@ Le Système d'Information Géographique (SIG) national de BENINVIE repose sur le
 ┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
 │ TABLEAU DE BORD MINISTÉRIEL & VEILLE SANITAIRE NATIONALE                                              │
 ├───────────────────────────────────────────────────┬────────────────────────────────────────────────────┤
-│ [ 🗺️ Carte OSM ]   [ 📋 Tableau IASO ]            │ FILTRES : [ Tous les 06 Pôles ▼ ] [ Recherche 🔍 ] │
+│ [ Carte OSM ]   [ Tableau IASO ]            │ FILTRES : [ Tous les 06 Pôles ▼ ] [ Recherche ] │
 ├───────────────────────────────────────────────────┴────────────────────────────────────────────────────┤
 │                                                                                                        │
-│   🌍 COUCHE OPENSTREETMAP INTERACTIVE (Leaflet + Tuiles Standard CartoDB / OSM)                         │
+│   COUCHE OPENSTREETMAP INTERACTIVE (Leaflet + Tuiles Standard CartoDB / OSM)                         │
 │                                                                                                        │
 │   • 06 Cercles Géodésiques de Couverture Territoriale (Rayons calibrés avec codes couleur officiels)   │
 │   • Marqueurs Différenciés :                                                                           │
-│       🔵 Établissements & Hôpitaux de Référence (CHIC, CNHU, CHD, HZ, CSA, CSC)                        │
-│       🔴 Dépôts & Banques de Sang HEMORA (Surveillance des stocks de culots globulaires)              │
-│       ⚠️ Alertes d'Urgences Vitales Actives (Transfusions & admissions Bris-de-Glace)                  │
+│       • Établissements & Hôpitaux de Référence (CHIC, CNHU, CHD, HZ, CSA, CSC)                        │
+│       • Dépôts & Banques de Sang HEMORA (Surveillance des stocks de culots globulaires)              │
+│       • Alertes d'Urgences Vitales Actives (Transfusions & admissions Bris-de-Glace)                  │
 │                                                                                                        │
 │   • Popups d'Établissements : Code IASO, Capacité en lits, Banque de sang disponible, Statut ARS,    │
 │     Lien d'orientation d'urgence.                                                                      │
@@ -181,7 +181,7 @@ La persistance des données vitales repose sur **PostgreSQL serverless géré pa
                                                         COMMIT; ───► HTTP 200 OK
 ```
 
-### 🛡️ Le Banc de Torture Adversarial (Pentest Anti-Fraude)
+### Le Banc de Torture Adversarial (Pentest Anti-Fraude)
 Validé par la suite de tests [`src/tests/adversarial_ordonnance_persistence.test.ts`](file:///home/lesaint/Rendue/BENINVIE/src/tests/adversarial_ordonnance_persistence.test.ts) :
 1. **Attaque par Concurrence Massif (Race Condition)** : 5 requêtes de délivrance strictement simultanées sont envoyées avec le même code d'ordonnance.
 2. **Résultat Implacable** : Exactement **1 seule requête réussit** (HTTP 200) tandis que les **4 autres sont immédiatement rejetées** (HTTP 409 Conflict).
@@ -328,8 +328,8 @@ sequenceDiagram
 
 Le dossier officiel complet d'homologation et de présentation ministérielle est archivé de manière exclusive et pérenne dans le sous-dossier [`docs/`](file:///home/lesaint/Rendue/BENINVIE/docs) :
 
-- 📕 **Format PDF Haute Fidélité Imprimable** : [`docs/BENINVIE_DOSSIER_DE_PRESENTATION.pdf`](file:///home/lesaint/Rendue/BENINVIE/docs/BENINVIE_DOSSIER_DE_PRESENTATION.pdf) (Document de 8 pages A4 rédigé selon les standards du Secrétariat Général du Gouvernement, intégrant graphiques haute résolution, tableaux budgétaires et signatures institutionnelles).
-- 🌐 **Version Source Web Interactive** : [`docs/presentation-beninvie.html`](file:///home/lesaint/Rendue/BENINVIE/docs/presentation-beninvie.html) (Mise en page CSS Paged Media respectant le gabarit d'impression 210mm × 297mm).
+- **Format PDF Haute Fidélité Imprimable** : [`docs/BENINVIE_DOSSIER_DE_PRESENTATION.pdf`](file:///home/lesaint/Rendue/BENINVIE/docs/BENINVIE_DOSSIER_DE_PRESENTATION.pdf) (Document de 8 pages A4 rédigé selon les standards du Secrétariat Général du Gouvernement, intégrant graphiques haute résolution, tableaux budgétaires et signatures institutionnelles).
+- **Version Source Web Interactive** : [`docs/presentation-beninvie.html`](file:///home/lesaint/Rendue/BENINVIE/docs/presentation-beninvie.html) (Mise en page CSS Paged Media respectant le gabarit d'impression 210mm × 297mm).
 
 ---
 
@@ -341,7 +341,7 @@ La plateforme BENINVIE fait l'objet d'une suite de tests automatisés exhaustive
 pnpm test
 ```
 
-### 📋 Résultats Officiels d'Exécution Vitest (14 Suites / 55 Tests)
+### Résultats Officiels d'Exécution Vitest (14 Suites / 55 Tests)
 
 ```text
  ✓ src/tests/adversarial_ordonnance_persistence.test.ts (5 tests)  --> Verrouillage SELECT ... FOR UPDATE & ACID
@@ -364,7 +364,7 @@ pnpm test
    Duration  41.17s
 ```
 
-### 🛡️ Contrôle Statique TypeScript Strict
+### Contrôle Statique TypeScript Strict
 ```bash
 pnpm tsc --noEmit
 # Résultat : Code 0 (0 erreur de compilation, typage 100% strict)
@@ -382,7 +382,7 @@ Le développement de la plateforme applique des règles d'ingénierie logicielle
   - Stabilisation et tags de version officielle mergés sur la branche `main`.
 - **Cadencement et Horodatage** : Commits atomiques réguliers et synchronisations distantes effectuées à intervalle inférieur à 2 heures.
 
-### 🚀 Démarrage Rapide en Local
+### Démarrage Rapide en Local
 
 ```bash
 # 1. Cloner le dépôt officiel
@@ -400,7 +400,7 @@ pnpm dev
 ```
 L'application démarre immédiatement sur **http://localhost:3000**.
 
-### 🐳 Déploiement Conteneurisé avec Docker Compose
+### Déploiement Conteneurisé avec Docker Compose
 
 ```bash
 # Lancement de l'environnement complet conteneurisé

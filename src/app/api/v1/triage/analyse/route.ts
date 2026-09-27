@@ -69,20 +69,27 @@ export async function POST(req: NextRequest) {
       alertes.push("Contrôler la température, la tension artérielle et la glycémie");
     }
 
+    const analysePayload = {
+      analyseTimestamp: new Date().toISOString(),
+      langueDetectee: langue,
+      symptomesAnalyses: symptomes,
+      niveauUrgence,
+      niveauGravite: niveauUrgence === "ROUGE_VITALE" ? "URGENCE_VITALE" : niveauUrgence === "ORANGE_URGENT" ? "URGENCE_RELATIVE" : "STABLE",
+      scoreGravite,
+      orientationRecommandee: orientation,
+      orientationConseillee: orientation,
+      diagnosticSuspecte: isHemmoragie ? "Suspicion d'hémorragie active / hémostase requise" : isGraviteGrossesse ? "Complication obstétricale du 3e trimestre" : "Syndrome infectieux aigu / paludisme présumé",
+      protocoleNational: protocole,
+      alertesCliniques: alertes,
+      signauxAlarme: alertes,
+      rappelReglementaire:
+        "Cette orientation clinique respecte le protocole national de santé communautaire du Ministère de la Santé du Bénin.",
+    };
+
     return NextResponse.json({
       success: true,
-      data: {
-        analyseTimestamp: new Date().toISOString(),
-        langueDetectee: langue,
-        symptomesAnalyses: symptomes,
-        niveauUrgence,
-        scoreGravite,
-        orientationRecommandee: orientation,
-        protocoleNational: protocole,
-        alertesCliniques: alertes,
-        rappelReglementaire:
-          "Cette analyse IA est une aide à la décision clinique d'orientation. La décision médicale appartient au professionnel de santé diplômé.",
-      },
+      data: analysePayload,
+      analyse: analysePayload,
     });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });

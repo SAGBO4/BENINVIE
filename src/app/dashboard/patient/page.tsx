@@ -36,6 +36,7 @@ import {
   CheckCheck,
   Share2,
   Lock,
+  ArrowUpRight,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { NfcCardConsole } from "@/components/nfc/nfc-card-console";
@@ -1424,9 +1425,10 @@ export default function PatientDashboardPage(): ReactNode {
               href={`/verify?token=ORD-${showQrModal || "2026-001"}-SCELLÉ`}
               target="_blank"
               rel="noopener noreferrer"
-              className="min-h-[44px] inline-flex items-center justify-center text-xs font-bold text-[#0a3764] dark:text-emerald-400 hover:underline"
+              className="min-h-[44px] inline-flex items-center justify-center gap-1.5 text-xs font-bold text-[#0a3764] dark:text-emerald-400 hover:underline"
             >
-              Tester le guichet de vérification pharmacie ↗
+              <span>Tester le guichet de vérification pharmacie</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
             </a>
 
             <button
@@ -1491,9 +1493,10 @@ export default function PatientDashboardPage(): ReactNode {
               href={`/verify?token=DONNEUR-${user?.npi || "NPI-CIT-1995-1029"}-HEMORA`}
               target="_blank"
               rel="noopener noreferrer"
-              className="min-h-[44px] inline-flex items-center justify-center text-xs font-bold text-rose-600 hover:underline"
+              className="min-h-[44px] inline-flex items-center justify-center gap-1.5 text-xs font-bold text-rose-600 hover:underline"
             >
-              Tester le guichet de contrôle transfusionnel CNTS ↗
+              <span>Tester le guichet de contrôle transfusionnel CNTS</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
             </a>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-left">

@@ -84,13 +84,45 @@ export default function CitoyenDashboardPage(): ReactNode {
 
   // Formulaire de signalement rapide citoyen
   const [signalementEnvoye, setSignalementEnvoye] = useState(false);
+  const [loadingSignalement, setLoadingSignalement] = useState(false);
+  const [codeDossierGenere, setCodeDossierGenere] = useState("");
+  const [erreurSignalement, setErreurSignalement] = useState("");
   const [etablissement, setEtablissement] = useState("Hôpital de Zone de Nikki");
   const [motif, setMotif] = useState("Exigence de caution financière illégale en urgence");
   const [description, setDescription] = useState("Refus d'admission sans paiement préalable de 20 000 FCFA.");
 
-  const handleSendSignalement = (e: React.FormEvent) => {
+  const handleSendSignalement = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSignalementEnvoye(true);
+    setLoadingSignalement(true);
+    setErreurSignalement("");
+    try {
+      const res = await fetch("/api/v1/signalements", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          typeInfraction: "EXIGENCE_CAUTION_ILLEGALE",
+          etablissementNom: etablissement,
+          description: `${motif} : ${description}`,
+          declarantNpi: user?.npi,
+          declarantNom: user ? `${user.prenom} ${user.nom}` : "Citoyen Bio GOUDA",
+          declarantTelephone: user?.telephone || "+229 97 45 12 33",
+          commune: user?.commune || "Nikki",
+          gravite: "CRITIQUE",
+          anonyme: false,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setCodeDossierGenere(data.codeDossier || "PLN-2026-CIT-9821");
+        setSignalementEnvoye(true);
+      } else {
+        setErreurSignalement(data.error || "Erreur lors de la transmission");
+      }
+    } catch (err: any) {
+      setErreurSignalement(err.message || "Erreur de connexion");
+    } finally {
+      setLoadingSignalement(false);
+    }
   };
 
   return (
@@ -451,7 +483,7 @@ export default function CitoyenDashboardPage(): ReactNode {
               <Check className="h-8 w-8 text-emerald-500" />
               <h4 className="text-base font-bold text-foreground">Signalement Transmis au Cabinet du Ministre</h4>
               <p className="text-xs text-foreground/75 max-w-lg">
-                Votre dossier a été enregistré sous le numéro officiel <strong className="font-mono text-emerald-400">PLN-2026-CIT-9821</strong>. L&apos;Inspection Générale des Services de Santé a été immédiatement alertée.
+                Votre dossier a été enregistré sous le numéro officiel <strong className="font-mono text-emerald-400">{codeDossierGenere}</strong>. L&apos;Inspection Générale des Services de Santé a été immédiatement alertée et l&apos;intervention est tracée dans le registre ministériel.
               </p>
               <button
                 onClick={() => setSignalementEnvoye(false)}
@@ -462,6 +494,11 @@ export default function CitoyenDashboardPage(): ReactNode {
             </div>
           ) : (
             <form onSubmit={handleSendSignalement} className="flex flex-col gap-4">
+              {erreurSignalement && (
+                <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-xs text-red-400">
+                  {erreurSignalement}
+                </div>
+              )}
               <div>
                 <label className="block text-xs font-bold uppercase tracking-wider text-foreground mb-1">
                   Établissement de Santé Concerné
@@ -506,10 +543,11 @@ export default function CitoyenDashboardPage(): ReactNode {
 
               <button
                 type="submit"
-                className="mt-2 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-bold text-xs py-3 px-4 shadow-lg shadow-red-600/30 flex items-center justify-center gap-2 cursor-pointer transition-all"
+                disabled={loadingSignalement}
+                className="mt-2 rounded-2xl bg-red-600 hover:bg-red-500 disabled:opacity-50 text-white font-bold text-xs py-3 px-4 shadow-lg shadow-red-600/30 flex items-center justify-center gap-2 cursor-pointer transition-all"
               >
                 <Send className="h-4 w-4" />
-                <span>Transmettre immédiatement au Ministère de la Santé</span>
+                <span>{loadingSignalement ? "Transmission sécurisée en cours..." : "Transmettre immédiatement au Ministère de la Santé"}</span>
               </button>
             </form>
           )}

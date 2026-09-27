@@ -1,4 +1,4 @@
-# 🩺 Gbɛ (BENINVIE) — Plateforme Nationale de Santé Numérique du Bénin
+# 🩺 BENINVIE — Plateforme Nationale de Santé Numérique du Bénin
 ### *Intégrant le Système d'Information Hospitalier (SANTÉ+) et le Réseau d'Urgence Transfusionnelle (HEMORA)*
 
 > **Gbɛ** (« *La Vie* » en langues béninoises) est la réponse technologique souveraine et intégrée aux orientations stratégiques du **Programme d'Action Wadagni - Talata 2026** : un **carnet de santé digital adossé à un SIH généralisé**, la **prise en charge systématique des urgences vitales par paiement différé**, la valorisation sécurisée de la **pharmacopée traditionnelle certifiée**, l'assistance diagnostique par **Intelligence Artificielle**, la couverture maladie universelle (**ARCH / GBESSOKE**) et la mobilisation d'urgence de sang (**HEMORA**).

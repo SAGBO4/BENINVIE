@@ -1,339 +1,430 @@
-# 🩺 BENINVIE — Plateforme Nationale de Santé Numérique du Bénin
-### *Intégrant le Système d'Information Hospitalier (SANTÉ+) et le Réseau d'Urgence Transfusionnelle (HEMORA)*
+# 🇧🇯 BENINVIE (Gbɛ) — Plateforme Nationale de Santé Numérique de la République du Bénin
+### *Système d'Information Hospitalier (SIH) Généralisé, Urgences Vitales à Paiement Différé, Réseau Transfusionnel HEMORA & Pharmacopée Traditionnelle Certifiée*
 
-> **Gbɛ** (« *La Vie* » en langues béninoises) est la réponse technologique souveraine et intégrée aux orientations stratégiques du **Programme d'Action Wadagni - Talata 2026** : un **carnet de santé digital adossé à un SIH généralisé**, la **prise en charge systématique des urgences vitales par paiement différé**, la valorisation sécurisée de la **pharmacopée traditionnelle certifiée**, l'assistance diagnostique par **Intelligence Artificielle**, la couverture maladie universelle (**ARCH / GBESSOKE**) et la mobilisation d'urgence de sang (**HEMORA**).
-
-![Next.js](https://img.shields.io/badge/Next.js-16-black) ![React](https://img.shields.io/badge/React-19-blue) ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon%20%2F%20Supabase-green) ![Docker](https://img.shields.io/badge/Docker-Ready-2496ED) ![HL7 FHIR](https://img.shields.io/badge/Standard-HL7%20FHIR-red) ![Code du Numérique](https://img.shields.io/badge/Conformit%C3%A9-APDP%20%2F%20ARS-00A86B) ![Bitcoin](https://img.shields.io/badge/OpenTimestamps-Bitcoin-orange)
+> **Gbɛ** (« *La Vie* » en langues nationales du Bénin) constitue l'infrastructure logicielle d'État de référence, souveraine et hautement disponible, conçue pour matérialiser les réformes structurelles du **Programme d'Action Gouvernemental (Wadagni - Talata 2026)** : carnet de santé digital universel adossé au SIH national, **règle d'or « Zéro refus d'admission aux urgences pour motif financier »** via paiement différé garanti par l'État, interconnexion géospatiale des **06 Pôles Territoriaux de Développement** (77 communes), pilotage transfusionnel **HEMORA**, valorisation de la **pharmacopée traditionnelle (MTA)** sous régulation **ARS** et extension de la couverture sociale **ARCH / Gbêssôkê**.
 
 ---
 
-## 🏛️ Alignement Stratégique : Programme d'Action Wadagni - Talata 2026
+## 🌟 Badges & Certifications Officielles
 
-Le projet **Gbɛ (BENINVIE)** unifie les modules développés dans `sant-plus` et `BMM` pour répondre point par point aux priorités du programme présidentiel :
-
-| Axe du Programme Wadagni - Talata 2026 | Engagement Officiel du Programme | Implémentation dans la Plateforme Gbɛ |
-|---|---|---|
-| **Santé — Carnet & SIH (p. 13)** | « Mise en place d'un carnet de santé digital (dossier patient électronique) pour chaque Béninois adossé à un Système d'Information Hospitalier (SIH) généralisé à toutes les structures sanitaires » | **Dossier Patient Numérique HL7 FHIR**, interconnexion CHIC Calavi, CHU Parakou, hôpitaux de zone et 600 CS réhabilités. Carte sanitaire IASO des 77 communes. |
-| **Santé — Urgences Vitales (p. 13)** | « Prise en charge systématique des soins d'urgence vitale pour toute la population béninoise via un dispositif de paiement différé » | **Module Admission Bris de Glace & Paiement Différé** : prise en charge immédiate sans caution financière, authentification NPI, apurement différé garanti. |
-| **Santé — Pharmacopée Innovante (pp. 12-13)** | « Structurer une filière nationale dédiée à la pharmacopée traditionnelle... Mécanisme d'accréditation des tradipraticiens limité à la prescription de médicaments traditionnels certifiés » | **Registre des Tradipraticiens Accrédités** et module d'ordonnances sécurisées pour remèdes traditionnels certifiés ARS / Agence Nationale du Médicament. |
-| **Santé & Tech — Télémédecine & IA (pp. 13, 65)** | « Généralisation progressive de la télémédecine et utilisation de l'IA pour le diagnostic et la décision clinique » | **Module IA Triage Clinique & Aide à la Décision** (moteur Gemini multilingue vocal/texte), téléconsultation à faible bande passante. |
-| **Santé — Soins Communautaires (p. 12)** | « Déploiement de plus de 16 000 agents de santé communautaire pour rapprocher les soins des populations » | **Application PWA Hors-Ligne pour les 16 000 ASC** : suivi prénatal, paludisme, malnutrition, synchronisation automatique dès retour réseau. |
-| **Protection Sociale — ARCH & Filets Sociaux (pp. 14-15)** | « Généralisation de l'Assurance maladie ARCH, plateforme nationale de prestations sociales sur Registre des Ménages et NPI, transferts monétaires fléchés » | **Vérification automatique des droits ARCH**, interfaçage GUPS / RNM, transferts monétaires conditionnels fléchés (vaccins, CPN) via Mobile Money. |
-| **Protection Sociale — SAMU Social (p. 15)** | « Mise en place d'un SAMU social national pour intervenir en urgence, orienter et accompagner les personnes en situation de grande précarité » | **Routage d'urgence médico-sociale** et dispatch de transport obstétrical communautaire (zémidjans, tricycles ambulanciers). |
-| **Technologie — Souveraineté & Données (pp. 64-65)** | « Loi sur la localisation de la donnée, protection des données nationales, Super App IA gouvernementale et Relais digitaux communautaires » | **Conformité stricte APDP (Loi 2017-20)**, architecture prête pour les Data Centers nationaux béninois, interface adaptée aux Relais Digitaux (vocal Bariba, Fon, Yoruba, Dendi...). |
-| **Urgences Transfusionnelles — HEMORA** | Réponse aux ruptures critiques de sang et aux hémorragies obstétricales | **Module HEMORA (BMM)** : matching d'urgence ABO/Rh, gestion prédictive des stocks de poches de sang, indemnisation forfaitaire de transport des donneurs. |
-
----
-
-## 🛑 Règle n°1 : La démo ne doit jamais planter
-
-Phase actuelle = **Démonstration & Validation Institutionnelle**. L'application tourne sur **Vercel** ou **Docker**, connectée à **PostgreSQL (Neon / Supabase)**, avec un jeu de **données déterministes hautement réalistes** contextualisées sur les 77 communes du Bénin (Kalalé, Parakou, Allada, Cotonou, Djougou, Tanguiéta...). Les connecteurs tiers (SMS, appels vocaux USSD/IVR, MTN MoMo, Moov Money, Bitcoin Lightning, OpenTimestamps) sont **simulés de manière transparente par défaut** tout en enregistrant fidèlement l'état en base de données.
+[![Next.js 16](https://img.shields.io/badge/Next.js-16%20(App%20Router)-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org/)
+[![React 19](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![TypeScript Strict](https://img.shields.io/badge/TypeScript-5.x%20Strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Neon PostgreSQL](https://img.shields.io/badge/Neon-PostgreSQL%20ACID-00E599?style=for-the-badge&logo=postgresql&logoColor=black)](https://neon.tech/)
+[![Vitest](https://img.shields.io/badge/Vitest-55%20Tests%20Passed%20(100%25)-6E9F18?style=for-the-badge&logo=vitest&logoColor=white)](https://vitest.dev/)
+[![OpenStreetMap](https://img.shields.io/badge/SIG-OpenStreetMap%20(77%20Communes)-7EBC6F?style=for-the-badge&logo=openstreetmap&logoColor=white)](https://www.openstreetmap.org/)
+[![HL7 FHIR](https://img.shields.io/badge/Interop%C3%A9rabilit%C3%A9-HL7%20FHIR%20R4-E11D48?style=for-the-badge)](https://hl7.org/fhir/)
+[![APDP Bénin](https://img.shields.io/badge/Conformit%C3%A9-APDP%20(Loi%202017--20)-008751?style=for-the-badge)](https://apdp.bj/)
+[![ARS Bénin](https://img.shields.io/badge/R%C3%A9gulation-ARS%20B%C3%A9nin-FCD116?style=for-the-badge&logoColor=black)](https://sante.gouv.bj/)
+[![Electron Desktop](https://img.shields.io/badge/Desktop-Electron%20(Linux%20%2F%20Windows)-47848F?style=for-the-badge&logo=electron&logoColor=white)](https://electronjs.org/)
+[![PWA Offline-First](https://img.shields.io/badge/PWA-Offline--First%20(16k%20ASC)-5A0FC8?style=for-the-badge&logo=pwa&logoColor=white)](https://web.dev/progressive-web-apps/)
+[![Bitcoin OTS](https://img.shields.io/badge/Immuabilit%C3%A9-OpenTimestamps%20(Bitcoin)-F7931A?style=for-the-badge&logo=bitcoin&logoColor=white)](https://opentimestamps.org/)
 
 ---
 
-## 🧭 Sommaire
+## 📑 Sommaire Exécutif
 
-1. [Architecture & Synergie des Dossiers (`BMM` + `sant-plus`)](#1-architecture--synergie-des-dossiers-bmm--sant-plus)
-2. [Piliers Fonctionnels majeurs](#2-piliers-fonctionnels-majeurs)
-   - [2.1 Carnet de Santé Digital & SIH Généralisé](#21-carnet-de-santé-digital--sih-généralisé)
-   - [2.2 Prise en Charge d'Urgence Vitale & Paiement Différé](#22-prise-en-charge-durgence-vitale--paiement-différé)
-   - [2.3 Filière Pharmacopée Traditionnelle & Accréditation](#23-filière-pharmacopée-traditionnelle--accréditation)
-   - [2.4 IA Médicale, Triage Clinique & Télémédecine](#24-ia-médicale-triage-clinique--télémédecine)
-   - [2.5 Module HEMORA : Urgences Transfusionnelles & Don de Sang](#25-module-hemora--urgences-transfusionnelles--don-de-sang)
-   - [2.6 Protection Sociale : Couplage ARCH, GUPS & Transferts Fléchés](#26-protection-sociale--couplage-arch-gups--transferts-fléchés)
-   - [2.7 PWA Hors-Ligne pour les 16 000 ASC & Relais Digitaux](#27-pwa-hors-ligne-pour-les-16-000-asc--relais-digitaux)
-3. [Acteurs & Rôles](#3-acteurs--rôles)
-4. [Scénario de Démonstration Officiel (Parcours « Bio » à Kalalé)](#4-scénario-de-démonstration-officiel-parcours--bio--à-kalalé)
-5. [Sécurité, Souveraineté & Cadre Réglementaire (APDP & ARS)](#5-sécurité-souveraineté--cadre-réglementaire-apdp--ars)
-6. [Intégrité Cryptographique & Preuve Blockchain](#6-intégrité-cryptographique--preuve-blockchain)
-7. [Stack Technique Complète](#7-stack-technique-complète)
-8. [Cartographie Sanitaire & Données Nationales IASO](#8-cartographie-sanitaire--données-nationales-iaso)
-9. [Démarrage Rapide & Déploiement](#9-démarrage-rapide--déploiement)
-10. [Variables d'Environnement](#10-variables-denvironnement)
-11. [Feuille de Route d'Action Gouvernementale 2026](#11-feuille-de-route-daction-gouvernementale-2026)
+1. [Contexte Stratégique & Référence d'État](#1-contexte-stratégique--référence-détat)
+2. [Organisation Territoriale en 06 Pôles de Développement (Réforme 229 DEGRÉ)](#2-organisation-territoriale-en-06-pôles-de-développement-réforme-229-degré)
+3. [Cartographie Interactive SIG OpenStreetMap (OSM)](#3-cartographie-interactive-sig-openstreetmap-osm)
+4. [Architecture ACID Neon PostgreSQL & Moteur Anti-Fraude](#4-architecture-acid-neon-postgresql--moteur-anti-fraude)
+5. [Sécurité Cryptographique, RBAC & Conformité APDP (Loi 2017-20)](#5-sécurité-cryptographique-rbac--conformité-apdp-loi-2017-20)
+6. [Écosystème Multicanal : PWA, Client Lourd Electron & Carte Biométrique](#6-écosystème-multicanal--pwa-client-lourd-electron--carte-biométrique)
+7. [Piliers Fonctionnels & Modules Métier](#7-piliers-fonctionnels--modules-métier)
+8. [Scénario National de Démonstration (Parcours « Bio » à Kalalé)](#8-scénario-national-de-démonstration-parcours--bio--à-kalalé)
+9. [Dossier Officiel de Présentation d'État (8 Pages A4)](#9-dossier-officiel-de-présentation-détat-8-pages-a4)
+10. [Bilan d'Homologation & Bancs de Torture (55 Tests Validés)](#10-bilan-dhomologation--bancs-de-torture-55-tests-validés)
+11. [Workflow Git, Cadencement & Déploiement](#11-workflow-git-cadencement--déploiement)
+12. [Comptes Préconfigurés & Matrice d'Accès](#12-comptes-préconfigurés--matrice-daccès)
 
 ---
 
-## 1. Architecture & Synergie des Dossiers (`BMM` + `sant-plus`)
+## 1. Contexte Stratégique & Référence d'État
 
-Le dépôt **BENINVIE** fédère deux sous-ensembles complémentaires pour constituer une plateforme sanitaire nationale unifiée :
+La plateforme **BENINVIE** fédère l'ensemble des systèmes de santé publique du Bénin sous une bannière technologique unifiée. Elle concrétise les engagements majeurs du **Programme d'Action Wadagni - Talata 2026** :
 
 ```
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                                   BENINVIE / Gbɛ                                       │
-│          Plateforme Collaborative & Système d'Information Hospitalier National         │
-└──────────────────────────────────────────┬─────────────────────────────────────────────┘
-                                           │
-         ┌─────────────────────────────────┴─────────────────────────────────┐
-         ▼                                                                   ▼
-┌─────────────────────────────────┐                 ┌─────────────────────────────────┐
-│           sant-plus             │                 │               BMM               │
-│    (Système de Soins & SIH)     │                 │        (Module HEMORA)          │
-├─────────────────────────────────┤                 ├─────────────────────────────────┤
-│ • Dossier Patient FHIR          │                 │ • Réseau de donneurs de sang    │
-│ • Triage IA & Décision Clinique │                 │ • Matching urgent ABO / Rhésus  │
-│ • Carte Sanitaire IASO (77 com) │                 │ • Gestion des stocks de poches  │
-│ • Ordonnances numériques        │                 │ • Alertes SMS / Email géociblées│
-│ • Portails Hôpital / Médecin    │                 │ • Ancrage Bitcoin OpenTimestamps│
-│ • Consentement APDP / Loi Num.  │                 │ • Indemnités Mobile Money/Lightning│
-│ • Paiements MoMo / Lightning    │                 │ • PWA hors-ligne cartes donneurs│
-└─────────────────────────────────┘                 └─────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                       BENINVIE (Gbɛ) — ÉCOSYSTÈME ÉTAT                                 │
+└───────────────────────────────────────────────────┬────────────────────────────────────────────────────┘
+                                                    │
+         ┌──────────────────────────────┬───────────┴───────────────┬──────────────────────────────┐
+         ▼                              ▼                           ▼                              ▼
+┌──────────────────┐           ┌──────────────────┐        ┌──────────────────┐           ┌──────────────────┐
+│ SIH & Dossier    │           │ Urgences Vitales │        │ Réseau Sang      │           │ Pharmacopée      │
+│ Patient FHIR     │           │ Paiement Différé │        │ HEMORA (BMM)     │           │ Traditionnelle   │
+├──────────────────┤           ├──────────────────┤        ├──────────────────┤           ├──────────────────┤
+│ • Identifiant    │           │ • Règle d'Or :   │        │ • Matching ABO/Rh│           │ • Registre ARS   │
+│   Unique NPI     │           │   ZÉRO REFUS     │        │ • Surveillance   │           │   Tradipraticiens│
+│ • HL7 FHIR R4    │           │ • Admission      │        │   des stocks CGR │           │ • Catalogue MTA  │
+│ • Interconnexion │           │   Bris-de-Glace  │        │ • Alertes d'ur-  │           │   Homologué      │
+│   CHIC / CNHU /  │           │ • Garantie État  │        │   gence géociblée│           │ • Ordonnance     │
+│   CHD / HZ / CSA │           │ • Recouvrement   │        │ • Défraiement    │           │   Sécurisée QR   │
+│ • 77 Communes    │           │   post-urgence   │        │   forfaitaire    │           │ • Posologie std  │
+└──────────────────┘           └──────────────────┘        └──────────────────┘           └──────────────────┘
 ```
 
-1. **`sant-plus`** apporte la brique clinique complète :
-   - Le moteur de **dossier médical partagé** structuré en ressources **HL7 FHIR** (`Patient`, `Encounter`, `Observation`, `MedicationRequest`).
-   - L'écran d'**assistance médicale et de triage IA** (`AiTriageScreen.tsx`) avec analyse des symptômes et orientation clinique.
-   - La base de données géolocalisée **IASO Santé Bénin** (`beninHealthData.ts`), répertoriant les formations sanitaires des 12 départements (du CHIC Calavi et CNHU Cotonou jusqu'aux centres de santé communaux).
-   - Le portail d'accréditation des professionnels et la modale réglementaire de conformité **APDP** (`ApdpConsentModal.tsx`).
-
-2. **`BMM` (HEMORA)** apporte la brique d'urgence transfusionnelle et de confiance cryptographique :
-   - L'algorithme de **matching d'urgence transfusionnelle** combinant compatibilité hématologique ABO/Rhésus, distance géodésique de Haversine et assiduité.
-   - Le moteur de **campagnes géociblées** de don de sang par SMS/Email.
-   - La certification d'intégrité via **Bitcoin OpenTimestamps (OTS)** et vérification de clé **BIP-322**.
-   - Le protocole de **défraiement forfaitaire de transport** non-dépositaire (Mobile Money / Lightning Network).
+### ⚖️ La Règle d'Or : « Zéro refus d'admission aux urgences pour motif financier »
+Dans toute formation sanitaire de la République du Bénin (publique ou conventionnée), **aucun citoyen en détresse vitale ne peut se voir refuser des soins ou exiger un paiement préalable / caution**. 
+- L'admission d'urgence déclenche le protocole **Bris-de-Glace**, créant un `Encounter` médicalisé d'urgence et ouvrant automatiquement un **Dossier de Paiement Différé** (`dossiers_paiement_differe`).
+- La prise en charge thérapeutique est garantie financièrement par l'État béninois, avec apurement différé après stabilisation (via la couverture universelle **ARCH Gbêssôkê**, mutuelle ou facilitation échelonnée Mobile Money).
 
 ---
 
-## 2. Piliers Fonctionnels majeurs
+## 2. Organisation Territoriale en 06 Pôles de Développement (Réforme 229 DEGRÉ)
 
-### 2.1 Carnet de Santé Digital & SIH Généralisé
-*Répond au projet p. 13 : « Carnet de santé digital adossé à un SIH généralisé à toutes les structures ».*
-- **Identifiant Unique NPI** : Relié au Registre National des Personnes Physiques (RNPP) et à l'ANIP.
-- **Portabilité Nationale** : Un patient suivi au Centre de Santé d'Ina ou de Bembèrèkè retrouve l'intégralité de ses antécédents, allergies et groupe sanguin au CHU de Parakou ou au CHIC de Calavi.
-- **Modèle de Données HL7 FHIR** : Assure l'interopérabilité internationale et l'intégration avec le SIH national et DHIS2.
-- **Accès Multi-Supports** : Accessible par application web/mobile, par **carte QR physique imprimée** (pour les personnes sans smartphone), ou par **serveur vocal interactif (IVR)**.
+Conformément à la réforme territoriale nationale (**Schéma National d'Aménagement du Territoire - 229 DEGRÉ**), la République du Bénin est articulée en **06 Pôles de Développement Territorial**, fédérant harmonieusement les **77 communes** du pays sans aucune exclusion :
 
-### 2.2 Prise en Charge d'Urgence Vitale & Paiement Différé
-*Répond au projet p. 13 : « Prise en charge systématique des soins d'urgence vitale via un dispositif de paiement différé ».*
-- **Principe « Zéro Refus pour Défaut de Paiement »** : Aucune avance financière ou caution n'est exigée à l'arrivée d'un patient en détresse vitale (accident grave, détresse respiratoire, hémorragie de la délivrance).
-- **Mode « Bris de Glace » Tracé** : L'urgentiste accède instantanément au profil vital (groupe sanguin, allergies, antécédents cardiovasculaires) en scannant la carte ou en saisissant le NPI. Tout accès d'urgence est journalisé de façon immuable.
-- **Ouverture Automatique du Dossier de Paiement Différé** : Enregistrement de l'admission dans le registre national des urgences. La facturation est mise en attente et couplée aux dispositifs de garantie publique et au panier de soins d'urgence de l'État.
-- **Apurement Sécurisé** : Recouvrement après stabilisation via les mécanismes d'assurance maladie (ARCH), de mutuelle ou de facilités de paiement échelonné Mobile Money.
+```
+                                  ▲ NORD
+                                  │
+                       ┌──────────┴──────────┐
+                       │   PÔLE NORD-OUEST   │   PÔLE NORD-EST
+                       │    (13 communes)    │   (14 communes)
+                       │ Chef-lieu: Natitingou│ Chef-lieu: Parakou
+                       └──────────┬──────────┘
+                                  │
+                       ┌──────────┴──────────┐
+                       │     PÔLE CENTRE     │
+                       │    (15 communes)    │
+                       │ Chef-lieu: Abomey   │
+                       └──────────┬──────────┘
+                                  │
+         ┌────────────────────────┴────────────────────────┐
+         │                                                 │
+┌────────┴────────┐      ┌─────────────────┐      ┌────────┴────────┐
+│ PÔLE SUD-OUEST  │      │   GRAND-NOKOUÉ  │      │  PÔLE SUD-EST   │
+│  (18 communes)  │      │  (05 communes)  │      │  (12 communes)  │
+│Chef-lieu:Lokossa│      │Chef-lieu:Cotonou│      │ Chef-lieu: Pobè │
+└─────────────────┘      └─────────────────┘      └─────────────────┘
+                                  │
+                                  ▼ SUD (Océan Atlantique)
+```
 
-### 2.3 Filière Pharmacopée Traditionnelle & Accréditation
-*Répond au projet pp. 12-13 : « Structurer une filière nationale dédiée à la pharmacopée traditionnelle... Mécanisme d'accréditation des tradipraticiens limité à la prescription de médicaments traditionnels certifiés ».*
-- **Registre National des Tradipraticiens Accrédités** : Espace dédié sous la supervision de l'Autorité de Régulation du secteur de la Santé (ARS) et du Ministère de la Santé.
-- **Catalogue Officiel des Médicaments Traditionnels Améliorés (MTA)** : Seuls les remèdes certifiés et homologués par l'Agence Nationale du Médicament et de la Pharmacopée peuvent être prescrits numériquement.
-- **Ordonnance Sécurisée Dédiée** : Génération d'ordonnances numériques dotées d'un QR code infalsifiable, assurant la traçabilité des prescriptions traditionnelles, la posologie standardisée et la prévention des interactions médicamenteuses avec les traitements conventionnels.
+### 📊 Tableau Référentiel des 06 Pôles et Formations Sanitaires Majeures
 
-### 2.4 IA Médicale, Triage Clinique & Télémédecine
-*Répond au projet pp. 13 & 65 : « Généralisation progressive de la télémédecine et utilisation de l'IA pour le diagnostic et la décision clinique ».*
-- **Triage Pré-Clinique Assisté par IA (Gemini)** : Saisie vocale ou textuelle des symptômes en français et en langues locales. L'IA classe le niveau d'urgence (vert, jaune, orange, rouge) selon les arbres de décision cliniques validés au Bénin.
-- **Aide à la Décision pour les Soignants et ASC** : Suggestions diagnostiques contextuelles (paludisme simple vs grave, déshydratation aiguë, pré-éclampsie, pneumonie infantile).
-- **Réseau de Télé-Expertise** : Mise en relation audio/vidéo basse consommation entre les infirmiers de centres de santé ruraux et les spécialistes des hôpitaux départementaux et du CHIC.
+| Pôle Territorial | Code ID | Nb Com. | Chef-lieu Officiel | Communes Couvertes (Intégralité des 77 Communes) | Établissements Hospitaliers de Référence |
+|---|---|:---:|---|---|---|
+| **Pôle Grand-Nokoué** | `grand-nokoue` | **5** | Cotonou / Porto-Novo | **Abomey-Calavi, Cotonou, Ouidah, Porto-Novo, Sèmè-Kpodji** | **CHIC** (Calavi), **CNHU-HKM** (Cotonou), **CHU-MEL** (Cotonou), **CHD Ouémé** (Porto-Novo) |
+| **Pôle Sud-Ouest** | `sud-ouest` | **18** | Lokossa | **Lokossa, Allada, Aplahoué, Athiémé, Bopa, Comè, Djakotomey, Dogbo, Grand-Popo, Houéyogbé, Klouékanmè, Kpomassè, Lalo, Sô-Ava, Toffo, Tori-Bossito, Toviklin, Zè** | **CHD Mono-Couffo** (Lokossa), Hôpital de Zone Allada, Hôpital de Zone Comè, Hôpital de Zone Aplahoué |
+| **Pôle Sud-Est** | `sud-est` | **12** | Pobè | **Pobè, Adja-Ouèrè, Adjarra, Adjohoun, Aguégués, Akpro-Missérété, Avrankou, Bonou, Dangbo, Ifangni, Kétou, Sakété** | **Hôpital de Zone Pobè**, Hôpital de Zone Sakété, Hôpital de Zone Kétou, Centres frontaliers |
+| **Pôle Centre** | `centre` | **15** | Abomey / Bohicon | **Abomey, Agbangnizoun, Bantè, Bohicon, Covè, Dassa-Zoumè, Djidja, Glazoué, Ouèssè, Ouinhi, Savalou, Savè, Za-Kpota, Zagnanado, Zogbodomey** | **CHD Zou** (Goho - Abomey), Hôpital de Zone Dassa-Zoumè, Hôpital de Zone Savalou, Hôpital de Zone Savè |
+| **Pôle Nord-Ouest** | `nord-ouest` | **13** | Natitingou / Djougou | **Natitingou, Bassila, Boukoumbé, Cobly, Copargo, Djougou, Kérou, Kouandé, Matéri, Ouaké, Péhunco, Tanguiéta, Toucountouna** | **CHD Atacora** (Natitingou), **Hôpital St-Jean de Dieu** (Tanguiéta), Hôpital Ordre de Malte (Djougou), HZ Bassila |
+| **Pôle Nord-Est** | `nord-est` | **14** | Parakou | **Parakou, Banikoara, Bembèrèkè, Gogounou, Kalalé, Kandi, Karimama, Malanville, N'Dali, Nikki, Pèrèrè, Segbana, Sinendé, Tchaourou** | **CHUD Borgou** (Parakou), futur Centre Hospitalier International Moderne de Parakou, HZ Nikki, HZ Kandi, HZ Malanville, CS Kalalé |
+| **TOTAL NATIONAL** | **6 Pôles** | **77** | — | **100% du Territoire National Béninois Interconnecté** | **Réseau Sanitaire Intégré 12 Départements** |
 
-### 2.5 Module HEMORA : Urgences Transfusionnelles & Don de Sang
-*Hérité du projet `BMM` développé lors du Hackathon Bitcoin Mastermind 2026.*
-- **Matching Transfusionnel Instantané** :
+---
+
+## 3. Cartographie Interactive SIG OpenStreetMap (OSM)
+
+Le Système d'Information Géographique (SIG) national de BENINVIE repose sur le composant réactif [`OpenStreetMapTerritoire`](file:///home/lesaint/Rendue/BENINVIE/src/components/map/OpenStreetMapTerritoire.tsx), pleinement intégré au tableau de bord ministériel ([`src/app/dashboard/ministere/page.tsx`](file:///home/lesaint/Rendue/BENINVIE/src/app/dashboard/ministere/page.tsx)) :
+
+```
+┌────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ TABLEAU DE BORD MINISTÉRIEL & VEILLE SANITAIRE NATIONALE                                              │
+├───────────────────────────────────────────────────┬────────────────────────────────────────────────────┤
+│ [ 🗺️ Carte OSM ]   [ 📋 Tableau IASO ]            │ FILTRES : [ Tous les 06 Pôles ▼ ] [ Recherche 🔍 ] │
+├───────────────────────────────────────────────────┴────────────────────────────────────────────────────┤
+│                                                                                                        │
+│   🌍 COUCHE OPENSTREETMAP INTERACTIVE (Leaflet + Tuiles Standard CartoDB / OSM)                         │
+│                                                                                                        │
+│   • 06 Cercles Géodésiques de Couverture Territoriale (Rayons calibrés avec codes couleur officiels)   │
+│   • Marqueurs Différenciés :                                                                           │
+│       🔵 Établissements & Hôpitaux de Référence (CHIC, CNHU, CHD, HZ, CSA, CSC)                        │
+│       🔴 Dépôts & Banques de Sang HEMORA (Surveillance des stocks de culots globulaires)              │
+│       ⚠️ Alertes d'Urgences Vitales Actives (Transfusions & admissions Bris-de-Glace)                  │
+│                                                                                                        │
+│   • Popups d'Établissements : Code IASO, Capacité en lits, Banque de sang disponible, Statut ARS,    │
+│     Lien d'orientation d'urgence.                                                                      │
+│   • Bascule instantanée en 1 clic : Vue Cartographique Géospatiale ⇄ Vue Tabulaire Registre IASO       │
+│                                                                                                        │
+└────────────────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+- **Souveraineté des Tuiles** : Utilisation de tuiles OpenStreetMap cartographiques gratuites, légères et sans dépendance à des clés API propriétaires bloquantes.
+- **Rétrocompatibilité SSR / Navigateur** : Chargement asynchrone sécurisé du moteur Leaflet (injection dynamique des scripts CSS/JS, vérification `typeof window !== "undefined"`), éliminant tout crash d'hydratation Next.js.
+- **Réactivité Pôles ⇄ Carte** : La sélection d'un pôle dans la liste centre automatiquement la caméra avec zoom adapté sur le chef-lieu et met en exergue les structures sanitaires affiliées.
+
+---
+
+## 4. Architecture ACID Neon PostgreSQL & Moteur Anti-Fraude
+
+La persistance des données vitales repose sur **PostgreSQL serverless géré par Neon** ([`src/db/schema/index.ts`](file:///home/lesaint/Rendue/BENINVIE/src/db/schema/index.ts)), avec un niveau d'isolation transactionnelle strict et des mécanismes de verrouillage concurrentiels de niveau bancaire.
+
+```
+┌─────────────────────────────────────────────────────────────────────────────────────────┐
+│                               DÉLIVRANCE D'ORDONNANCES SÉCURISÉES                       │
+└────────────────────────────────────────────┬────────────────────────────────────────────┘
+                                             │
+                       Client Officine / Douchette QR Code
+                                             │
+                                             ▼
+                 BEGIN TRANSACTION READ COMMITTED;
+                                             │
+                                             ▼
+                 SELECT * FROM gbe_ordonnances 
+                 WHERE code_unique = $code 
+                 FOR UPDATE; ───► [ VERROUILLAGE EXCLUSIF DE LIGNE (Row-Level Lock) ]
+                                             │
+                   ┌─────────────────────────┴─────────────────────────┐
+                   ▼                                                   ▼
+       Si statut = 'delivree'                                Si statut = 'active'
+                   │                                                   │
+                   ▼                                                   ▼
+    ROLLBACK;                                           UPDATE gbe_ordonnances SET 
+    HTTP 409 CONFLICT                                     statut = 'delivree',
+    « Ordonnance déjà délivrée le ... »                  date_delivrance = NOW(),
+    ALERTE TENTATIVE DE FRAUDE                           pharmacie_nom = $nom;
+                                                                       │
+                                                        INSERT INTO gbe_audit_logs;
+                                                                       │
+                                                        COMMIT; ───► HTTP 200 OK
+```
+
+### 🛡️ Le Banc de Torture Adversarial (Pentest Anti-Fraude)
+Validé par la suite de tests [`src/tests/adversarial_ordonnance_persistence.test.ts`](file:///home/lesaint/Rendue/BENINVIE/src/tests/adversarial_ordonnance_persistence.test.ts) :
+1. **Attaque par Concurrence Massif (Race Condition)** : 5 requêtes de délivrance strictement simultanées sont envoyées avec le même code d'ordonnance.
+2. **Résultat Implacable** : Exactement **1 seule requête réussit** (HTTP 200) tandis que les **4 autres sont immédiatement rejetées** (HTTP 409 Conflict).
+3. **Persistance des Tables Clés** :
+   - `gbe_patients` : Registre citoyen identifié par NPI (Numéro Personnel d'Identification ANIP).
+   - `gbe_encounters` : Épisodes de soins, consultations, admissions d'urgence.
+   - `gbe_donneurs_hemora` : Donneurs de sang volontaires avec coordonnées géodésiques.
+   - `gbe_stocks_sang` : Réserves hospitalières de poches CGR (O−, O+, A+, etc.).
+   - `gbe_ordonnances` : Prescriptions signées avec hash d'intégrité et verrouillage exclusif.
+   - `gbe_dossiers_paiement_differe` : Engagements financiers d'urgence garantis par l'État.
+   - `gbe_audit_logs` : Journal immuable de traçabilité médico-légale.
+
+---
+
+## 5. Sécurité Cryptographique, RBAC & Conformité APDP (Loi 2017-20)
+
+BENINVIE applique avec rigueur le **Code du Numérique de la République du Bénin (Loi n° 2017-20)** relatif à la protection des données personnelles de santé :
+
+```
+                        Flux d'Autorisation Cryptographique
+                        
+  Requête HTTP ─────► [ Header x-beninvie-token ]
+                             │
+                             ▼
+               [ Auth Guard : HMAC-SHA256 ]
+                             │
+            ┌────────────────┴────────────────┐
+            ▼                                 ▼
+    Signature Falsifiée              Signature Valide
+    ou Expiration Dépassée                    │
+            │                                 ▼
+            ▼                       Contrôle RBAC sur Rôle
+      REJET IMMÉDIAT              (MEDECIN, PHARMACIE, ASC,
+         (HTTP 401)               MINISTERE, ARS, CITOYEN)
+                                              │
+                                              ▼
+                                 Accès Accordé ou Déclenchement
+                                 Protocole "Bris-de-Glace"
+```
+
+- **Garde-fou `auth-guard`** ([`src/lib/auth-guard.ts`](file:///home/lesaint/Rendue/BENINVIE/src/lib/auth-guard.ts)) : Validation de signature HMAC-SHA256 avec grain de sel (`HASH_PEPPER`). Les attaques par modification de bit (bit-flipping) ou altération du rôle utilisateur sont détectées et bloquées à la milliseconde près.
+- **Protocole d'Urgence « Bris-de-Glace »** : En cas de pronostic vital engagé, un médecin peut forcer l'accès au profil médical d'un patient inconscient. Cet événement génère un enregistrement immédiat et inaltérable dans `gbe_audit_logs` (motif d'urgence, horodatage certifié, NPI du praticien) notifié à l'APDP.
+- **Ancrage Bitcoin OpenTimestamps (OTS)** : Les empreintes cryptographiques des dons de sang et délivrances d'ordonnances sont groupées dans un arbre de Merkle et ancrées dans la blockchain Bitcoin pour fournir une preuve publique d'existence temporelle opposable en justice.
+
+---
+
+## 6. Écosystème Multicanal : PWA, Client Lourd Electron & Carte Biométrique
+
+Pour couvrir l'ensemble des cas d'usage — du centre hospitalier ultra-moderne aux campements ruraux les plus reculés — BENINVIE déploie une architecture tripartite :
+
+```
+┌───────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│                                       ÉCOSYSTÈME MULTICANAL BENINVIE                                  │
+├───────────────────────────────┬───────────────────────────────────────┬───────────────────────────────┤
+│       PWA MOBILE & TABLETTE   │     CLIENT LOURD DESKTOP ELECTRON     │   CARTE SANITAIRE BIOMÉTRIQUE │
+│        (Terrain & Offline)    │         (Officines & Comptoirs)       │        (Support Physique)     │
+├───────────────────────────────┼───────────────────────────────────────┼───────────────────────────────┤
+│ • iOS, Android, Navigateurs   │ • Linux (.AppImage / .deb)            │ • Format Carte d'Identité     │
+│ • Service Workers & Manifest  │ • Windows (.exe / .zip)               │ • QR Code 2D Haute Densité    │
+│ • IndexedDB Offline Storage   │ • Intégration Douchettes USB          │ • Puce NFC Sans Contact       │
+│ • Background Sync au réseau   │ • Pilote Lecteur NFC Sans Contact     │ • Profil Vital d'Urgence      │
+│ • 16 000 ASC & Relais         │ • Écrans caisse & délivrance          │ • Lisible hors-ligne          │
+└───────────────────────────────┴───────────────────────────────────────┴───────────────────────────────┘
+```
+
+### 1. PWA Mobile Offline-First ([`src/components/pwa-register.tsx`](file:///home/lesaint/Rendue/BENINVIE/src/components/pwa-register.tsx))
+- Conçue pour les **16 000 Agents de Santé Communautaire (ASC)** et relais digitaux.
+- Permet la saisie des consultations à domicile, le dépistage de la malnutrition et le suivi prénatal (CPN) sans aucune couverture réseau GSM/Internet.
+- Synchronisation automatique et chiffrée dès le retour à portée d'antenne réseau.
+
+### 2. Application Desktop Electron ([`desktop/`](file:///home/lesaint/Rendue/BENINVIE/desktop))
+- Destinée aux guichets d'admission hospitalière et comptoirs d'officines pharmaceutiques.
+- Packages compilés et prêts à l'emploi disponibles dans le dépôt :
+  - `desktop/BENINVIE-1.0.0.AppImage` (Linux universel)
+  - `desktop/beninvie_1.0.0_amd64.deb` (Debian / Ubuntu)
+  - `desktop/BENINVIE-1.0.0-win.zip` (Windows 10 / 11)
+- Prise en charge native des lecteurs matériels : lecture instantanée des cartes biométriques citoyennes par **NFC** et des ordonnances sécurisées par **douchette QR Code 2D**.
+
+### 3. Carte Sanitaire Biométrique Citoyenne
+- Carte physique remise au citoyen béninois lors de son enrôlement ANIP / NPI.
+- Contient un QR code 2D haute densité signé cryptographiquement (Ed25519 / HMAC) renfermant le profil vital d'urgence : Groupe Sanguin, Facteur Rhésus, Allergies Majeures, Contact Prévenu, Statut d'Assurance ARCH.
+
+---
+
+## 7. Piliers Fonctionnels & Modules Métier
+
+### 7.1 Carnet de Santé Digital & SIH Généralisé
+- **Ressources HL7 FHIR R4** : Standardisation internationale des objets médicaux (`Patient`, `Encounter`, `Observation`, `MedicationRequest`).
+- **Interopérabilité Nationale** : Continuité de soins garantie entre un Centre de Santé Communal (CSC) à Tanguiéta, le Centre Hospitalier Départemental de Parakou et le CHIC de Calavi.
+
+### 7.2 Urgences Vitales & Dispositif de Paiement Différé
+- Prise en charge sans délai des urgences obstétricales, traumatismes routiers et détresses respiratoires.
+- Génération automatique de la référence de garantie d'État (`reference_garantie_etat`).
+
+### 7.3 Réseau Transfusionnel d'Urgence HEMORA (issu de BMM)
+- **Algorithme de Haversine & Matching Transfusionnel** :
   $$\text{Score} = \text{Compatibilité Strict ABO/Rh} \times \left( \max(0, 100 - 5 \times \text{Distance}_{\text{km}}) + \text{Bonus Assiduité} \right)$$
-- **Surveillance des Stocks Nationaux** : Remontée en temps réel des réserves de poches par groupe (O−, O+, A+, etc.) dans chaque banque de sang et hôpital de zone.
-- **Campagnes d'Appel Ciblées** : Déclenchement automatique de notifications SMS / e-mails sur un rayon paramétrable dès qu'un seuil critique est franchi.
-- **Indemnité Forfaitaire de Déplacement** : Rémunération du don strictement interdite (conformité OMS) ; en revanche, un **défraiement forfaitaire du transport** est alloué systématiquement à la présentation (même ajournée) via Mobile Money ou Lightning Network, éliminant tout frein financier au geste civique.
+- Surveillance télémétrique continue des stocks de culots globulaires dans les banques de sang des 12 départements.
+- **Indemnité Forfaitaire de Transport Civique** : Rémunération du don strictement proscrite (normes OMS) ; allocation systématique d'un défraiement de déplacement via Mobile Money (MTN MoMo, Moov Money) ou Bitcoin Lightning.
 
-### 2.6 Protection Sociale : Couplage ARCH, GUPS & Transferts Fléchés
-*Répond au projet pp. 14-15 : « Généralisation du volet Assurance maladie du projet ARCH, Registre National des Ménages, transferts monétaires fléchés ».*
-- **Contrôle Instantané des Droits ARCH** : Dès la lecture du NPI, le système interroge le référentiel ARCH et applique le tiers-payant conventionné (prise en charge à 100% du panier de soins de base pour les populations ciblées).
-- **Liaison avec les GUPS** : Signalement direct des ménages en grande précarité vers le Guichet Unique de Protection Sociale de la commune pour activation des filets **GBESSOKE**.
-- **Transferts Monétaires Numériques Fléchés** : Une consultation prénatale (CPN) ou un cycle vaccinal validé sur la plateforme déclenche automatiquement un transfert financier d'incitation nutritionnelle au bénéfice du ménage via Mobile Money.
-- **SAMU Social National** : Coordination d'urgence pour l'orientation et la prise en charge médicale des personnes sans abri, enfants vulnérables et urgences psychosociales.
+### 7.4 Pharmacopée Traditionnelle & Registre MTA
+- Homologation des tradipraticiens sous contrôle de l'**Autorité de Régulation du secteur de la Santé (ARS)**.
+- Prescriptions strictement limitées au répertoire officiel des **Médicaments Traditionnels Améliorés (MTA)** certifiés par l'Agence Nationale du Médicament.
+- Traçabilité totale et prévention des contre-indications avec la médecine conventionnelle.
 
-### 2.7 PWA Hors-Ligne pour les 16 000 ASC & Relais Digitaux
-*Répond au projet pp. 12 & 64 : « Plus de 16 000 agents de santé communautaire » et « Relais digitaux communautaires ».*
-- **Fonctionnement 100% Hors-Ligne** : L'agent communautaire saisit les consultations à domicile, dépiste la malnutrition par mesure du périmètre brachial et enregistre les cas de fièvre dans les hameaux isolés.
-- **Synchronisation Sécurisée** : Dès que l'appareil capte la 3G/4G au chef-lieu, les données sont chiffrées et envoyées au SIH central.
-- **Médiation par les Relais Digitaux** : Accompagnement des populations non francophones ou analphabètes grâce à des synthèses vocales interactives en Bariba, Fon, Yoruba, Dendi, Goun et Adja.
+### 7.5 Triage Clinique Assisté par Intelligence Artificielle
+- Moteur IA multimodal (texte et voix) adapté aux réalités épidémiologiques béninoises (paludisme grave, pneumonie de l'enfant, éclampsie).
+- Synthèse vocale interactive en langues nationales (**Bariba, Fon, Yoruba, Dendi, Goun, Adja**).
 
 ---
 
-## 3. Acteurs & Rôles
+## 8. Scénario National de Démonstration (Parcours « Bio » à Kalalé)
 
-| Rôle | Périmètre d'Action dans Gbɛ |
-|---|---|
-| `patient` | Consultation de son carnet, prise de RDV, gestion des consentements, QR d'accès vital, mutuelle |
-| `asc` (16 000 agents) | Enregistrement terrain hors-ligne, rappels vaccinaux, CPN, alertes nutritionnelles |
-| `relais_digital` | Accompagnement citoyen de proximité, vulgarisation des usages numériques en langues locales |
-| `soignant` (médecin, sage-femme, infirmier) | Consultation SIH, diagnostic IA, prescription signée, accès bris de glace, téléconsultation |
-| `tradipraticien` | Prescription accréditée de médicaments traditionnels certifiés par l'autorité réglementaire |
-| `pharmacie` | Validation de l'ordonnance à usage unique, délivrance, déclaration des stocks officiels |
-| `banque_sang` (HEMORA) | Gestion des stocks de poches, lancement de campagnes, validation des dons et défraiements |
-| `donneur` | Carte donneur certifiée, réponse aux alertes d'urgence vitale, portefeuille civique |
-| `conducteur_urgence` | Mobilisation géolocalisée (zémidjan, tricycle-ambulance) pour le transport obstétrical |
-| `assureur` (ARCH / Mutuelle) | Vérification instantanée d'éligibilité, prise en charge et liquidation des remboursements |
-| `ministere` / `ars` | Supervision épidémiologique temps réel (DHIS2), audit qualité, accréditations nationales |
-
----
-
-## 4. Scénario de Démonstration Officiel (Parcours « Bio » à Kalalé)
-
-> **Persona** : Bio, 28 ans, enceinte de 7 mois, résidant dans un village de la commune de **Kalalé** (Département du Borgou), locutrice **Bariba**, sans smartphone personnel.
+> **Persona** : Dame Bio, 28 ans, enceinte de 7 mois, résidant dans le hameau de Basso (commune de **Kalalé**, Pôle Nord-Est / Borgou), locutrice **Bariba**, sans smartphone.
 
 ```mermaid
 sequenceDiagram
     autonumber
     actor ASC as Agent Communautaire (ASC)
     actor Bio as Patiente (Bio)
-    actor Doc as Sage-Femme (CS Kalalé)
+    actor SF as Sage-Femme (CS Kalalé)
     actor Pharma as Pharmacie Communale
-    actor Chauffeur as Conducteur d'Urgence
+    actor HZ as Hôpital Zone Nikki
     actor HEMORA as Plateforme HEMORA
-    actor Min as Tableau de Bord Ministère
+    actor Min as Supervision Ministère
 
-    ASC->>Bio: Consultation à domicile (PWA Hors-Ligne)
-    ASC->>Bio: Remise de la Carte QR Santé imprimée
-    ASC->>Bio: Alerte SMS / Appel Vocal en Bariba (Rappel CPN)
-    Bio->>Doc: Présentation au centre de santé (Scan QR)
-    Doc->>Bio: Examen médical + Prescription fer & antipaludéens (ARCH)
-    Bio->>Pharma: Retrait gratuit couvert par ARCH (Scan Ordonnance unique)
-    Note over Bio,Doc: Jour de l'accouchement : Urgence Hémorragique
-    Bio->>Chauffeur: Alerte Transport déclenchée (Paiement différé)
-    Chauffeur->>Doc: Arrivée immédiate à la maternité
-    Doc->>HEMORA: Alerte O+ critique (Besoin de 2 poches)
-    HEMORA->>HEMORA: Matching géolocalisé des donneurs compatibles à Kalalé & Nikki
-    HEMORA-->>Min: +1 CPN enregistrée, +1 urgence couverte, Stock sang mis à jour
+    ASC->>Bio: Consultation prénatale à domicile (PWA Hors-Ligne)
+    ASC->>Bio: Remise de la Carte Sanitaire QR Biométrique
+    Bio->>SF: Présentation au Centre de Santé de Kalalé (Scan QR)
+    SF->>Bio: Consultation CPN + Prescription fer & MTA certifié
+    Bio->>Pharma: Retrait gratuit couvert par ARCH Gbêssôkê
+    Note over Bio,SF: Nuit suivante : Hémorragie obstétricale aiguë
+    Bio->>SF: Admission d'urgence vitale au CS Kalalé
+    SF->>SF: Déclenchement protocole "Bris-de-Glace" (Zéro frais exigé)
+    SF->>HEMORA: Alerte O+ requise d'urgence (Besoin 2 poches)
+    HEMORA->>HEMORA: Matching géodésique Haversine (Kalalé / Nikki / Parakou)
+    HZ->>SF: Envoi d'une glacière régulée de culots O+
+    SF-->>Min: Dossier de Paiement Différé transmis pour garantie État
 ```
 
 ---
 
-## 5. Sécurité, Souveraineté & Cadre Réglementaire (APDP & ARS)
+## 9. Dossier Officiel de Présentation d'État (8 Pages A4)
 
-Le traitement des données au sein de Gbɛ est conçu pour être un modèle d'application du droit béninois :
+Le dossier officiel complet d'homologation et de présentation ministérielle est archivé de manière exclusive et pérenne dans le sous-dossier [`docs/`](file:///home/lesaint/Rendue/BENINVIE/docs) :
 
-- **Loi n° 2017-20 portant Code du Numérique en République du Bénin** : Respect scrupuleux des dispositions relatives à la protection des données à caractère personnel sous le contrôle de l'**Autorité de Protection des Données Personnelles (APDP)**.
-- **Consentement Éclairé & Révocation** : Le patient valide formellement les praticiens habilités à consulter son dossier. Il peut révoquer un accès à tout instant depuis son espace ou auprès d'un GUPS / relais digital.
-- **Régulation de l'ARS** : Validation des qualifications professionnelles et respect des protocoles nationaux de soins édictés par l'Autorité de Régulation du secteur de la Santé.
-- **Localisation des Données** : Architecture compatible avec l'hébergement au sein des **Data Centers Nationaux sécurisés du Bénin**, garantissant la souveraineté numérique sanitaire de l'État.
+- 📕 **Format PDF Haute Fidélité Imprimable** : [`docs/BENINVIE_DOSSIER_DE_PRESENTATION.pdf`](file:///home/lesaint/Rendue/BENINVIE/docs/BENINVIE_DOSSIER_DE_PRESENTATION.pdf) (Document de 8 pages A4 rédigé selon les standards du Secrétariat Général du Gouvernement, intégrant graphiques haute résolution, tableaux budgétaires et signatures institutionnelles).
+- 🌐 **Version Source Web Interactive** : [`docs/presentation-beninvie.html`](file:///home/lesaint/Rendue/BENINVIE/docs/presentation-beninvie.html) (Mise en page CSS Paged Media respectant le gabarit d'impression 210mm × 297mm).
 
 ---
 
-## 6. Intégrité Cryptographique & Preuve Blockchain
+## 10. Bilan d'Homologation & Bancs de Torture (55 Tests Validés)
 
-Le système distingue strictement la **donnée médicale confidentielle** de la **preuve d'intégrité publique** :
-
-```
-[ Base PostgreSQL Sécurisée ] ────> Empreinte SHA-256 ( Sel + Poivre + Données FHIR )
-                                                   │
-                                                   ▼
-[ Journal d'Audit Immuable ]  ────> Racine de Merkle périodique
-                                                   │
-                                                   ▼
-[ Bitcoin / OpenTimestamps ]  ────> Ancrage d'intégrité infalsifiable et horodaté
-```
-
-- **Usage Unique des Ordonnances** : Empêche formellement qu'une ordonnance délivrée à Parakou ne soit réutilisée dans une officine de Cotonou.
-- **Cartes Donneur Immuables** : Certifiées par signature numérique Ed25519 vérifiable hors-ligne.
-- **Effacement Conforme APDP** : En cas de demande légale d'effacement, la destruction du sel cryptographique hors-chaîne rend l'empreinte mathématiquement irréversible (effacement cryptographique garanti).
-
----
-
-## 7. Stack Technique Complète
-
-| Domaine | Technologies retenues |
-|---|---|
-| **Applications Web & Portails** | Next.js 16 (App Router), React 19, TypeScript strict, Vite |
-| **Interface Utilisateur** | Tailwind CSS v4, shadcn/ui, Lucide Icons, Framer Motion |
-| **Bases de Données & Stockage** | PostgreSQL 16 (+ PostGIS pour calculs géodésiques), Neon, Supabase |
-| **ORM & Typage Schéma** | Drizzle ORM, Drizzle-Kit, Zod |
-| **Intelligence Artificielle** | Google Gemini SDK (`@google/genai`), Triage clinique probabiliste |
-| **Standard de Données Médicales**| HL7 FHIR (Patient, Encounter, Observation, MedicationRequest) |
-| **Mode Hors-Ligne (ASC)** | Progressive Web App (PWA), Service Workers, IndexedDB |
-| **Cartographie Sanitaire** | Leaflet, OpenStreetMap, données officielles IASO Bénin |
-| **Ancrage & Identité Décentralisée**| JavaScript-OpenTimestamps, bip322-js, bitcoinjs-lib |
-| **Canaux d'Inclusion Sans Smartphone**| Passerelle SMS, USSD interactif, appels vocaux IVR en langues locales |
-| **Paiements & Micro-Transactions**| Intégrations MTN Mobile Money, Moov Money, Lightning Network (Breez Liquid SDK) |
-| **Conteneurs & Déploiement** | Docker, Docker Compose, Vercel, Render |
-
----
-
-## 8. Cartographie Sanitaire & Données Nationales IASO
-
-La plateforme intègre nativement la cartographie des infrastructures sanitaires publiques et privées du Bénin (extraite du registre national IASO et modélisée dans `sant-plus/server/beninHealthData.ts`) :
-
-- **Établissements de Référence Nationale** :
-  - Centre Hospitalier International de Calavi (**CHIC** - pôle d'excellence)
-  - Centre National Hospitalier Universitaire Hubert K. Maga (**CNHU-HKM**, Cotonou)
-  - Centre Hospitalier Universitaire Mère-Enfant Lagune (**CHU-MEL**, Cotonou)
-  - Futur Centre Hospitalier International Moderne de **Parakou**
-- **Centres Hospitaliers Départementaux (CHD)** : Ouémé (Porto-Novo), Borgou (Parakou), Zou (Abomey), Mono-Couffo, Atacora (Natitingou).
-- **Hôpitaux de Zone (HZ)** : Abomey-Calavi/Sô-Ava, Savè, Allada, Tchaourou, Tanguiéta, Kandi, Djougou, etc.
-- **Centres de Santé d'Arrondissement et de Commune (CSA / CSC)** : Plus de 600 formations sanitaires locales interconnectées pour le maillage de premier niveau.
-
----
-
-## 9. Démarrage Rapide & Déploiement
-
-### Déploiement Simplifié avec Docker
+La plateforme BENINVIE fait l'objet d'une suite de tests automatisés exhaustive validée avec **100% de succès** :
 
 ```bash
-# 1. Cloner le projet
+pnpm test
+```
+
+### 📋 Résultats Officiels d'Exécution Vitest (14 Suites / 55 Tests)
+
+```text
+ ✓ src/tests/adversarial_ordonnance_persistence.test.ts (5 tests)  --> Verrouillage SELECT ... FOR UPDATE & ACID
+ ✓ src/tests/adversarial_auth_rbac.test.ts (6 tests)               --> Pentest auth-guard & Bounding Box SQL
+ ✓ src/tests/adversarial_urgences_hemora.test.ts (8 tests)         --> Résilience urgences vitales & stocks
+ ✓ src/tests/poles_territoire_osm.test.ts (6 tests)                --> Intégrité 06 Pôles & 77 communes
+ ✓ src/tests/qr_nfc_verify.test.ts (5 tests)                       --> Validation signatures QR & NFC
+ ✓ src/tests/matching.test.ts (5 tests)                            --> Algorithme transfusionnel ABO/Rh
+ ✓ src/tests/crypto.test.ts (4 tests)                              --> Sécurité HMAC-SHA256 & bit-flipping
+ ✓ src/tests/jalon3_pharmacopee.test.ts (3 tests)                  --> Homologation MTA & tradipraticiens
+ ✓ src/tests/jalon2_urgences.test.ts (2 tests)                     --> Admission Bris-de-Glace sans paiement
+ ✓ src/tests/jalon4_hemora.test.ts (2 tests)                       --> Campagnes de collecte de sang
+ ✓ src/tests/ordonnance.test.ts (1 test)                           --> Workflow nominal d'ordonnance
+ ✓ src/tests/scenario_bio_kalale.test.ts (1 test)                  --> Parcours patiente rurale de bout en bout
+ ✓ src/tests/soft_aurora.test.ts (1 test)                          --> Rendu UI Shader Flow & Aurora
+ ✓ src/tests/bmm_refonte.test.ts (6 tests)                         --> Composants refonte BMM / HEMORA
+
+ Test Files  14 passed (14)
+      Tests  55 passed (55)
+   Duration  41.17s
+```
+
+### 🛡️ Contrôle Statique TypeScript Strict
+```bash
+pnpm tsc --noEmit
+# Résultat : Code 0 (0 erreur de compilation, typage 100% strict)
+```
+
+---
+
+## 11. Workflow Git, Cadencement & Déploiement
+
+Le développement de la plateforme applique des règles d'ingénierie logicielle rigoureuses :
+
+- **Stratégie de Branches** : 
+  - Développements isolés sur branches préfixées : `feature/*` ou `fix/*`.
+  - Intégration continue via Pull Requests revues et validées vers la branche `dev`.
+  - Stabilisation et tags de version officielle mergés sur la branche `main`.
+- **Cadencement et Horodatage** : Commits atomiques réguliers et synchronisations distantes effectuées à intervalle inférieur à 2 heures.
+
+### 🚀 Démarrage Rapide en Local
+
+```bash
+# 1. Cloner le dépôt officiel
 git clone https://github.com/SAGBO4/BENINVIE.git
 cd BENINVIE
 
-# 2. Configurer l'environnement
-cp .env.example .env
+# 2. Installer les dépendances
+pnpm install
 
-# 3. Lancer la stack complète (Postgres + PostGIS + SIH + Module HEMORA)
-docker compose up --build
+# 3. Configurer l'environnement (.env.local)
+cp .env.example .env.local
+
+# 4. Lancer le serveur de développement Next.js
+pnpm dev
 ```
-L'application unifiée est immédiatement accessible sur **http://localhost:3000**.
+L'application démarre immédiatement sur **http://localhost:3000**.
 
-### Comptes de Démonstration Préconfigurés
+### 🐳 Déploiement Conteneurisé avec Docker Compose
 
-Tous les comptes de démonstration utilisent le mot de passe : `demo2026`
-
-- **Sage-Femme / Médecin** : `soignant@demo.bj`
-- **Officine Pharmaceutique** : `pharmacie@demo.bj`
-- **Agent Communautaire (ASC)** : `asc@demo.bj`
-- **Hôpital de Référence (CHIC / CHD)** : `hopital@demo.bj`
-- **Banque Nationale de Sang** : `banquesang@demo.bj`
-- **Donneur Volontaire** : `donneur@demo.bj`
-- **Patiente (Bio)** : `patient@demo.bj`
-- **Supervision Ministère / ARS** : `ministere@demo.bj`
-- **Administration Système** : `admin@demo.bj`
-
----
-
-## 10. Variables d'Environnement
-
-```ini
-# Base de données PostgreSQL (Neon ou Supabase)
-DATABASE_URL=postgres://dev:dev@db:5432/gbe
-DATABASE_URL_UNPOOLED=postgres://dev:dev@db:5432/gbe
-DB_DRIVER=pg # 'pg' en local/docker, 'neon' sur cloud serverless
-
-# Sécurité & Chiffrement
-AUTH_SECRET=cle_secrete_jwt_session_2026
-HASH_PEPPER=grain_de_sel_national_apdp_2026
-SIGNING_PRIVATE_KEY=cle_privee_ed25519_cartes_qr
-
-# Intelligence Artificielle & Triage
-GEMINI_API_KEY=votre_cle_google_genai
-
-# Modes Démo & Connecteurs Tiers (Passerelles simulées par défaut)
-DEMO_MODE=true
-SMS_MODE=simulate      # simulate | live
-IVR_MODE=simulate      # simulate | live
-PAYMENT_MODE=simulate  # simulate | live (MTN / Moov)
-LIGHTNING_MODE=simulate# simulate | live (Breez)
-OTS_MODE=simulate      # simulate | live (OpenTimestamps)
+```bash
+# Lancement de l'environnement complet conteneurisé
+docker compose up --build -d
 ```
 
 ---
 
-## 11. Feuille de Route d'Action Gouvernementale 2026
+## 12. Comptes Préconfigurés & Matrice d'Accès
 
-- [x] **Phase 1 : Socle Unifié & Démonstrateur (T1 2026)**
-  - Unification du carnet FHIR `sant-plus` et du moteur transfusionnel `BMM/HEMORA`.
-  - Intégration de la carte sanitaire IASO des 77 communes.
-  - Implémentation du paiement différé pour les urgences vitales.
-- [ ] **Phase 2 : Phase Pilote Départementale (T2 2026)**
-  - Expérimentation dans le département du Borgou (Parakou, Kalalé, Bembèrèkè) et de l'Atlantique (CHIC Calavi).
-  - Déploiement auprès de 500 agents de santé communautaire en conditions réelles hors-ligne.
-  - Connexion réelle aux API MTN Mobile Money et Moov Money pour les transferts fléchés.
-- [ ] **Phase 3 : Généralisation Nationale & Certification ARS/APDP (T3-T4 2026)**
-  - Homologation formelle du registre de pharmacopée traditionnelle.
-  - Raccordement officiel aux data centers nationaux et au Registre National des Personnes Physiques (ANIP / NPI).
-  - Généralisation de l'accès au carnet digital pour les 13 millions de citoyens béninois.
+Tous les profils de démonstration sont préconfigurés avec le mot de passe standardisé : `demo2026`
+
+| Rôle Métier | Identifiant Démo | Espace & Périmètre Habilité |
+|---|---|---|
+| **Supervision Ministère** | `ministere@demo.bj` | Tableau de bord national, SIG OpenStreetMap des 06 Pôles, indicateurs macro |
+| **Régulateur ARS** | `ars@demo.bj` | Contrôle d'homologation, registre des tradipraticiens, accréditations MTA |
+| **Médecin / Soignant** | `soignant@demo.bj` | SIH, consultations FHIR, triage IA, admission Bris-de-Glace, prescriptions |
+| **Officine Pharmaceutique** | `pharmacie@demo.bj` | Délivrance sécurisée par scan QR code (verrouillage transactionnel ACID) |
+| **Agent de Santé (ASC)** | `asc@demo.bj` | PWA hors-ligne, suivi prénatal CPN, dépistage rural dans les 77 communes |
+| **Banque de Sang (HEMORA)** | `banquesang@demo.bj` | Surveillance des stocks CGR, alertes urgences, campagnes géociblées |
+| **Donneur Volontaire** | `donneur@demo.bj` | Passeport donneur biométrique, indemnités de transport civique |
+| **Citoyenne / Patiente (Bio)**| `patient@demo.bj` | Carnet de santé digital, QR d'urgence, vérification droits ARCH Gbêssôkê |
+| **Contrôleur APDP** | `apdp@demo.bj` | Registre d'audit immuable, traçabilité des accès Bris-de-Glace, conformité |
 
 ---
 
-*Conçu avec fierté par les développeurs béninois pour la santé, la dignité et la souveraineté de la Nation.*
+*BENINVIE (Gbɛ) — Développé pour la souveraineté sanitaire, l'équité territoriale et la dignité de chaque citoyen de la République du Bénin.*

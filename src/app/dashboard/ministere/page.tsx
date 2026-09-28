@@ -28,7 +28,11 @@ import {
   UserCheck,
   Stethoscope,
   Pill,
+  Printer,
+  Download,
+  ArrowUpRight,
 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -84,6 +88,7 @@ export default function MinistereDashboardPage(): ReactNode {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [inspectionMsg, setInspectionMsg] = useState<string | null>(null);
+  const [showMandatModal, setShowMandatModal] = useState<any | null>(null);
 
   useEffect(() => {
     async function loadData() {
@@ -113,11 +118,19 @@ export default function MinistereDashboardPage(): ReactNode {
     loadData();
   }, []);
 
-  const handleTriggerInspection = () => {
-    setInspectionMsg("Arrêté ministériel d'inspection inopinée émis avec réquisition des registres APDP et contrôle physique sous 24h.");
-    setTimeout(() => {
-      setInspectionMsg(null);
-    }, 6000);
+  const handleTriggerInspection = (
+    etablissementCible = "Hôpital de Zone de Nikki",
+    motif = "Contrôle inopiné gratuité des urgences vitales (0 FCFA) et conformité tiers-payant ARCH"
+  ) => {
+    const mandatId = `MANDAT-IGS-${Date.now().toString().slice(-4)}`;
+    setInspectionMsg(`Arrêté ministériel #${mandatId} émis pour ${etablissementCible} avec réquisition des registres APDP.`);
+    setShowMandatModal({
+      id: mandatId,
+      etablissement: etablissementCible,
+      date: new Date().toLocaleDateString("fr-BJ", { day: "2-digit", month: "long", year: "numeric" }),
+      ministre: `${user?.prenom || "Prof. Benjamin"} ${user?.nom || "HOUNKPATIN"}`,
+      motif,
+    });
   };
 
   const filteredFacilities = facilities.filter((f) => {
@@ -303,7 +316,7 @@ export default function MinistereDashboardPage(): ReactNode {
                   type="button"
                   size="sm"
                   variant="default"
-                  onClick={handleTriggerInspection}
+                  onClick={() => handleTriggerInspection()}
                   className="bg-red-700 hover:bg-red-800 text-white text-xs font-bold h-8 cursor-pointer flex items-center gap-1.5"
                 >
                   <AlertTriangle className="w-3.5 h-3.5" />
@@ -732,8 +745,9 @@ export default function MinistereDashboardPage(): ReactNode {
                               sig.statut = "INSPECTEUR_DEPECHE";
                               sig.reponseMinistere = "Mission d'inspection immédiate diligentée sur place par arrêté ministériel.";
                               setSignalements([...signalements]);
+                              handleTriggerInspection(sig.etablissementNom, `Instruction du signalement #${sig.id}: ${sig.motif}`);
                             }}
-                            className="bg-red-700 hover:bg-red-800 text-white font-bold text-[10px] h-7 px-2.5"
+                            className="bg-red-700 hover:bg-red-800 text-white font-bold text-[10px] h-7 px-2.5 cursor-pointer"
                           >
                             Dépêcher
                           </Button>
@@ -744,8 +758,9 @@ export default function MinistereDashboardPage(): ReactNode {
                               sig.statut = "SANCTION_PRONONCEE";
                               sig.reponseMinistere = "Sanction administrative conservatoire prise : suspension à titre conservatoire.";
                               setSignalements([...signalements]);
+                              setInspectionMsg(`Arrêté de sanction administrative notifié pour ${sig.etablissementNom}.`);
                             }}
-                            className="font-bold text-[10px] h-7 px-2.5"
+                            className="font-bold text-[10px] h-7 px-2.5 cursor-pointer"
                           >
                             Sanctionner
                           </Button>
@@ -758,6 +773,114 @@ export default function MinistereDashboardPage(): ReactNode {
             </div>
           </CardContent>
         </Card>
+
+        {/* MODAL RÉGALIENNE : MANDAT MINISTÉRIEL D'INSPECTION IGS */}
+        {showMandatModal && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-3 sm:p-4"
+            onClick={() => setShowMandatModal(null)}
+          >
+            <div
+              className="w-full max-w-[95vw] sm:max-w-xl max-h-[90vh] overflow-y-auto rounded-3xl sm:rounded-4xl border border-red-900/40 bg-white p-5 sm:p-8 shadow-2xl flex flex-col gap-5 text-left text-slate-900 relative"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Entête officielle */}
+              <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
+                    <div className="h-3 w-3.5 rounded-xs bg-[#008751]" />
+                    <div className="h-3 w-3.5 rounded-xs bg-[#FCD116]" />
+                    <div className="h-3 w-3.5 rounded-xs bg-[#E8112D]" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-bold text-red-700 uppercase tracking-widest block">
+                      RÉPUBLIQUE DU BÉNIN • MINISTÈRE DE LA SANTÉ
+                    </span>
+                    <span className="text-xs font-black text-slate-900">
+                      INSPECTION GÉNÉRALE DES SERVICES DE SANTÉ (IGS)
+                    </span>
+                  </div>
+                </div>
+                <Badge variant="destructive" className="text-[10px] uppercase font-bold">
+                  Mandat Régalien Actif
+                </Badge>
+              </div>
+
+              <div className="text-center space-y-1">
+                <h3 className="text-lg font-black text-slate-900">
+                  Arrêté Ministériel Portant Mission d&apos;Inspection Inopinée
+                </h3>
+                <p className="text-xs font-mono text-slate-500 font-semibold">
+                  Réf. Officielle : {showMandatModal.id} • Décret n° 2026-412/PR/MS
+                </p>
+              </div>
+
+              {/* Fiche de mission régalienne */}
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div>
+                  <span className="text-[10px] text-slate-500 block font-semibold">Établissement Visé</span>
+                  <span className="font-bold text-slate-900 text-sm block">
+                    {showMandatModal.etablissement}
+                  </span>
+                  <span className="text-[10px] text-slate-500">Contrôle physique sur site & réquisition APDP</span>
+                </div>
+                <div>
+                  <span className="text-[10px] text-slate-500 block font-semibold">Autorité Signataire</span>
+                  <span className="font-bold text-slate-900 block">{showMandatModal.ministre}</span>
+                  <span className="text-[10px] text-slate-500">Ministre de la Santé de la République du Bénin</span>
+                </div>
+                <div className="sm:col-span-2">
+                  <span className="text-[10px] text-slate-500 block font-semibold">Motif et Base Légale</span>
+                  <span className="font-medium text-slate-800 leading-relaxed block">
+                    {showMandatModal.motif} (Loi n° 2017-20 et Décret de gratuité des urgences 0 FCFA).
+                  </span>
+                </div>
+              </div>
+
+              {/* Scellé QR Code vérifiable */}
+              <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col items-center justify-center text-center gap-2">
+                <div className="p-2 rounded-xl bg-white shadow-sm border border-slate-200">
+                  <QRCodeSVG
+                    value={`https://beninvie.bj/verify?token=${showMandatModal.id}`}
+                    size={130}
+                    level="M"
+                    includeMargin={false}
+                  />
+                </div>
+                <span className="text-[10px] font-mono text-slate-700 font-bold">
+                  {showMandatModal.id} • SCELLÉ MINISTÉRIEL NUMÉRIQUE
+                </span>
+                <a
+                  href={`/verify?token=${showMandatModal.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-xs font-bold text-red-700 hover:underline inline-flex items-center gap-1"
+                >
+                  <span>Tester le scellé sur le Guichet Public de Contrôle (/verify)</span>
+                  <ArrowUpRight className="h-3.5 w-3.5" />
+                </a>
+              </div>
+
+              {/* Actions régaliennes */}
+              <div className="flex flex-col sm:flex-row gap-2.5 pt-2 border-t border-slate-200">
+                <Button
+                  onClick={() => window.print()}
+                  className="flex-1 min-h-[44px] bg-red-700 hover:bg-red-800 text-white font-bold text-xs flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Download className="h-4 w-4" />
+                  <span>Imprimer l&apos;Arrêté Officiel (PDF)</span>
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowMandatModal(null)}
+                  className="min-h-[44px] px-5 font-bold text-xs cursor-pointer"
+                >
+                  Fermer le Mandat
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );

@@ -20,6 +20,7 @@ import {
   QrCode,
   Check,
   Zap,
+  ExternalLink,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 
@@ -313,13 +314,19 @@ export function NfcCardConsole({
                     </div>
                   </div>
 
-                  <div className="bg-white p-1 rounded-lg shrink-0 shadow-sm">
+                  <a
+                    href={`/verify?token=NFC-${card.npi}-${card.uid}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="Vérifier sur le Guichet National (/verify)"
+                    className="bg-white p-1 rounded-lg shrink-0 shadow-sm hover:ring-2 hover:ring-emerald-400 transition-all cursor-pointer block"
+                  >
                     <QRCodeSVG
                       value={`https://beninvie.bj/verify?token=NFC-${card.npi}-${card.uid}`}
                       size={48}
                       level="L"
                     />
-                  </div>
+                  </a>
                 </div>
 
                 {/* Mentions légales */}
@@ -333,14 +340,23 @@ export function NfcCardConsole({
           </div>
 
           {/* Raccourci de clic pour interaction */}
-          <div className="mt-4 flex items-center justify-center sm:justify-start w-full">
+          <div className="mt-4 flex flex-col sm:flex-row items-center justify-start gap-2.5 w-full">
             <button
               onClick={handleTapCard}
               className="w-full sm:w-auto min-h-[44px] inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[#0a3764] hover:bg-[#072544] text-white text-xs font-bold shadow-md transition-all active:scale-95 cursor-pointer text-center"
             >
               <Zap className="h-4 w-4 text-amber-400 shrink-0" />
-              <span>Simuler le passage sans contact sur la borne</span>
+              <span>Simuler le passage sans contact</span>
             </button>
+            <a
+              href={`/verify?token=NFC-${card.npi}-${card.uid}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto min-h-[44px] inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-bold border border-slate-700 transition-all cursor-pointer text-center"
+            >
+              <ExternalLink className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+              <span>Contrôler la signature (/verify)</span>
+            </a>
           </div>
         </div>
 

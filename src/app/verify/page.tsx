@@ -26,6 +26,8 @@ import {
   Search,
   Check,
   Award,
+  Printer,
+  Download,
 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 
@@ -51,6 +53,7 @@ function VerifyContent() {
   const [isVerifying, setIsVerifying] = useState<boolean>(false);
   const [verificationResult, setVerificationResult] = useState<any>(null);
   const [dispenseSuccess, setDispenseSuccess] = useState<any>(null);
+  const [dispenseError, setDispenseError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"result" | "scanner" | "presets">("result");
   const [cameraActive, setCameraActive] = useState<boolean>(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -74,6 +77,7 @@ function VerifyContent() {
     if (!tokenToVerify.trim()) return;
     setIsVerifying(true);
     setDispenseSuccess(null);
+    setDispenseError(null);
 
     try {
       const res = await fetch(
@@ -120,6 +124,7 @@ function VerifyContent() {
   const handleDispenseAction = async (action: "DELIVRANCE" | "ENREGISTRER_DON") => {
     if (!inputToken) return;
     setIsVerifying(true);
+    setDispenseError(null);
     try {
       const res = await fetch(`/api/v1/verify`, {
         method: "POST",
@@ -136,10 +141,10 @@ function VerifyContent() {
       if (data.success) {
         setDispenseSuccess(data);
       } else {
-        alert(data.error || "Action refusée");
+        setDispenseError(data.error || "Action refusée par le registre central");
       }
     } catch (err: any) {
-      alert("Erreur de délivrance: " + err.message);
+      setDispenseError("Erreur de délivrance: " + err.message);
     } finally {
       setIsVerifying(false);
     }
@@ -687,6 +692,14 @@ function VerifyContent() {
                             </div>
                           </div>
 
+                          {/* Message d'erreur de délivrance le cas échéant */}
+                          {dispenseError && (
+                            <div className="p-4 rounded-xl bg-red-50 border border-red-300 text-red-950 flex items-center gap-2 text-xs font-semibold">
+                              <AlertTriangle className="h-5 w-5 text-red-600 shrink-0" />
+                              <span>{dispenseError}</span>
+                            </div>
+                          )}
+
                           {/* Confirmation de délivrance */}
                           {dispenseSuccess ? (
                             <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-950">
@@ -786,6 +799,13 @@ function VerifyContent() {
                             </p>
                           </div>
 
+                          {dispenseError && (
+                            <div className="p-4 rounded-xl bg-red-50 border border-red-300 text-red-950 flex items-center gap-2 text-xs font-semibold">
+                              <AlertTriangle className="h-5 w-5 text-red-600 shrink-0" />
+                              <span>{dispenseError}</span>
+                            </div>
+                          )}
+
                           {dispenseSuccess ? (
                             <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-950">
                               <div className="flex items-center gap-2 font-bold text-sm">
@@ -808,6 +828,132 @@ function VerifyContent() {
                               </button>
                             </div>
                           )}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* DÉTAIL POUR CARTE NATIONALE DE SANTÉ / DOSSIER PATIENT */}
+                    {verificationResult.payload?.type === "DOSSIER_PATIENT" && (
+                      <div className="bg-white rounded-2xl border border-slate-200 shadow-md overflow-hidden">
+                        <div className="bg-gradient-to-r from-[#008751] via-[#0a3764] to-[#0a3764] text-white p-4 sm:p-6">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div>
+                              <div className="flex items-center gap-1.5 mb-1">
+                                <div className="h-2 w-3 rounded-xs bg-[#008751]" />
+                                <div className="h-2 w-3 rounded-xs bg-[#FCD116]" />
+                                <div className="h-2 w-3 rounded-xs bg-[#E8112D]" />
+                                <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-emerald-200 ml-1">
+                                  RÉPUBLIQUE DU BÉNIN • MINISTÈRE DE LA SANTÉ
+                                </span>
+                              </div>
+                              <h3 className="text-xl sm:text-2xl font-black mt-0.5">
+                                Carte Nationale de Santé Dématérialisée
+                              </h3>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-2xl font-black bg-white/10 px-3 py-1 rounded-xl">
+                                {verificationResult.payload.details?.groupeSanguin || "O+"}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="p-4 sm:p-6 md:p-8 space-y-6">
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                            <div className="p-3.5 sm:p-4 rounded-xl bg-slate-50 border border-slate-200">
+                              <span className="text-xs font-semibold text-slate-600 block">Titulaire de la Carte</span>
+                              <span className="text-sm font-bold text-slate-900 block mt-1">
+                                {verificationResult.payload.patientNom}
+                              </span>
+                              <span className="text-xs font-mono text-slate-600">
+                                {verificationResult.payload.patientNpi}
+                              </span>
+                            </div>
+
+                            <div className="p-3.5 sm:p-4 rounded-xl bg-emerald-50 border border-emerald-200">
+                              <span className="text-xs font-semibold text-emerald-800 block">Couverture Universelle</span>
+                              <span className="text-sm font-bold text-emerald-900 block mt-1">
+                                Régime ARCH Actif
+                              </span>
+                              <span className="text-xs text-emerald-700">
+                                Prise en charge 100% Panier de Base
+                              </span>
+                            </div>
+
+                            <div className="p-3.5 sm:p-4 rounded-xl bg-slate-50 border border-slate-200">
+                              <span className="text-xs font-semibold text-slate-600 block">Historique Transfusionnel</span>
+                              <span className="text-sm font-bold text-rose-700 block mt-1">
+                                {verificationResult.payload.details?.nbDons || 8} Dons Enregistrés
+                              </span>
+                              <span className="text-xs text-slate-600">
+                                Éligible au don de sang régulier
+                              </span>
+                            </div>
+                          </div>
+
+                          <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div>
+                              <span className="text-xs font-bold text-slate-900 block">Établissement Référent de Soins</span>
+                              <span className="text-xs text-slate-600">{verificationResult.payload.prescripteur?.structure || "Hôpital de Zone de Nikki • Pôle Borgou-Alibori"}</span>
+                            </div>
+                            <button
+                              onClick={() => window.print()}
+                              className="min-h-[44px] px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                            >
+                              <Download className="h-3.5 w-3.5" />
+                              <span>Imprimer Attestation Sanitaire</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* DÉTAIL POUR URGENCE VITALE / MANDAT */}
+                    {verificationResult.payload?.type === "URGENCE_VITALE" && (
+                      <div className="bg-white rounded-2xl border border-red-200 shadow-md overflow-hidden">
+                        <div className="bg-gradient-to-r from-red-700 to-red-900 text-white p-4 sm:p-6">
+                          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div>
+                              <span className="text-xs font-mono font-bold text-red-200">
+                                DÉCRET DE GRATUITÉ DES URGENCES VITALES (0 FCFA) • MINISTÈRE DE LA SANTÉ
+                              </span>
+                              <h3 className="text-xl sm:text-2xl font-black mt-0.5">
+                                Prise en Charge Sans Avance Financière
+                              </h3>
+                            </div>
+                            <span className="text-xs font-bold bg-white/20 px-3 py-1.5 rounded-full text-white">
+                              Garantie Étatique Active
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="p-4 sm:p-6 md:p-8 space-y-6">
+                          <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-xs text-red-900 leading-relaxed">
+                            <strong>Article 3 du Décret Sanitaire d&apos;Urgence :</strong> Aucun établissement hospitalier béninois (public ou privé) n&apos;est autorisé à exiger de caution préalable avant réanimation ou intervention chirurgicale vitale. Le dossier d&apos;urgence est garanti sur le Trésor Public.
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+                              <span className="text-slate-500 block">Patient Pris en Charge :</span>
+                              <span className="font-bold text-slate-900 text-sm mt-0.5 block">{verificationResult.payload.patientNom}</span>
+                              <span className="font-mono text-slate-600">{verificationResult.payload.patientNpi}</span>
+                            </div>
+                            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+                              <span className="text-slate-500 block">Groupe Sanguin Déclaré :</span>
+                              <span className="font-bold text-red-600 text-sm mt-0.5 block">{verificationResult.payload.details?.groupeSanguin || "O+"}</span>
+                              <span className="text-slate-600">Allergies : {verificationResult.payload.details?.allergies?.join(", ") || "Aucune"}</span>
+                            </div>
+                          </div>
+
+                          <div className="flex justify-end pt-4 border-t border-slate-200">
+                            <button
+                              onClick={() => window.print()}
+                              className="min-h-[44px] px-6 py-2.5 bg-red-700 hover:bg-red-800 text-white rounded-xl text-xs font-bold transition-colors flex items-center gap-2 cursor-pointer"
+                            >
+                              <Printer className="h-4 w-4" />
+                              <span>Imprimer le Bon d&apos;Admission Vitale Garanti</span>
+                            </button>
+                          </div>
                         </div>
                       </div>
                     )}

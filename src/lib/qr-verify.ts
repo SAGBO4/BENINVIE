@@ -289,6 +289,122 @@ export function resolveQrToken(token: string): {
     return verifyQrToken(generated.token);
   }
 
+  if (clean.includes("BON") || clean.includes("BON-PHARMA")) {
+    const generated = generateSecureQrToken({
+      type: "ORDONNANCE",
+      id: "BON-PHARMA-8871",
+      patientNpi: "NPI-CIT-1995-1029",
+      patientNom: "SAGBOHAN Chantal",
+      patientAge: 31,
+      prescripteur: {
+        nom: "CNTS Bénin / Programme Donneur HémoRa",
+        titre: "Direction Médicale CNTS",
+        structure: "Banque de Sang Hôpital de Zone de Nikki",
+        matricule: "CNTS-BON-2026",
+      },
+      rolesAutorises: ["PHARMACIEN", "ADMIN", "CITOYEN"],
+      details: {
+        medicaments: [
+          {
+            nom: "Bon de Réduction Officinale CNTS - Don Bénévole",
+            dosage: "Valeur faciale : 2 000 FCFA (200 Points Santé)",
+            posologie: "Déductible immédiatement sur ordonnance en officine conventionnée",
+            quantite: 1,
+            remboursement: "100% Déduction Prise en Charge CNTS (2 000 FCFA)",
+          },
+        ],
+      },
+    });
+    return verifyQrToken(generated.token);
+  }
+
+  if (clean.includes("CARTE") || clean.includes("NFC") || clean.includes("CNS-") || clean.includes("CIT-")) {
+    const npiFound = clean.match(/NPI-[A-Z0-9-]+/)?.[0] || "NPI-CIT-1995-1029";
+    const generated = generateSecureQrToken({
+      type: "DOSSIER_PATIENT",
+      id: `CNS-BJ-${npiFound}`,
+      patientNpi: npiFound,
+      patientNom: "SAGBOHAN Chantal",
+      patientAge: 31,
+      prescripteur: {
+        nom: "Ministère de la Santé / ANIP",
+        titre: "Registre National d'Identification Sanitaire",
+        structure: "Centre de Santé Communal de Kalalé / HZ Nikki",
+        matricule: "MS-ANIP-2026",
+      },
+      rolesAutorises: ["CITOYEN", "MEDECIN", "SOIGNANT_URGENCE", "PHARMACIEN", "ADMIN", "ARS", "AGENT_COMMUNAUTAIRE"],
+      details: {
+        groupeSanguin: "O+",
+        rhesus: "POSITIF",
+        nbDons: 8,
+        allergies: ["Pénicilline (réaction modérée)"],
+        contactUrgence: {
+          nom: "SAGBOHAN Bio",
+          relation: "Conjoint",
+          telephone: "+229 97 00 12 34",
+        },
+        pointsMoMo: 400,
+        statutDon: "APTE",
+      },
+    });
+    return verifyQrToken(generated.token);
+  }
+
+  if (clean.includes("URGENCE") || clean.includes("MANDAT") || clean.includes("ADMISSION") || clean.includes("BRIS") || clean.includes("TRIAGE")) {
+    const generated = generateSecureQrToken({
+      type: "URGENCE_VITALE",
+      id: clean.match(/[A-Z0-9-]+/)?.[0] || "URG-VIT-2026-001",
+      patientNpi: "NPI-CIT-1995-1029",
+      patientNom: "SAGBOHAN Chantal",
+      patientAge: 31,
+      prescripteur: {
+        nom: "Service des Urgences Vitales / IGS",
+        titre: "Régulation Nationale des Urgences Vitales 0 FCFA",
+        structure: "Ministère de la Santé du Bénin",
+        matricule: "MS-URG-0FCFA",
+      },
+      rolesAutorises: ["MEDECIN", "SOIGNANT_URGENCE", "ADMIN", "ARS", "CITOYEN"],
+      details: {
+        diagnosticUrgence: "Admission d'Urgence Vitale sous Garantie Étatique Républicaine (0 FCFA de caution)",
+        groupeSanguin: "O+",
+        rhesus: "POSITIF",
+        allergies: ["Pénicilline (réaction modérée)"],
+        contactUrgence: {
+          nom: "SAGBOHAN Bio",
+          relation: "Conjoint",
+          telephone: "+229 97 00 12 34",
+        },
+      },
+    });
+    return verifyQrToken(generated.token);
+  }
+
+  if (clean.includes("GBESSOKE") || clean.includes("MOMO")) {
+    const generated = generateSecureQrToken({
+      type: "DOSSIER_PATIENT",
+      id: clean.match(/[A-Z0-9-]+/)?.[0] || "GBES-TRF-2026-9821",
+      patientNpi: "NPI-CIT-1995-1029",
+      patientNom: "SAGBOHAN Chantal",
+      patientAge: 31,
+      prescripteur: {
+        nom: "Programme National GBESSOKE",
+        titre: "Transferts Monétaires Fléchés Santé Maternelle",
+        structure: "Centre de Santé Communal de Kalalé",
+        matricule: "GBES-MS-2026",
+      },
+      rolesAutorises: ["AGENT_COMMUNAUTAIRE", "CITOYEN", "ADMIN"],
+      details: {
+        pointsMoMo: 500,
+        contactUrgence: {
+          nom: "SAGBOHAN Bio",
+          relation: "Conjoint",
+          telephone: "+229 97 00 12 34",
+        },
+      },
+    });
+    return verifyQrToken(generated.token);
+  }
+
   if (clean.startsWith("ORD") || clean.includes("ORDONNANCE")) {
     const idMatch = clean.match(/ORD-\d{4}-\d+/);
     const id = idMatch ? idMatch[0] : "ORD-2026-001";
@@ -304,7 +420,7 @@ export function resolveQrToken(token: string): {
         structure: "Hôpital de Zone de Nikki / Kalalé",
         matricule: "MS-MED-2015-388",
       },
-      rolesAutorises: ["PHARMACIEN", "ADMIN"],
+      rolesAutorises: ["PHARMACIEN", "ADMIN", "CITOYEN"],
       details: {
         medicaments: [
           {

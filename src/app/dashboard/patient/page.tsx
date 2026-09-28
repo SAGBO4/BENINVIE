@@ -134,6 +134,7 @@ export default function PatientDashboardPage(): ReactNode {
 
   // États interactifs HEMORA & Passeport Donneur
   const [showHemoraCardModal, setShowHemoraCardModal] = useState(false);
+  const [showAttestationPdfModal, setShowAttestationPdfModal] = useState(false);
   const [pointsSanteBalance, setPointsSanteBalance] = useState(400);
   const [bonPharmacieGenere, setBonPharmacieGenere] = useState(false);
   const [bonPharmacieLoading, setBonPharmacieLoading] = useState(false);
@@ -826,7 +827,7 @@ export default function PatientDashboardPage(): ReactNode {
                 </div>
 
                 <button
-                  onClick={() => alert("Génération du certificat PDF sécurisé du CNTS signée avec scellé ANIP.")}
+                  onClick={() => setShowAttestationPdfModal(true)}
                   className="min-h-[44px] inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-foreground/10 hover:bg-foreground/15 text-foreground text-xs font-bold transition-all cursor-pointer"
                 >
                   <Download className="h-3.5 w-3.5" />
@@ -1573,6 +1574,201 @@ export default function PatientDashboardPage(): ReactNode {
             >
               Fermer
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal 4 : Attestation PDF Officielle CNTS */}
+      {showAttestationPdfModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-3 sm:p-4"
+          onClick={() => setShowAttestationPdfModal(false)}
+        >
+          <div
+            className="w-full max-w-[95vw] sm:max-w-xl max-h-[90vh] overflow-y-auto rounded-3xl sm:rounded-4xl border border-rose-500/40 bg-background p-5 sm:p-8 shadow-2xl flex flex-col gap-5 text-left relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Bannière Régalienne */}
+            <div className="flex items-center justify-between border-b border-foreground/10 pb-4">
+              <div className="flex items-center gap-2">
+                <div className="flex flex-col gap-0.5">
+                  <div className="flex items-center gap-1">
+                    <div className="h-3 w-3.5 rounded-xs bg-[#008751]" />
+                    <div className="h-3 w-3.5 rounded-xs bg-[#FCD116]" />
+                    <div className="h-3 w-3.5 rounded-xs bg-[#E8112D]" />
+                  </div>
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold text-rose-500 uppercase tracking-widest block">
+                    RÉPUBLIQUE DU BÉNIN • MINISTÈRE DE LA SANTÉ
+                  </span>
+                  <span className="text-xs font-black text-foreground">
+                    CENTRE NATIONAL DE TRANSFUSION SANGUINE (CNTS)
+                  </span>
+                </div>
+              </div>
+              <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                Certificat Homologué
+              </span>
+            </div>
+
+            <div className="text-center space-y-1">
+              <h3 className="text-lg font-black text-foreground">
+                Attestation Officielle de Donneur Régulier de Sang
+              </h3>
+              <p className="text-xs text-foreground/60">
+                Délivrée en application de l&apos;Arrêté Ministériel portant promotion du don bénévole et sécurisation transfusionnelle
+              </p>
+            </div>
+
+            {/* Fiche Identitaire et Biologique */}
+            <div className="p-4 rounded-2xl bg-foreground/5 border border-foreground/10 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div>
+                <span className="text-[10px] text-foreground/50 block font-semibold">Identité Titulaire</span>
+                <span className="font-bold text-foreground text-sm">
+                  {user?.prenom || "Sabi"} {user?.nom || "KORA"}
+                </span>
+                <span className="font-mono text-[11px] text-rose-500 block">
+                  {user?.npi || "NPI-CIT-1995-1029"}
+                </span>
+              </div>
+              <div>
+                <span className="text-[10px] text-foreground/50 block font-semibold">Groupe Sanguin Confirmé</span>
+                <span className="font-black text-rose-600 text-lg">O+ Rhésus Positif</span>
+                <span className="text-[10px] text-emerald-500 font-bold block">Phénotypage complet certifié</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-foreground/50 block font-semibold">Bilan Transfusionnel</span>
+                <span className="font-bold text-foreground">8 Dons Bénévoles Validés</span>
+                <span className="text-[10px] text-foreground/60 block">Dernier don : 15 Janvier 2026</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-foreground/50 block font-semibold">Centre d&apos;Attachement</span>
+                <span className="font-semibold text-foreground">Banque de Sang HZ Nikki</span>
+                <span className="text-[10px] text-foreground/60 block">Pôle Régional Borgou-Alibori</span>
+              </div>
+            </div>
+
+            {/* QR Code Scannable */}
+            <div className="p-4 rounded-2xl bg-white border border-rose-500/20 shadow-inner flex flex-col items-center justify-center text-center gap-2">
+              <QRCodeSVG
+                value={`https://beninvie.bj/verify?token=DONNEUR-${user?.npi || "NPI-CIT-1995-1029"}-HEMORA`}
+                size={140}
+                level="M"
+                includeMargin={false}
+              />
+              <span className="text-[10px] font-mono text-zinc-700 font-bold">
+                HEMORA-BJ-2026-O-8871 • SCELLÉ NUMÉRIQUE ANIP
+              </span>
+              <a
+                href={`/verify?token=DONNEUR-${user?.npi || "NPI-CIT-1995-1029"}-HEMORA`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] font-bold text-rose-600 hover:underline inline-flex items-center gap-1"
+              >
+                <span>Tester la vérification sur le Guichet Public</span>
+                <ArrowUpRight className="h-3 w-3" />
+              </a>
+            </div>
+
+            {/* Actions */}
+            <div className="flex flex-col sm:flex-row gap-2.5 pt-2 border-t border-foreground/10">
+              <button
+                onClick={() => window.print()}
+                className="min-h-[44px] flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold shadow-md cursor-pointer transition-colors"
+              >
+                <Download className="h-4 w-4" />
+                <span>Imprimer l&apos;Attestation Numérique (PDF)</span>
+              </button>
+              <button
+                onClick={() => setShowAttestationPdfModal(false)}
+                className="min-h-[44px] px-5 py-2.5 rounded-xl bg-foreground/10 hover:bg-foreground/15 text-foreground text-xs font-bold cursor-pointer transition-colors"
+              >
+                Fermer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal 5 : Bon Pharmacie CNTS -2 000 FCFA */}
+      {showBonPharmacieModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-3 sm:p-4"
+          onClick={() => setShowBonPharmacieModal(false)}
+        >
+          <div
+            className="w-full max-w-[95vw] sm:max-w-md max-h-[90vh] overflow-y-auto rounded-3xl sm:rounded-4xl border border-emerald-500/40 bg-background p-5 sm:p-8 shadow-2xl flex flex-col gap-4 text-center relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-foreground/10 pb-3">
+              <div className="flex items-center gap-1.5">
+                <div className="h-2.5 w-3 rounded-xs bg-[#008751]" />
+                <div className="h-2.5 w-3 rounded-xs bg-[#FCD116]" />
+                <div className="h-2.5 w-3 rounded-xs bg-[#E8112D]" />
+                <span className="text-[10px] font-bold text-emerald-500 uppercase tracking-widest ml-1">
+                  CNTS • RÉGIME ARCH
+                </span>
+              </div>
+              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400">
+                -2 000 FCFA
+              </span>
+            </div>
+
+            <div className="flex flex-col items-center gap-1">
+              <div className="h-12 w-12 rounded-2xl bg-emerald-500/20 text-emerald-500 flex items-center justify-center">
+                <Pill className="h-6 w-6" />
+              </div>
+              <h3 className="text-base font-bold text-foreground mt-1">
+                Bon de Réduction Officinale
+              </h3>
+              <p className="text-xs text-foreground/60">
+                Code Officiel : <strong className="font-mono text-emerald-500">BON-PHARMA-8871</strong>
+              </p>
+            </div>
+
+            {/* QR Code Scannable en Pharmacie */}
+            <div className="p-4 rounded-3xl bg-white border-2 border-emerald-500/30 shadow-inner flex flex-col items-center justify-center mx-auto max-w-full">
+              <QRCodeSVG
+                value="https://beninvie.bj/verify?token=BON-PHARMA-8871"
+                size={160}
+                level="M"
+                includeMargin={false}
+              />
+              <div className="mt-2 text-[10px] font-mono text-zinc-800 font-bold">
+                BON-PHARMA-8871 • PRÉLÈVEMENT 200 PTS
+              </div>
+            </div>
+
+            <p className="text-xs text-foreground/70 leading-relaxed text-left p-3 rounded-2xl bg-foreground/5 border border-foreground/8">
+              Présentez ce QR code à la <strong>Pharmacie Communale de Nikki</strong> ou dans toute officine conventionnée du Bénin. Le pharmacien scanne le code pour déduire immédiatement 2 000 FCFA sur votre ordonnance.
+            </p>
+
+            <a
+              href="/verify?token=BON-PHARMA-8871"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs font-bold text-emerald-500 hover:underline inline-flex items-center justify-center gap-1 min-h-[44px]"
+            >
+              <span>Tester la lecture du bon sur le Guichet Pharmacie</span>
+              <ArrowUpRight className="h-3.5 w-3.5" />
+            </a>
+
+            <div className="flex gap-2 pt-2">
+              <button
+                onClick={() => window.print()}
+                className="flex-1 min-h-[44px] py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <Download className="h-3.5 w-3.5" />
+                <span>Imprimer le Bon</span>
+              </button>
+              <button
+                onClick={() => setShowBonPharmacieModal(false)}
+                className="min-h-[44px] px-4 py-2.5 rounded-xl bg-foreground/10 hover:bg-foreground/15 text-xs font-bold text-foreground transition-colors cursor-pointer"
+              >
+                Fermer
+              </button>
+            </div>
           </div>
         </div>
       )}

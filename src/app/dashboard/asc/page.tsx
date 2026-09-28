@@ -12,9 +12,13 @@ import {
   AlertCircle,
   Smartphone,
   Coins,
-  WifiOff,
   UserPlus,
+  ExternalLink,
+  Printer,
+  Download,
+  PhoneCall,
 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import { FadeIn, ScaleUnblur } from "@/components/ui/motion-primitives";
 
 export default function AscDashboardPage(): ReactNode {
@@ -191,6 +195,24 @@ export default function AscDashboardPage(): ReactNode {
                     <strong>Signaux d&apos;alarme :</strong> {triageResult.analyse.signauxAlarme.join(", ")}
                   </div>
                 )}
+
+                <div className="flex flex-wrap gap-2 pt-2 border-t border-foreground/10">
+                  <button
+                    type="button"
+                    onClick={() => window.print()}
+                    className="min-h-[36px] px-3 py-1.5 rounded-xl bg-foreground/10 hover:bg-foreground/15 text-foreground text-[11px] font-bold inline-flex items-center gap-1.5 cursor-pointer transition-colors"
+                  >
+                    <Printer className="h-3.5 w-3.5" />
+                    <span>Imprimer Fiche Triage PCIME</span>
+                  </button>
+                  <a
+                    href="tel:136"
+                    className="min-h-[36px] px-3 py-1.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-[11px] font-bold inline-flex items-center gap-1.5 cursor-pointer transition-colors"
+                  >
+                    <PhoneCall className="h-3.5 w-3.5" />
+                    <span>Alerter SAMU 136</span>
+                  </a>
+                </div>
               </ScaleUnblur>
             )}
           </form>
@@ -240,7 +262,7 @@ export default function AscDashboardPage(): ReactNode {
               <select
                 value={typeActe}
                 onChange={(e) => setTypeActe(e.target.value)}
-                className="w-full rounded-2xl border border-foreground/15 bg-background px-4 py-2.5 text-xs text-foreground"
+                className="w-full rounded-2xl border border-foreground/15 bg-background px-4 py-2.5 text-xs text-foreground cursor-pointer"
               >
                 <option value="CPN3">CPN 3 - Consultation Prénatale Trimestre 3 (5 000 FCFA)</option>
                 <option value="PEV_COMPLET">Cycle Vaccinal PEV Complet Nourrisson (5 000 FCFA)</option>
@@ -250,20 +272,56 @@ export default function AscDashboardPage(): ReactNode {
             <button
               onClick={handleTransfert}
               disabled={loadingTransfert}
-              className="py-3 rounded-2xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow-lg shadow-amber-600/30 transition-all flex items-center justify-center gap-2"
+              className="py-3 rounded-2xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow-lg shadow-amber-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <Coins className="h-4 w-4" />
               <span>{loadingTransfert ? "Versement en cours..." : "Valider Acte & Verser 5 000 FCFA"}</span>
             </button>
 
             {transfertResult?.success && (
-              <ScaleUnblur className="p-3 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 text-xs text-emerald-500 flex flex-col gap-1">
-                <span className="font-bold flex items-center gap-1.5">
-                  <CheckCircle className="h-4 w-4" /> {transfertResult.message}
-                </span>
-                <span className="font-mono text-[10px] text-foreground/60">
-                  Réf Mobile Money: {transfertResult.transfert?.transactionRef}
-                </span>
+              <ScaleUnblur className="p-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 text-xs text-emerald-500 flex flex-col gap-3">
+                <div className="flex items-center justify-between">
+                  <span className="font-bold flex items-center gap-1.5 text-sm text-foreground">
+                    <CheckCircle className="h-4 w-4 text-emerald-500" /> {transfertResult.message}
+                  </span>
+                  <span className="font-mono text-[10px] text-foreground/60">
+                    Réf: {transfertResult.transfert?.transactionRef}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-background/80 border border-emerald-500/20">
+                  <div className="p-1 rounded-lg bg-white shrink-0 shadow-sm">
+                    <QRCodeSVG
+                      value={`https://beninvie.bj/verify?token=GBESSOKE-${transfertResult.transfert?.transactionRef}`}
+                      size={64}
+                      level="M"
+                      includeMargin={false}
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0 text-xs">
+                    <span className="font-bold text-foreground block">Quittance Mobile Money Homologuée</span>
+                    <p className="text-[10px] text-foreground/60 truncate">5 000 FCFA versés sur compte de la bénéficiaire.</p>
+                    <div className="flex gap-2.5 mt-1.5">
+                      <a
+                        href={`/verify?token=GBESSOKE-${transfertResult.transfert?.transactionRef}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[10px] font-bold text-amber-500 hover:underline inline-flex items-center gap-1"
+                      >
+                        <ExternalLink className="h-3 w-3" />
+                        <span>Vérifier Scellé (/verify)</span>
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => window.print()}
+                        className="text-[10px] font-bold text-foreground/75 hover:text-foreground inline-flex items-center gap-1 cursor-pointer"
+                      >
+                        <Printer className="h-3 w-3" />
+                        <span>Imprimer Reçu</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </ScaleUnblur>
             )}
           </div>

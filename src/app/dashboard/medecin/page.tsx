@@ -15,7 +15,12 @@ import {
   Zap,
   Leaf,
   Pill,
+  ExternalLink,
+  Printer,
+  ArrowUpRight,
+  Check,
 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import { FadeIn, ScaleUnblur } from "@/components/ui/motion-primitives";
 
 export default function MedecinDashboardPage(): ReactNode {
@@ -262,14 +267,50 @@ export default function MedecinDashboardPage(): ReactNode {
 
             {/* Résultat Admission */}
             {admissionResult?.success && (
-              <ScaleUnblur className="p-3 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 text-xs text-foreground/80 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-emerald-500" />
-                  <span>Dossier d&apos;Urgence #{admissionResult.dossier.id} ouvert sous garantie étatique.</span>
+              <ScaleUnblur className="p-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 text-xs text-foreground/80 flex flex-col gap-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-emerald-500 shrink-0" />
+                    <span className="font-bold text-foreground">Dossier d&apos;Urgence #{admissionResult.dossier.id} Garanti (0 FCFA)</span>
+                  </div>
+                  <span className="font-mono text-emerald-500 font-bold bg-emerald-500/10 px-2 py-0.5 rounded">
+                    Trésor Public
+                  </span>
                 </div>
-                <span className="font-mono text-emerald-500 font-bold">
-                  {admissionResult.dossier.montantTotalFcfa} FCFA (Différé)
-                </span>
+
+                <div className="flex items-center gap-4 bg-background/80 p-3 rounded-xl border border-emerald-500/20">
+                  <div className="p-1.5 rounded-lg bg-white shrink-0 shadow-sm">
+                    <QRCodeSVG
+                      value={`https://beninvie.bj/verify?token=ADMISSION-${admissionResult.dossier.id}`}
+                      size={64}
+                      level="M"
+                      includeMargin={false}
+                    />
+                  </div>
+                  <div className="flex-1 min-w-0 text-xs">
+                    <p className="font-semibold text-foreground">Pass d&apos;Admission Vitale Sans Caution</p>
+                    <p className="text-[11px] text-foreground/60 truncate">Prise en charge intégrale sous décret présidentiel.</p>
+                    <div className="flex gap-3 mt-1.5">
+                      <a
+                        href={`/verify?token=ADMISSION-${admissionResult.dossier.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-[11px] font-bold text-emerald-500 hover:underline flex items-center gap-1"
+                      >
+                        <ExternalLink className="h-3 w-3" />
+                        Vérifier Scellé
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => window.print()}
+                        className="text-[11px] font-bold text-foreground/75 hover:text-foreground flex items-center gap-1 cursor-pointer"
+                      >
+                        <Printer className="h-3 w-3" />
+                        Imprimer le Pass
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </ScaleUnblur>
             )}
           </div>
@@ -350,7 +391,7 @@ export default function MedecinDashboardPage(): ReactNode {
             <button
               type="submit"
               disabled={loadingPrescription}
-              className="mt-2 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2"
+              className="mt-2 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <QrCode className="h-4 w-4" />
               <span>{loadingPrescription ? "Génération..." : "Émettre Ordonnance Sécurisée"}</span>
@@ -358,18 +399,59 @@ export default function MedecinDashboardPage(): ReactNode {
 
             {/* Résultat Ordonnance */}
             {ordonnanceResult?.success && (
-              <ScaleUnblur className="p-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 flex flex-col gap-2 mt-2">
+              <ScaleUnblur className="p-5 rounded-2xl border border-emerald-500/30 bg-emerald-500/5 flex flex-col gap-3 mt-2">
                 <div className="flex items-center justify-between text-xs font-bold text-emerald-500">
                   <span className="flex items-center gap-1.5">
-                    <CheckCircle className="h-4 w-4" /> Ordonnance Générée avec Succès
+                    <CheckCircle className="h-4 w-4" /> Ordonnance Émise & Scellée ANIP
                   </span>
-                  <span className="font-mono text-[10px]">{ordonnanceResult.ordonnance.codeUnique}</span>
+                  <span className="font-mono text-[10px] bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                    {ordonnanceResult.ordonnance.codeUnique}
+                  </span>
                 </div>
-                <p className="text-[11px] text-foreground/70">
-                  QR Code cryptographique à usage unique prêt pour délivrance en officine.
-                </p>
-                <div className="text-[10px] font-mono text-foreground/50 truncate">
-                  Hash: {ordonnanceResult.ordonnance.empreinteHash}
+
+                <div className="flex flex-col sm:flex-row items-center gap-4 bg-background/90 p-4 rounded-xl border border-emerald-500/20">
+                  <div className="p-2 rounded-xl bg-white shrink-0 shadow-sm flex flex-col items-center">
+                    <QRCodeSVG
+                      value={`https://beninvie.bj/verify?token=${ordonnanceResult.ordonnance.codeUnique}`}
+                      size={100}
+                      level="M"
+                      includeMargin={false}
+                    />
+                    <span className="text-[9px] font-mono text-zinc-700 font-bold mt-1">
+                      Usage Unique
+                    </span>
+                  </div>
+
+                  <div className="flex-1 text-xs space-y-1 w-full">
+                    <p className="font-bold text-foreground text-sm">
+                      {medicamentNom}
+                    </p>
+                    <p className="text-[11px] text-foreground/70">
+                      {posologie}
+                    </p>
+                    <p className="text-[10px] font-mono text-foreground/50 truncate">
+                      Scellé: {ordonnanceResult.ordonnance.empreinteHash}
+                    </p>
+                    <div className="pt-2 flex flex-wrap gap-2">
+                      <a
+                        href={`/verify?token=${ordonnanceResult.ordonnance.codeUnique}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="min-h-[36px] px-3 py-1.5 bg-[#0a3764] hover:bg-[#072544] text-white text-[11px] font-bold rounded-lg transition-colors inline-flex items-center gap-1.5 shadow-sm cursor-pointer"
+                      >
+                        <ExternalLink className="h-3 w-3" />
+                        <span>Tester sur le Guichet Pharmacie</span>
+                      </a>
+                      <button
+                        type="button"
+                        onClick={() => window.print()}
+                        className="min-h-[36px] px-3 py-1.5 bg-foreground/10 hover:bg-foreground/15 text-foreground text-[11px] font-bold rounded-lg transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+                      >
+                        <Printer className="h-3 w-3" />
+                        <span>Imprimer l&apos;Ordonnance</span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </ScaleUnblur>
             )}

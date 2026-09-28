@@ -21,7 +21,12 @@ import {
   Check,
   Building,
   Send,
+  ExternalLink,
+  Printer,
+  Download,
+  ArrowUpRight,
 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import { FadeIn, ScaleUnblur } from "@/components/ui/motion-primitives";
 import { getPoleForCommune } from "@/data/communes";
 
@@ -81,6 +86,11 @@ export default function CitoyenDashboardPage(): ReactNode {
   const [activeModule, setActiveModule] = useState<CitoyenModule | null>(null);
 
   const currentModule = CITOYEN_MODULES.find((m) => m.id === activeModule);
+
+  // Modales interactives
+  const [otsModalHash, setOtsModalHash] = useState<string | null>(null);
+  const [selectedReceipt, setSelectedReceipt] = useState<any | null>(null);
+  const [showCarteModal, setShowCarteModal] = useState<boolean>(false);
 
   // Formulaire de signalement rapide citoyen
   const [signalementEnvoye, setSignalementEnvoye] = useState(false);
@@ -288,8 +298,24 @@ export default function CitoyenDashboardPage(): ReactNode {
             </div>
 
             <div className="flex flex-col sm:flex-row items-center gap-5 py-3 border-y border-foreground/10">
-              <div className="h-28 w-28 rounded-2xl bg-white p-2.5 flex items-center justify-center shadow-md">
-                <QrCode className="h-full w-full text-black" />
+              <div className="flex flex-col items-center gap-2 shrink-0">
+                <div className="h-28 w-28 rounded-2xl bg-white p-2 flex items-center justify-center shadow-md">
+                  <QRCodeSVG
+                    value={`https://beninvie.bj/verify?token=CARTE-${user?.npi || "NPI-CIT-1995-1029"}`}
+                    size={96}
+                    level="M"
+                    includeMargin={false}
+                  />
+                </div>
+                <a
+                  href={`/verify?token=CARTE-${user?.npi || "NPI-CIT-1995-1029"}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[10px] text-pink-400 hover:text-pink-300 font-bold underline flex items-center gap-1"
+                >
+                  <ExternalLink className="h-2.5 w-2.5" />
+                  Tester Guichet National
+                </a>
               </div>
               <div className="flex flex-col gap-1 text-xs">
                 <div className="font-bold text-foreground text-base">{user?.prenom} {user?.nom}</div>
@@ -314,6 +340,23 @@ export default function CitoyenDashboardPage(): ReactNode {
                 <span className="text-[10px] text-foreground/50 block font-semibold">Forfaits Transport Reçus</span>
                 <span className="font-bold text-foreground text-sm mt-0.5 block">4 000 FCFA MoMo</span>
               </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-2">
+              <button
+                onClick={() => setShowCarteModal(true)}
+                className="min-h-[44px] flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-pink-600 hover:bg-pink-500 text-white font-bold text-xs shadow-md transition-colors cursor-pointer"
+              >
+                <QrCode className="h-4 w-4" />
+                <span>Agrandir Carte & Scellé</span>
+              </button>
+              <button
+                onClick={() => window.print()}
+                className="min-h-[44px] inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-foreground/10 hover:bg-foreground/15 text-foreground font-bold text-xs transition-colors cursor-pointer"
+              >
+                <Download className="h-4 w-4" />
+                <span>Attestation PDF</span>
+              </button>
             </div>
 
             <div className="p-3 rounded-2xl bg-foreground/5 border border-foreground/10 text-[11px] text-foreground/60 flex items-center gap-2">
@@ -391,9 +434,13 @@ export default function CitoyenDashboardPage(): ReactNode {
                   </span>
                 </div>
                 <p className="text-xs text-foreground/60 mt-1">Banque de Sang de l&apos;Hôpital de Zone de Nikki • 15 Janvier 2026</p>
-                <p className="text-[10px] font-mono text-foreground/45 mt-0.5">
-                  Ancrage OTS : 7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069
-                </p>
+                <button
+                  onClick={() => setOtsModalHash("7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069")}
+                  className="mt-1 text-xs text-rose-500 hover:text-rose-400 font-bold flex items-center gap-1.5 cursor-pointer"
+                >
+                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
+                  <span>Examiner le scellé Bitcoin OTS (7f83b165...)</span>
+                </button>
               </div>
               <div className="text-left sm:text-right">
                 <span className="text-sm font-bold text-emerald-500">+2 000 FCFA</span>
@@ -410,9 +457,13 @@ export default function CitoyenDashboardPage(): ReactNode {
                   </span>
                 </div>
                 <p className="text-xs text-foreground/60 mt-1">Centre Communal de Basso • 12 Octobre 2025</p>
-                <p className="text-[10px] font-mono text-foreground/45 mt-0.5">
-                  Ancrage OTS : e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
-                </p>
+                <button
+                  onClick={() => setOtsModalHash("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855")}
+                  className="mt-1 text-xs text-rose-500 hover:text-rose-400 font-bold flex items-center gap-1.5 cursor-pointer"
+                >
+                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
+                  <span>Examiner le scellé Bitcoin OTS (e3b0c442...)</span>
+                </button>
               </div>
               <div className="text-left sm:text-right">
                 <span className="text-sm font-bold text-emerald-500">+2 000 FCFA</span>
@@ -449,6 +500,23 @@ export default function CitoyenDashboardPage(): ReactNode {
               </div>
               <span className="text-xl font-bold text-foreground">2 000 FCFA</span>
               <p className="text-[11px] text-foreground/60">Transmis sur MTN Mobile Money (+229 97 45 12 33) suite au don #DON-2026-1001.</p>
+              <button
+                onClick={() =>
+                  setSelectedReceipt({
+                    id: "TRF-9821",
+                    montant: "2 000 FCFA",
+                    operateur: "MTN Mobile Money",
+                    telephone: "+229 97 45 12 33",
+                    date: "15 Janvier 2026",
+                    motif: "Défraiement déplacement don bénévole #DON-2026-1001",
+                    hash: "0x7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069",
+                  })
+                }
+                className="mt-2 min-h-[36px] px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 text-xs font-bold border border-amber-500/30 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+              >
+                <Download className="h-3.5 w-3.5" />
+                <span>Voir Quittance MoMo Officielle</span>
+              </button>
             </div>
 
             <div className="p-4 rounded-3xl border border-foreground/8 bg-foreground/3 flex flex-col gap-2">
@@ -458,6 +526,23 @@ export default function CitoyenDashboardPage(): ReactNode {
               </div>
               <span className="text-xl font-bold text-foreground">2 000 FCFA</span>
               <p className="text-[11px] text-foreground/60">Transmis sur Moov Money suite au don #DON-2025-0842 à Basso.</p>
+              <button
+                onClick={() =>
+                  setSelectedReceipt({
+                    id: "TRF-7412",
+                    montant: "2 000 FCFA",
+                    operateur: "Moov Money Bénin",
+                    telephone: "+229 96 11 22 33",
+                    date: "12 Octobre 2025",
+                    motif: "Défraiement déplacement don bénévole #DON-2025-0842",
+                    hash: "0xe3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+                  })
+                }
+                className="mt-2 min-h-[36px] px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 text-xs font-bold border border-amber-500/30 flex items-center justify-center gap-1.5 cursor-pointer transition-colors"
+              >
+                <Download className="h-3.5 w-3.5" />
+                <span>Voir Quittance MoMo Officielle</span>
+              </button>
             </div>
           </div>
         </ScaleUnblur>
@@ -553,6 +638,239 @@ export default function CitoyenDashboardPage(): ReactNode {
           )}
         </ScaleUnblur>
       )}
+        </div>
+      )}
+
+      {/* MODALE 1 : CARTE NATIONALE DE SANTÉ PLEIN ÉCRAN & QR */}
+      {showCarteModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-3 sm:p-4"
+          onClick={() => setShowCarteModal(false)}
+        >
+          <div
+            className="w-full max-w-[95vw] sm:max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl sm:rounded-4xl border border-pink-500/40 bg-background p-5 sm:p-8 shadow-2xl flex flex-col gap-5 text-center relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-foreground/10 pb-3">
+              <div className="flex items-center gap-1.5">
+                <div className="h-2.5 w-3 rounded-xs bg-[#008751]" />
+                <div className="h-2.5 w-3 rounded-xs bg-[#FCD116]" />
+                <div className="h-2.5 w-3 rounded-xs bg-[#E8112D]" />
+                <span className="text-[10px] font-bold text-pink-400 uppercase tracking-widest ml-1">
+                  RÉPUBLIQUE DU BÉNIN • MINISTÈRE DE LA SANTÉ
+                </span>
+              </div>
+              <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-pink-500/15 text-pink-400">
+                Carte Dématérialisée
+              </span>
+            </div>
+
+            <div className="flex flex-col items-center gap-2">
+              <div className="h-16 w-16 rounded-2xl bg-pink-600 text-white flex flex-col items-center justify-center shadow-lg shadow-pink-600/30">
+                <span className="text-[10px] font-bold uppercase opacity-80 leading-none">Groupe</span>
+                <span className="text-2xl font-black leading-none mt-0.5">O+</span>
+              </div>
+              <h3 className="text-lg font-bold text-foreground">
+                {user?.prenom} {user?.nom}
+              </h3>
+              <p className="text-xs font-mono text-pink-400 break-all">{user?.npi}</p>
+            </div>
+
+            {/* Grand QR Code scannable */}
+            <div className="p-4 rounded-3xl bg-white border-2 border-pink-500/30 shadow-inner flex flex-col items-center justify-center mx-auto max-w-full">
+              <QRCodeSVG
+                value={`https://beninvie.bj/verify?token=CARTE-${user?.npi || "NPI-CIT-1995-1029"}`}
+                size={180}
+                level="M"
+                className="max-w-full h-auto"
+              />
+              <div className="mt-2 text-[10px] font-mono text-zinc-800 font-bold break-all">
+                CNS-BJ-{user?.npi} • SCELLÉ ANIP
+              </div>
+            </div>
+
+            <a
+              href={`/verify?token=CARTE-${user?.npi || "NPI-CIT-1995-1029"}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="min-h-[44px] inline-flex items-center justify-center gap-1.5 text-xs font-bold text-pink-500 hover:underline"
+            >
+              <span>Tester le guichet de contrôle national (/verify)</span>
+              <ArrowUpRight className="w-3.5 h-3.5" />
+            </a>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs text-left">
+              <div className="p-3 rounded-2xl bg-foreground/5 border border-foreground/8">
+                <span className="text-[10px] text-foreground/50 block">Régime ARCH</span>
+                <span className="font-bold text-emerald-400">100% Pris en Charge</span>
+              </div>
+              <div className="p-3 rounded-2xl bg-foreground/5 border border-foreground/8">
+                <span className="text-[10px] text-foreground/50 block">Rattachement</span>
+                <span className="font-bold text-foreground">{user?.commune} ({user?.departement})</span>
+              </div>
+            </div>
+
+            <div className="flex gap-2">
+              <button
+                onClick={() => window.print()}
+                className="flex-1 min-h-[44px] py-2.5 rounded-xl bg-pink-600 hover:bg-pink-500 text-white text-xs font-bold transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <Download className="h-3.5 w-3.5" />
+                <span>Imprimer la Carte</span>
+              </button>
+              <button
+                onClick={() => setShowCarteModal(false)}
+                className="min-h-[44px] px-5 py-2.5 rounded-xl bg-foreground/10 hover:bg-foreground/15 text-xs font-bold text-foreground transition-colors cursor-pointer"
+              >
+                Fermer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODALE 2 : PREUVE CRYPTOGRAPHIQUE OPENTIMESTAMPS */}
+      {otsModalHash && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-3 sm:p-4"
+          onClick={() => setOtsModalHash(null)}
+        >
+          <div
+            className="w-full max-w-[95vw] sm:max-w-lg max-h-[90vh] overflow-y-auto rounded-3xl sm:rounded-4xl border border-rose-500/30 bg-background p-4 sm:p-8 shadow-2xl flex flex-col gap-4 text-left relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-3 border-b border-foreground/10 pb-3">
+              <div className="h-10 w-10 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
+                <ShieldCheck className="h-5 w-5" />
+              </div>
+              <div>
+                <h4 className="text-sm font-bold text-foreground">Attestation Immuable OpenTimestamps</h4>
+                <p className="text-[11px] text-foreground/60">Ancrage cryptographique sur la blockchain Bitcoin</p>
+              </div>
+            </div>
+
+            <div className="space-y-2.5 text-xs">
+              <div className="p-3 rounded-2xl bg-foreground/5 border border-foreground/8">
+                <span className="text-[10px] text-foreground/50 block font-semibold">Empreinte SHA-256 du Don</span>
+                <span className="font-mono text-[11px] text-rose-400 break-all select-all font-semibold">
+                  {otsModalHash}
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div className="p-3 rounded-2xl bg-foreground/5 border border-foreground/8">
+                  <span className="text-[10px] text-foreground/50 block">Réseau Public</span>
+                  <span className="font-bold text-foreground">Bitcoin Mainnet</span>
+                </div>
+                <div className="p-3 rounded-2xl bg-foreground/5 border border-foreground/8">
+                  <span className="text-[10px] text-foreground/50 block">Statut d&apos;Horodatage</span>
+                  <span className="font-bold text-emerald-400 flex items-center gap-1">
+                    <CheckCircle className="h-3.5 w-3.5 shrink-0" />
+                    <span>Confirmé Immuable</span>
+                  </span>
+                </div>
+              </div>
+
+              <div className="p-3 rounded-2xl bg-foreground/5 border border-foreground/8 text-[11px] text-foreground/70 leading-relaxed">
+                Ce scellé mathématique garantit l&apos;existence et l&apos;intégrité de la poche de sang prélevée sans divulguer l&apos;identité nominative du donneur, conformément aux exigences de l&apos;APDP (Loi n° 2017-20).
+              </div>
+            </div>
+
+            <button
+              onClick={() => setOtsModalHash(null)}
+              className="min-h-[44px] mt-2 w-full py-2.5 rounded-2xl bg-foreground/10 hover:bg-foreground/15 text-xs font-bold text-foreground transition-colors cursor-pointer flex items-center justify-center"
+            >
+              Fermer
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* MODALE 3 : QUITTANCE DE VERSEMENT MOBILE MONEY */}
+      {selectedReceipt && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-3 sm:p-4"
+          onClick={() => setSelectedReceipt(null)}
+        >
+          <div
+            className="w-full max-w-[95vw] sm:max-w-md max-h-[90vh] overflow-y-auto rounded-3xl sm:rounded-4xl border border-amber-500/40 bg-background p-5 sm:p-8 shadow-2xl flex flex-col gap-4 text-left relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between border-b border-foreground/10 pb-3">
+              <div className="flex items-center gap-2">
+                <div className="h-8 w-8 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center">
+                  <CreditCard className="h-4 w-4" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold text-amber-500 uppercase tracking-widest block">
+                    REÇU OFFICIEL DE DÉFRAIEMENT
+                  </span>
+                  <span className="text-xs font-bold text-foreground">
+                    CNTS • RÉPUBLIQUE DU BÉNIN
+                  </span>
+                </div>
+              </div>
+              <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400">
+                Versé
+              </span>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-foreground/5 border border-foreground/10 flex flex-col gap-2 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-foreground/60">Identifiant Transaction :</span>
+                <span className="font-mono font-bold text-foreground">{selectedReceipt.id}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-foreground/60">Montant Forfaitaire :</span>
+                <span className="text-base font-black text-emerald-400">{selectedReceipt.montant}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-foreground/60">Opérateur / Canal :</span>
+                <span className="font-semibold text-foreground">{selectedReceipt.operateur}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-foreground/60">Numéro Bénéficiaire :</span>
+                <span className="font-mono text-foreground">{selectedReceipt.telephone}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-foreground/60">Date & Heure :</span>
+                <span className="text-foreground">{selectedReceipt.date}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-foreground/60">Motif Réglementaire :</span>
+                <span className="text-[11px] text-foreground/80 font-medium">{selectedReceipt.motif}</span>
+              </div>
+            </div>
+
+            {/* QR Code Scannable */}
+            <div className="p-3 rounded-2xl bg-white border border-amber-500/30 flex flex-col items-center justify-center text-center">
+              <QRCodeSVG
+                value={`https://beninvie.bj/verify?token=GBESSOKE-${selectedReceipt.id}`}
+                size={110}
+                level="M"
+                includeMargin={false}
+              />
+              <span className="text-[9px] font-mono text-zinc-700 font-bold mt-1">
+                Scellé Trésor Public • {selectedReceipt.id}
+              </span>
+            </div>
+
+            <div className="flex gap-2 pt-2 border-t border-foreground/10">
+              <button
+                onClick={() => window.print()}
+                className="flex-1 min-h-[44px] py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold transition-colors cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <Download className="h-3.5 w-3.5" />
+                <span>Imprimer Quittance</span>
+              </button>
+              <button
+                onClick={() => setSelectedReceipt(null)}
+                className="min-h-[44px] px-5 py-2.5 rounded-xl bg-foreground/10 hover:bg-foreground/15 text-xs font-bold text-foreground transition-colors cursor-pointer"
+              >
+                Fermer
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </main>

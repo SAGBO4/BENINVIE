@@ -10,7 +10,11 @@ import {
   ShieldCheck,
   Search,
   Check,
+  ExternalLink,
+  Printer,
+  ArrowUpRight,
 } from "lucide-react";
+import { QRCodeSVG } from "qrcode.react";
 import { FadeIn, ScaleUnblur } from "@/components/ui/motion-primitives";
 
 export default function PharmacieDashboardPage(): ReactNode {
@@ -123,15 +127,36 @@ export default function PharmacieDashboardPage(): ReactNode {
                 onChange={(e) => setCodeOrdonnance(e.target.value)}
                 className="w-full rounded-2xl border border-foreground/15 bg-background px-4 py-2.5 text-xs text-foreground font-mono focus:outline-none focus:border-cyan-500"
               />
-              <span className="text-[10px] text-foreground/50 mt-1 block">
-                Code test officiel : ORD-2026-001 (Prescription Bio GOUDA à Kalalé)
-              </span>
+              <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                <span className="text-[10px] text-foreground/50 mr-1">Exemples officiels :</span>
+                <button
+                  type="button"
+                  onClick={() => setCodeOrdonnance("ORD-2026-001")}
+                  className="px-2.5 py-1 rounded-lg bg-foreground/5 hover:bg-foreground/10 text-[10px] font-mono font-bold text-foreground transition-colors cursor-pointer"
+                >
+                  ORD-2026-001
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCodeOrdonnance("ORD-2026-002")}
+                  className="px-2.5 py-1 rounded-lg bg-foreground/5 hover:bg-foreground/10 text-[10px] font-mono font-bold text-foreground transition-colors cursor-pointer"
+                >
+                  ORD-2026-002
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setCodeOrdonnance("BON-PHARMA-8871")}
+                  className="px-2.5 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-[10px] font-mono font-bold text-emerald-500 transition-colors cursor-pointer"
+                >
+                  BON-PHARMA-8871
+                </button>
+              </div>
             </div>
 
             <button
               type="submit"
               disabled={loadingVerify}
-              className="py-3 rounded-2xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs shadow-lg shadow-cyan-600/30 transition-all flex items-center justify-center gap-2"
+              className="py-3 rounded-2xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs shadow-lg shadow-cyan-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <Search className="h-4 w-4" />
               <span>{loadingVerify ? "Vérification en cours..." : "Vérifier l'Ordonnance"}</span>
@@ -164,6 +189,41 @@ export default function PharmacieDashboardPage(): ReactNode {
                 </span>
               </div>
 
+              {/* Scellé QR Code et Vérification */}
+              <div className="flex items-center gap-4 p-3.5 rounded-2xl bg-foreground/5 border border-foreground/10">
+                <div className="p-1.5 rounded-xl bg-white shrink-0 shadow-sm">
+                  <QRCodeSVG
+                    value={`https://beninvie.bj/verify?token=${verificationResult.ordonnance.codeUnique}`}
+                    size={72}
+                    level="M"
+                    includeMargin={false}
+                  />
+                </div>
+                <div className="flex-1 min-w-0 text-xs">
+                  <span className="font-bold text-foreground block">Scellé Cryptographique Contrôlé</span>
+                  <p className="text-[11px] text-foreground/60 truncate">Certifié par l&apos;ANIP et le Ministère de la Santé.</p>
+                  <div className="flex flex-wrap gap-3 mt-1.5">
+                    <a
+                      href={`/verify?token=${verificationResult.ordonnance.codeUnique}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[11px] font-bold text-cyan-500 hover:underline flex items-center gap-1"
+                    >
+                      <ExternalLink className="h-3 w-3" />
+                      <span>Contrôle APDP (/verify)</span>
+                    </a>
+                    <button
+                      type="button"
+                      onClick={() => window.print()}
+                      className="text-[11px] font-bold text-foreground/75 hover:text-foreground flex items-center gap-1 cursor-pointer"
+                    >
+                      <Printer className="h-3 w-3" />
+                      <span>Imprimer Récépissé</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               {/* Tiers Payant ARCH */}
               <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between">
                 <div>
@@ -193,7 +253,7 @@ export default function PharmacieDashboardPage(): ReactNode {
                 <button
                   onClick={handleDeliver}
                   disabled={loadingDeliver}
-                  className="py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2"
+                  className="py-3.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-600/30 transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Check className="h-4 w-4" />
                   <span>{loadingDeliver ? "Délivrance en cours..." : "Délivrer Médicaments & Invalider le QR Code"}</span>
@@ -201,9 +261,19 @@ export default function PharmacieDashboardPage(): ReactNode {
               )}
 
               {delivranceResult?.success && (
-                <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-500 font-bold flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4" />
-                  <span>Délivrance enregistrée avec succès. QR Code définitivement invalidé.</span>
+                <div className="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-500 font-bold flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 shrink-0" />
+                    <span>Délivrance enregistrée avec succès. QR Code définitivement invalidé.</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => window.print()}
+                    className="min-h-[36px] px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow-sm"
+                  >
+                    <Printer className="h-3 w-3" />
+                    <span>Imprimer Quittance</span>
+                  </button>
                 </div>
               )}
             </ScaleUnblur>

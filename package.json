@@ -14,6 +14,7 @@
     "start": "next start -p 3000",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "test:e2e": "playwright test",
     "db:seed": "tsx src/db/seed/index.ts",
     "electron:dev": "electron .",
     "electron:start": "electron .",
@@ -73,6 +74,7 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@types/matter-js": "^0.20.2",
     "@types/node": "^22.13.4",
     "@types/pg": "^8.11.11",

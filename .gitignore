@@ -32,3 +32,5 @@ sant-plus/
 programme-wadagni-talata-2026-1.pdf
 desktop/
 dist-electron/
+test-results/
+playwright-report/

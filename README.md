@@ -370,6 +370,22 @@ pnpm tsc --noEmit
 # Résultat : Code 0 (0 erreur de compilation, typage 100% strict)
 ```
 
+### Suite de Tests End-to-End Playwright (Navigateur Réel Google Chrome)
+```bash
+pnpm test:e2e
+# Résultat : 24 / 24 tests passés avec 100% de succès sur Desktop et Mobile
+```
+- **Couverture Multi-Écrans** : Exécution sur **Desktop Chrome (1440x900)** et **Mobile Chrome (Pixel 7, 412x915)**.
+- **Parcours Métier Validés** :
+  - **Vitrine Républicaine** : Navigation fluide, conformité visuelle et zéro débordement horizontal (`overflow-x: hidden`).
+  - **Portail d'Accès Républicain (`/login`)** : Double onglet Connexion / Inscription, 8 accès rapides de démonstration, contrôle NPI et charte zéro emoji.
+  - **Patient & Assuré ARCH** : Carnet de santé HL7 FHIR, constantes vitales et transmission réelle de signalements citoyens à l'Inspection Générale du Ministère.
+  - **Donneur Volontaire HEMORA** : Suivi des 400 Points Santé et monitoring des stocks transfusionnels en direct.
+  - **Pharmacie d'Officine** : Contrôle du code `ORD-2026-001`, vérification d'authenticité et délivrance verrouillée à usage unique.
+  - **Ministère de la Santé** : Tableau de bord pleine largeur Shadcn UI, supervision des 06 Pôles et 77 communes, bascule instantanée [Carte Interactive OSM] ⇄ [Tableau SIG IASO].
+  - **Audit Console & Mobile** : 0 exception JavaScript fatale et respect strict de la largeur d'écran sur tous les terminaux mobiles.
+
+
 ---
 
 ## 11. Workflow Git, Cadencement & Déploiement
